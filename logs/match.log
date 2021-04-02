@@ -36,3 +36,4 @@ Traceback (most recent call last):
     return jwt.encode(
 AttributeError: 'str' object has no attribute 'decode'
 2021-04-02 16:19:45,735 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-02 17:25:36,079 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
