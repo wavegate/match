@@ -35,3 +35,4 @@ Traceback (most recent call last):
   File "A:\projects\match\app\models.py", line 110, in get_reset_password_token
     return jwt.encode(
 AttributeError: 'str' object has no attribute 'decode'
+2021-04-02 16:19:45,735 INFO: Match startup [in A:\projects\match\app\__init__.py:82]

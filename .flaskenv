@@ -1,1 +1,2 @@
 FLASK_APP=match.py
+FLASK_DEBUG=1
