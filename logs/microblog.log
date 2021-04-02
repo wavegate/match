@@ -72,3 +72,6 @@ Traceback (most recent call last):
 elasticsearch.exceptions.NotFoundError: NotFoundError(404, 'index_not_found_exception', 'no such index [post]', post, index_or_alias)
 2021-04-02 09:57:46,807 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
 2021-04-02 10:02:20,958 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 13:29:19,903 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 13:29:19,905 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
+2021-04-02 13:29:19,905 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
