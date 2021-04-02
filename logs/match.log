@@ -1,79 +1,13 @@
-2021-04-01 10:13:38,039 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:13:44,043 ERROR: Exception on /edit_profile [POST] [in c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py:1891]
-Traceback (most recent call last):
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_context
-    self.dialect.do_execute(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\default.py", line 681, in do_execute
-    cursor.execute(statement, parameters)
-sqlite3.IntegrityError: UNIQUE constraint failed: user.username
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\_compat.py", line 39, in reraise
-    raise value
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "C:\Users\ccfra\projects\match\app\routes.py", line 85, in edit_profile
-    db.session.commit()
-  File "<string>", line 2, in commit
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 1415, in commit
-    self._transaction.commit(_to_root=self.future)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 829, in commit
-    self._prepare_impl()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 808, in _prepare_impl
-    self.session.flush()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3233, in flush
-    self._flush(objects)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3373, in _flush
-    transaction.rollback(_capture_exception=True)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
-    compat.raise_(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
-    raise exception
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3333, in _flush
-    flush_context.execute()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\unitofwork.py", line 453, in execute
-    rec.execute(self)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\unitofwork.py", line 627, in execute
-    util.preloaded.orm_persistence.save_obj(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\persistence.py", line 234, in save_obj
-    _emit_update_statements(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\persistence.py", line 998, in _emit_update_statements
-    c = connection._execute_20(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1520, in _execute_20
-    return meth(self, args_10style, kwargs_10style, execution_options)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\sql\elements.py", line 313, in _execute_on_connection
-    return connection._execute_clauseelement(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1389, in _execute_clauseelement
-    ret = self._execute_context(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1748, in _execute_context
-    self._handle_dbapi_exception(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1929, in _handle_dbapi_exception
-    util.raise_(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
-    raise exception
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_context
-    self.dialect.do_execute(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\default.py", line 681, in do_execute
-    cursor.execute(statement, parameters)
-sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: user.username
-[SQL: UPDATE user SET username=?, about_me=? WHERE user.id = ?]
-[parameters: ('susan2', 'aoefaefaef', 1)]
-(Background on this error at: http://sqlalche.me/e/14/gkpj)
-2021-04-01 10:17:20,589 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:32:18,524 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:32:24,806 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:37:38,221 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:45:48,873 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:47:00,349 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
+2021-04-01 16:56:16,043 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
+2021-04-01 16:57:36,616 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:07:00,598 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:09:14,046 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:13:23,587 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:16:52,534 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:17:56,148 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:19:31,910 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:21:06,738 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 17:24:03,541 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 23:00:09,701 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 23:01:06,441 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
+2021-04-01 23:04:52,810 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
