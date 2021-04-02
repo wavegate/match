@@ -37,3 +37,7 @@ Traceback (most recent call last):
 AttributeError: 'str' object has no attribute 'decode'
 2021-04-02 16:19:45,735 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
 2021-04-02 17:25:36,079 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-02 17:49:37,902 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-02 17:49:43,603 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-02 17:50:36,911 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-02 17:50:42,125 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
