@@ -1,7 +1,4 @@
-2021-04-02 00:10:54,208 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:10:59,127 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:11:33,092 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:12:07,541 ERROR: Exception on /auth/reset_password_request [POST] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
+2021-04-02 09:40:09,036 ERROR: Exception on /search [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
 Traceback (most recent call last):
   File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -15,15 +12,30 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
     return self.view_functions[rule.endpoint](**req.view_args)
-  File "A:\projects\match\app\auth\routes.py", line 61, in reset_password_request
-    send_password_reset_email(user)
-  File "A:\projects\match\app\auth\email.py", line 7, in send_password_reset_email
-    token = user.get_reset_password_token()
-  File "A:\projects\match\app\models.py", line 66, in get_reset_password_token
-    return jwt.encode(
-AttributeError: 'str' object has no attribute 'decode'
-2021-04-02 00:14:02,736 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:14:06,255 ERROR: Exception on /auth/reset_password_request [POST] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
+  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "A:\projects\match\app\main\routes.py", line 152, in search
+    posts, total = Post.search(g.search_form.q.data, page,
+  File "A:\projects\match\app\models.py", line 15, in search
+    ids, total = query_index(cls.__tablename__, expression, page, per_page)
+  File "A:\projects\match\app\search.py", line 22, in query_index
+    search = current_app.elasticsearch.search(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\client\utils.py", line 153, in _wrapped
+    return func(*args, params=params, headers=headers, **kwargs)
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\client\__init__.py", line 1662, in search
+    return self.transport.perform_request(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\transport.py", line 415, in perform_request
+    raise e
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\transport.py", line 381, in perform_request
+    status, headers_response, data = connection.perform_request(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\connection\http_urllib3.py", line 275, in perform_request
+    self._raise_error(response.status, raw_data)
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\connection\base.py", line 322, in _raise_error
+    raise HTTP_EXCEPTIONS.get(status_code, TransportError)(
+elasticsearch.exceptions.NotFoundError: NotFoundError(404, 'index_not_found_exception', 'no such index [post]', post, index_or_alias)
+2021-04-02 09:47:51,856 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 09:57:04,511 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 09:57:08,197 ERROR: Exception on /search [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
 Traceback (most recent call last):
   File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -37,41 +49,26 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
     return self.view_functions[rule.endpoint](**req.view_args)
-  File "A:\projects\match\app\auth\routes.py", line 61, in reset_password_request
-    send_password_reset_email(user)
-  File "A:\projects\match\app\auth\email.py", line 7, in send_password_reset_email
-    token = user.get_reset_password_token()
-  File "A:\projects\match\app\models.py", line 66, in get_reset_password_token
-    return jwt.encode(
-AttributeError: 'str' object has no attribute 'decode'
-2021-04-02 00:18:00,083 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:18:02,549 ERROR: Exception on /auth/reset_password_request [POST] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
-Traceback (most recent call last):
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "a:\projects\match\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
-    raise value
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "A:\projects\match\app\auth\routes.py", line 61, in reset_password_request
-    send_password_reset_email(user)
-  File "A:\projects\match\app\auth\email.py", line 7, in send_password_reset_email
-    token = user.get_reset_password_token()
-  File "A:\projects\match\app\models.py", line 66, in get_reset_password_token
-    return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},current_app.config['SECRET_KEY'],algorithm='HS256').decode('utf-8')
-AttributeError: 'str' object has no attribute 'decode'
-2021-04-02 00:18:33,893 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:32:01,849 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:35:23,796 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:36:19,453 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:36:24,957 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:36:29,737 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:37:18,531 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 00:47:27,478 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
-2021-04-02 01:10:24,501 INFO: Microblog startup [in A:\projects\match\app\__init__.py:74]
+  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "A:\projects\match\app\main\routes.py", line 152, in search
+    posts, total = Post.search(g.search_form.q.data, page,
+  File "A:\projects\match\app\models.py", line 15, in search
+    ids, total = query_index(cls.__tablename__, expression, page, per_page)
+  File "A:\projects\match\app\search.py", line 22, in query_index
+    search = current_app.elasticsearch.search(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\client\utils.py", line 153, in _wrapped
+    return func(*args, params=params, headers=headers, **kwargs)
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\client\__init__.py", line 1662, in search
+    return self.transport.perform_request(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\transport.py", line 415, in perform_request
+    raise e
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\transport.py", line 381, in perform_request
+    status, headers_response, data = connection.perform_request(
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\connection\http_urllib3.py", line 275, in perform_request
+    self._raise_error(response.status, raw_data)
+  File "a:\projects\match\venv\lib\site-packages\elasticsearch\connection\base.py", line 322, in _raise_error
+    raise HTTP_EXCEPTIONS.get(status_code, TransportError)(
+elasticsearch.exceptions.NotFoundError: NotFoundError(404, 'index_not_found_exception', 'no such index [post]', post, index_or_alias)
+2021-04-02 09:57:46,807 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 10:02:20,958 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
