@@ -75,3 +75,6 @@ elasticsearch.exceptions.NotFoundError: NotFoundError(404, 'index_not_found_exce
 2021-04-02 13:29:19,903 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
 2021-04-02 13:29:19,905 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
 2021-04-02 13:29:19,905 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
+2021-04-02 13:45:09,056 INFO: Microblog startup [in A:\projects\match\app\__init__.py:77]
+2021-04-02 13:45:09,057 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
+2021-04-02 13:45:09,057 INFO: Microblog startup [in A:\projects\match\app\__init__.py:95]
