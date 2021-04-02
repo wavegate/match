@@ -39,3 +39,4 @@ venv
 app.db
 match.log*
 microblog.log*
+.env
