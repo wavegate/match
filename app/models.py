@@ -132,10 +132,12 @@ class User(UserMixin, db.Model):
     def follow_program(self, program):
         if not self.is_following_program(program):
             self.programs.append(program)
+            db.session.commit()
 
     def unfollow_program(self, program):
         if self.is_following_program(program):
             self.programs.remove(program)
+            db.session.commit()
 
     def is_following_program(self, program):
         return self.programs.filter(
