@@ -13,8 +13,8 @@
 				</a>
 			</span>
 			{% endset %}
-			{{ _('%(name)s said %(when)s',
-			name=program_link, when=moment(program.timestamp).fromNow()) }}
+			{{ _('%(name)s',
+			name=program_link) }}
 			<br>
 			<span id="program{{ program.id }}">{{ program.body }}</span>
 			{% if program.language and program.language != g.locale %}

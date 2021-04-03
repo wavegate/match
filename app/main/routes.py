@@ -5,8 +5,8 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm
-from app.models import User, Post, Program, Message, Notification
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm
+from app.models import User, Post, Program, Message, Notification, Interview
 from app.translate import translate
 from app.main import bp
 
@@ -93,7 +93,21 @@ def program(name):
 #    prev_url = url_for('main.user', username=user.username,
 #                       page=posts.prev_num) if posts.has_prev else None
     form = EmptyForm()
-    return render_template('program.html', program=program, form=form)
+    return render_template('program.html', program=program, interviews=program.interviews, form=form)
+
+@bp.route('/add_interview/<name>', methods=['GET', 'POST'])
+@login_required
+def add_interview(name):
+    program = Program.query.filter_by(name=name).first_or_404()
+    form = AddInterviewForm(current_user.username, program)
+    if form.validate_on_submit():
+        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user)
+        db.session.add(interview)
+        db.session.commit()
+        flash(_('Interview added!'))
+        return redirect(url_for('main.program', name=name))
+    return render_template('add_interview.html',title=_('Add Interview'),
+                           form=form)
 
 
 @bp.route('/user/<username>')

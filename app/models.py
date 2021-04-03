@@ -72,6 +72,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    interviews = db.relationship('Interview', backref='interviewee', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed = db.relationship(
@@ -187,13 +188,14 @@ class Post(SearchableMixin, db.Model):
 
 class Program(SearchableMixin, db.Model):
     __tablename__ = 'program'
-    __searchable__ = ['body']
+    __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
+    interviews = db.relationship('Interview', backref='interviewer', lazy='dynamic')
     language = db.Column(db.String(5))
     image = db.Column(db.String(140))
     def __repr__(self):
@@ -218,3 +220,12 @@ class Notification(db.Model):
 
     def get_data(self):
         return json.loads(str(self.payload_json))
+
+class Interview(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
+    date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Interview {}>'.format(self.program_id)

@@ -81,12 +81,17 @@ def create_app(config_class=Config):
         app.logger.setLevel(logging.INFO)
         app.logger.info('Match startup')
 
+        with app.app_context():
+            if db.engine.url.drivername == 'sqlite':
+                migrate.init_app(app, db, render_as_batch=True)
+            else:
+                migrate.init_app(app, db)
+
     return app
 
 
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(current_app.config['LANGUAGES'])
-
 
 from app import models

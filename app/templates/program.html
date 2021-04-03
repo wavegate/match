@@ -26,12 +26,19 @@
                 <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
                         {{ form.hidden_tag() }}
                         {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
-                    </form>
+                </form>
+                <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value=_('Add Interview'), class_='btn btn-default')}}
+                </form>
             </td>
         </tr>
     </table>
     {% for post in posts %}
         {% include '_post.html' %}
+    {% endfor %}
+    {% for interview in interviews %}
+        {% include '_interview.html' %}
     {% endfor %}
     <nav aria-label="...">
         <ul class="pager">
