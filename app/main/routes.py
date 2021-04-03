@@ -65,7 +65,7 @@ def explore():
 def programs():
     form = ProgramForm()
     if form.validate_on_submit():
-        program = Program(name=form.name.data)
+        program = Program(name=form.name.data, body=form.body.data, image=form.image.data)
         db.session.add(program)
         db.session.commit()
         flash(_('Program added!'))
@@ -81,19 +81,30 @@ def programs():
                            programs=programs.items, next_url=next_url,
                            prev_url=prev_url, form=form)
 
-@bp.route('/program/<name>')
+@bp.route('/program/<name>', methods=['GET','POST'])
 @login_required
 def program(name):
     program = Program.query.filter_by(name=name).first_or_404()
     page = request.args.get('page', 1, type=int)
-#    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
-#        page, current_app.config['POSTS_PER_PAGE'], False)
-#    next_url = url_for('main.user', username=user.username,
-#                       page=posts.next_num) if posts.has_next else None
-#    prev_url = url_for('main.user', username=user.username,
-#                       page=posts.prev_num) if posts.has_prev else None
+    postform = PostForm()
+    if postform.validate_on_submit():
+        language = guess_language(postform.post.data)
+        if language == 'UNKNOWN' or len(language) > 5:
+            language = ''
+        post = Post(body=postform.post.data, author=current_user,
+                    language=language, program=program)
+        db.session.add(post)
+        db.session.commit()
+        flash(_('Your post is now live!'))
+        return redirect(url_for('main.program', name=name))
+    posts = program.posts.order_by(Post.timestamp.desc()).paginate(
+        page, current_app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.program', name=name,
+                       page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('main.program', name=name,
+                       page=posts.prev_num) if posts.has_prev else None
     form = EmptyForm()
-    return render_template('program.html', program=program, interviews=program.interviews, form=form)
+    return render_template('program.html', next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, posts=posts.items)
 
 @bp.route('/add_interview/<name>', methods=['GET', 'POST'])
 @login_required
@@ -122,7 +133,7 @@ def user(username):
     prev_url = url_for('main.user', username=user.username,
                        page=posts.prev_num) if posts.has_prev else None
     form = EmptyForm()
-    return render_template('user.html', user=user, posts=posts.items,
+    return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items,
                            next_url=next_url, prev_url=prev_url, form=form)
 
 

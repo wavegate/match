@@ -37,7 +37,7 @@ class EmptyForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post = TextAreaField(_l('Say something'), validators=[DataRequired()])
+    post = TextAreaField(_l('Enter interview review:'), validators=[DataRequired()])
     submit = SubmitField(_l('Submit'))
 
 
@@ -58,4 +58,6 @@ class MessageForm(FlaskForm):
 
 class ProgramForm(FlaskForm):
     name = StringField(_l('Add Program Name'), validators=[DataRequired()])
+    body = TextAreaField(_l('Enter interview format'))
+    image = StringField(_l('Image link:'))
     submit = SubmitField('Submit')

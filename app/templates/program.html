@@ -1,57 +1,178 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <table class="table table-hover">
-        <tr>
-            <td width="256px"><img src="{{ program.image }}" alt="no image"></td>
-            <td>
-                <h1>{{ program.name }}</h1>
-                {% if program.body %}<p>{{ program.body }}</p>{% endif %}
-                
-                {% if not current_user.is_following_program(program) %}
-                <p>
-                    <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
-                    </form>
-                </p>
-                {% else %}
-                <p>
-                    <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
-                    </form>
-                </p>
-                {% endif %}
+<table class="table table-hover">
+    <tr>
+        <td width="256px"><img src="{{ program.image }}" alt="no image" width="400" height="400"></td>
+        <td>
+            <h1>{{ program.name }}</h1>
+            <p>Interview structure: {% if program.body %}{{ program.body }}</p>{% endif %}
+
+            {% if not current_user.is_following_program(program) %}
+            <p>
+                <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
+                </form>
+            </p>
+            {% else %}
+            <p>
+                <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
+                </form>
+            </p>
+            {% endif %}
+            <p>
                 <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
                 </form>
+            </p>
+            <p>
                 <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Add Interview'), class_='btn btn-default')}}
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Add Interview Date'), class_='btn btn-default')}}
                 </form>
-            </td>
-        </tr>
-    </table>
-    {% for post in posts %}
-        {% include '_post.html' %}
-    {% endfor %}
+            </p>
+        </td>
+    </tr>
+</table>
+<div id="divCalendar"></div>
+{% if postform %}
+{{ wtf.quick_form(postform) }}
+{% endif %}
+{% for post in posts %}
+{% include '_post.html' %}
+{% endfor %}
+{% for interview in interviews %}
+{% include '_interview.html' %}
+{% endfor %}
+<nav aria-label="...">
+    <ul class="pager">
+        <li class="previous{% if not prev_url %} disabled{% endif %}">
+            <a href="{{ prev_url or '#' }}">
+                <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
+            </a>
+        </li>
+        <li class="next{% if not next_url %} disabled{% endif %}">
+            <a href="{{ next_url or '#' }}">
+                {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.css"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var myEvents =[
     {% for interview in interviews %}
-        {% include '_interview.html' %}
+    {
+        title: 'Interview',
+        start: '{{ interview.date.year }}-0{{ interview.date.month }}-0{{ interview.date.day }}'
+    },
     {% endfor %}
-    <nav aria-label="...">
-        <ul class="pager">
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
-                    <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
-                </a>
-            </li>
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
-                    {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    ];
+
+/*
+    {
+        title: 'All Day Event',
+        start: new Date(y, m, 1)
+    }, {
+        title: 'Long Event',
+        start: new Date(y, m, d - 5),
+        end: new Date(y, m, d - 2),
+        className: 'red'
+    }, {
+        id: 999,
+        title: 'Repeating Event',
+        start: new Date(y, m, d - 3, 16, 0),
+        allDay: false,
+        className: 'red'
+    }, {
+        id: 999,
+        title: 'Repeating Event',
+        start: new Date(y, m, d + 4, 16, 0),
+        allDay: false
+    }, {
+        title: 'Meeting',
+        start: new Date(y, m, d, 10, 30),
+        allDay: false
+    }, {
+        title: 'Lunch',
+        start: new Date(y, m, d, 12, 0),
+        end: new Date(y, m, d, 14, 0),
+        allDay: false
+    }, {
+        title: 'Birthday Party',
+        start: new Date(y, m, d + 1, 19, 0),
+        end: new Date(y, m, d + 1, 22, 30),
+        allDay: false
+    }, {
+        title: 'Click for Google',
+        start: new Date(y, m, 28),
+        end: new Date(y, m, 29),
+        url: 'http://google.com/'
+    }];*/
+    var calendar = $('#divCalendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,basicWeek ,basicDay'
+        },
+        buttonText: {
+            prev: 'prev',
+            next: 'next'
+        },
+        timeFormat: 'h(:mm)t',
+        selectable: true,
+        dayClick: function (date, allDay, jsEvent, view) {
+            alert(date);
+        },
+        eventClick: function (calEvent, jsEvent, view) {
+            alert('Event: ' + calEvent.title);
+            // change the border color just for fun
+            $(this).css('border-color', 'red');
+
+        },
+        select: function (start, end, allDay) {
+            var title = prompt('Event Title:');
+            if (title) {
+                calendar.fullCalendar('renderEvent', {
+                    title: title,
+                    start: start,
+                    end: end,
+                    allDay: allDay
+                },
+                true // make the event "stick"
+                );
+            }
+            calendar.fullCalendar('unselect');
+        },
+
+        events: myEvents
+    });
+
+    $('.fc-button-prev').click(function () {
+        alert(calendar.fullCalendar('removeEvents'));
+        calendar.fullCalendar('renderEvent', {
+            title: 'New',
+            start: "2013-09-09 10:30"
+        });
+
+    });
+
+});
+    </script>
 {% endblock %}

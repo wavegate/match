@@ -181,6 +181,7 @@ class Post(SearchableMixin, db.Model):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
     language = db.Column(db.String(5))
 
     def __repr__(self):
@@ -196,6 +197,7 @@ class Program(SearchableMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
     interviews = db.relationship('Interview', backref='interviewer', lazy='dynamic')
+    posts = db.relationship('Post', backref='program', lazy='dynamic')
     language = db.Column(db.String(5))
     image = db.Column(db.String(140))
     def __repr__(self):
