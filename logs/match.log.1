@@ -1,87 +1,4 @@
-2021-04-01 10:13:38,039 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:13:44,043 ERROR: Exception on /edit_profile [POST] [in c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py:1891]
-Traceback (most recent call last):
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_context
-    self.dialect.do_execute(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\default.py", line 681, in do_execute
-    cursor.execute(statement, parameters)
-sqlite3.IntegrityError: UNIQUE constraint failed: user.username
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\_compat.py", line 39, in reraise
-    raise value
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask\app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "C:\Users\ccfra\projects\match\app\routes.py", line 85, in edit_profile
-    db.session.commit()
-  File "<string>", line 2, in commit
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 1415, in commit
-    self._transaction.commit(_to_root=self.future)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 829, in commit
-    self._prepare_impl()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 808, in _prepare_impl
-    self.session.flush()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3233, in flush
-    self._flush(objects)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3373, in _flush
-    transaction.rollback(_capture_exception=True)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
-    compat.raise_(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
-    raise exception
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\session.py", line 3333, in _flush
-    flush_context.execute()
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\unitofwork.py", line 453, in execute
-    rec.execute(self)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\unitofwork.py", line 627, in execute
-    util.preloaded.orm_persistence.save_obj(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\persistence.py", line 234, in save_obj
-    _emit_update_statements(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\orm\persistence.py", line 998, in _emit_update_statements
-    c = connection._execute_20(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1520, in _execute_20
-    return meth(self, args_10style, kwargs_10style, execution_options)
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\sql\elements.py", line 313, in _execute_on_connection
-    return connection._execute_clauseelement(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1389, in _execute_clauseelement
-    ret = self._execute_context(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1748, in _execute_context
-    self._handle_dbapi_exception(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1929, in _handle_dbapi_exception
-    util.raise_(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\util\compat.py", line 211, in raise_
-    raise exception
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\base.py", line 1705, in _execute_context
-    self.dialect.do_execute(
-  File "c:\users\ccfra\appdata\local\programs\python\python39\lib\site-packages\sqlalchemy\engine\default.py", line 681, in do_execute
-    cursor.execute(statement, parameters)
-sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: user.username
-[SQL: UPDATE user SET username=?, about_me=? WHERE user.id = ?]
-[parameters: ('susan2', 'aoefaefaef', 1)]
-(Background on this error at: http://sqlalche.me/e/14/gkpj)
-2021-04-01 10:17:20,589 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:32:18,524 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:32:24,806 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:37:38,221 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:45:48,873 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 10:47:00,349 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:45]
-2021-04-01 11:34:07,045 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 11:39:24,578 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 12:14:16,743 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 12:14:19,234 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 12:14:36,702 ERROR: Exception on /user/susan2 [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
+2021-04-03 10:38:33,619 ERROR: Exception on /program/Mass Gen [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
 Traceback (most recent call last):
   File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -97,8 +14,8 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "A:\projects\match\app\routes.py", line 77, in user
-    return render_template('user.html', user=user, posts=posts)
+  File "A:\projects\match\app\main\routes.py", line 90, in program
+    return render_template('program.html', program=program, form=form)
   File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 137, in render_template
     return _render(
   File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 120, in _render
@@ -109,24 +26,94 @@ Traceback (most recent call last):
     reraise(*rewrite_traceback_stack(source=source))
   File "a:\projects\match\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
     raise value.with_traceback(tb)
-  File "A:\projects\match\app\templates\user.html", line 1, in top-level template code
+  File "A:\projects\match\app\templates\program.html", line 1, in top-level template code
     {% extends "base.html" %}
-  File "A:\projects\match\app\templates\base.html", line 30, in top-level template code
-    {% block content %}{% endblock %}
-  File "A:\projects\match\app\templates\user.html", line 17, in block "content"
-    {{ form.hidden_tag() }}
-  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 471, in getattr
-    return getattr(obj, attribute)
-jinja2.exceptions.UndefinedError: 'form' is undefined
-2021-04-01 12:16:17,372 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 13:00:34,173 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 13:01:45,086 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 16:09:46,900 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 16:11:45,893 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 16:13:13,139 INFO: Match startup [in A:\projects\match\app\__init__.py:45]
-2021-04-01 16:24:34,169 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
-2021-04-01 16:34:08,550 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
-2021-04-01 16:39:01,760 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
-2021-04-01 16:40:45,664 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
-2021-04-01 16:43:12,527 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
-2021-04-01 16:48:51,570 INFO: Match startup [in A:\projects\match\app\__init__.py:47]
+  File "A:\projects\match\app\templates\base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
+    {% block doc -%}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block "doc"
+    {%- block html %}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 20, in block "html"
+    {% block body -%}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 23, in block "body"
+    {% block content -%}
+  File "A:\projects\match\app\templates\base.html", line 66, in block "content"
+    {% block app_content %}{% endblock %}
+  File "A:\projects\match\app\templates\program.html", line 11, in block "app_content"
+    {% if not current_user.is_following_program(program) %}
+  File "A:\projects\match\app\models.py", line 134, in is_following_program
+    return self.programs.filter(
+AttributeError: 'InstrumentedList' object has no attribute 'filter'
+2021-04-03 10:39:36,805 ERROR: Exception on /program/Mass Gen [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
+Traceback (most recent call last):
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "a:\projects\match\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "A:\projects\match\app\main\routes.py", line 90, in program
+    return render_template('program.html', program=program, form=form)
+  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 137, in render_template
+    return _render(
+  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 120, in _render
+    rv = template.render(context)
+  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "a:\projects\match\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "A:\projects\match\app\templates\program.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "A:\projects\match\app\templates\base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
+    {% block doc -%}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block "doc"
+    {%- block html %}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 20, in block "html"
+    {% block body -%}
+  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 23, in block "body"
+    {% block content -%}
+  File "A:\projects\match\app\templates\base.html", line 66, in block "content"
+    {% block app_content %}{% endblock %}
+  File "A:\projects\match\app\templates\program.html", line 11, in block "app_content"
+    {% if not current_user.is_following_program(program) %}
+  File "A:\projects\match\app\models.py", line 134, in is_following_program
+    return 1
+AttributeError: 'InstrumentedList' object has no attribute 'filter'
+2021-04-03 10:39:44,300 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-03 10:39:50,993 ERROR: Exception on /unfollow_program/Mass Gen [POST] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
+Traceback (most recent call last):
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "a:\projects\match\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "A:\projects\match\app\main\routes.py", line 191, in unfollow_program
+    current_user.unfollow_program(program)
+  File "A:\projects\match\app\models.py", line 131, in unfollow_program
+    self.programs.remove(program)
+  File "a:\projects\match\venv\lib\site-packages\sqlalchemy\orm\collections.py", line 1141, in remove
+    fn(self, value)
+ValueError: list.remove(x): x not in list
+2021-04-03 10:40:41,303 INFO: Match startup [in A:\projects\match\app\__init__.py:82]

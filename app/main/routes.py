@@ -71,9 +71,23 @@ def programs():
         if programs.has_next else None
     prev_url = url_for('main.programs', page=programs.prev_num) \
         if programs.has_prev else None
-    return render_template('index.html', title=_('Explore'),
+    return render_template('programs.html', title=_('Programs'),
                            programs=programs.items, next_url=next_url,
                            prev_url=prev_url)
+
+@bp.route('/program/<name>')
+@login_required
+def program(name):
+    program = Program.query.filter_by(name=name).first_or_404()
+    page = request.args.get('page', 1, type=int)
+#    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
+#        page, current_app.config['POSTS_PER_PAGE'], False)
+#    next_url = url_for('main.user', username=user.username,
+#                       page=posts.next_num) if posts.has_next else None
+#    prev_url = url_for('main.user', username=user.username,
+#                       page=posts.prev_num) if posts.has_prev else None
+    form = EmptyForm()
+    return render_template('program.html', program=program, form=form)
 
 
 @bp.route('/user/<username>')
@@ -145,6 +159,39 @@ def unfollow(username):
         db.session.commit()
         flash(_('You are not following %(username)s.', username=username))
         return redirect(url_for('main.user', username=username))
+    else:
+        return redirect(url_for('main.index'))
+
+@bp.route('/follow_program/<name>', methods=['POST'])
+@login_required
+def follow_program(name):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        program = Program.query.filter_by(name=name).first()
+        if program is None:
+            flash(_('Program %(name)s not found.', name=name))
+            return redirect(url_for('main.index'))
+        current_user.follow_program(program)
+        db.session.commit()
+        flash(_('You are following %(name)s!', name=name))
+        return redirect(url_for('main.program', name=name))
+    else:
+        return redirect(url_for('main.index'))
+
+
+@bp.route('/unfollow_program/<name>', methods=['POST'])
+@login_required
+def unfollow_program(name):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        program = Program.query.filter_by(name=name).first()
+        if program is None:
+            flash(_('Program %(name)s not found.', name=name))
+            return redirect(url_for('main.index'))
+        current_user.unfollow_program(program)
+        db.session.commit()
+        flash(_('You are not following %(name)s.', name=name))
+        return redirect(url_for('main.program', name=name))
     else:
         return redirect(url_for('main.index'))
 

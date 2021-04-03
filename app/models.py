@@ -59,8 +59,14 @@ followers = db.Table(
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+link = db.Table(
+    'link',
+    db.Column('user', db.Integer, db.ForeignKey('user.id')),
+    db.Column('program', db.Integer, db.ForeignKey('program.id'))
+)
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -73,6 +79,7 @@ class User(UserMixin, db.Model):
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    programs = db.relationship('Program', secondary=link, back_populates='users', lazy='dynamic')
     messages_sent = db.relationship('Message',
                                     foreign_keys='Message.sender_id',
                                     backref='author', lazy='dynamic')
@@ -122,6 +129,25 @@ class User(UserMixin, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
 
+    def follow_program(self, program):
+        if not self.is_following_program(program):
+            self.programs.append(program)
+
+    def unfollow_program(self, program):
+        if self.is_following_program(program):
+            self.programs.remove(program)
+
+    def is_following_program(self, program):
+        return self.programs.filter(
+            link.c.program == program.id).count() > 0
+
+#    def followed_posts(self):
+#        followed = Post.query.join(
+#            followers, (followers.c.followed_id == Post.program_id)).filter(
+#                followers.c.follower_id == self.id)
+#        own = Post.query.filter_by(user_id=self.id)
+#        return followed.union(own).order_by(Post.timestamp.desc())
+
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -160,13 +186,16 @@ class Post(SearchableMixin, db.Model):
         return '<Post {}>'.format(self.body)
 
 class Program(SearchableMixin, db.Model):
+    __tablename__ = 'program'
     __searchable__ = ['body']
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
     language = db.Column(db.String(5))
-
+    image = db.Column(db.String(140))
     def __repr__(self):
         return '<Program {}>'.format(self.body)
 

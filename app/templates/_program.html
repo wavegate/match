@@ -1,0 +1,32 @@
+<table class="table table-hover">
+	<tr>
+		<td width="70px">
+			<a href="{{ url_for('main.program', name=program.name) }}">
+				<img src="{{ program.image }}" width="70" height="70"/>
+			</a>
+		</td>
+		<td>
+			{% set program_link %}
+			<span class="program_popup">
+				<a href="{{ url_for('main.program', name=program.name) }}">
+					{{ program.name }}
+				</a>
+			</span>
+			{% endset %}
+			{{ _('%(name)s said %(when)s',
+			name=program_link, when=moment(program.timestamp).fromNow()) }}
+			<br>
+			<span id="program{{ program.id }}">{{ program.body }}</span>
+			{% if program.language and program.language != g.locale %}
+			<br><br>
+			<span id="translation{{ program.id }}">
+				<a href="javascript:translate(
+				'#program{{ program.id }}',
+				'#translation{{ program.id }}',
+				'{{ program.language }}',
+				'{{ g.locale }}');">{{ _('Translate') }}</a>
+			</span>
+			{% endif %}
+		</td>
+	</tr>
+</table>

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table table-hover">
+        <tr>
+            <td width="256px"><img src="{{ program.image }}"></td>
+            <td>
+                <h1>{{ program.name }}</h1>
+                {% if program.body %}<p>{{ program.body }}</p>{% endif %}
+                
+                {% if not current_user.is_following_program(program) %}
+                <p>
+                    <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
+                    </form>
+                </p>
+                {% else %}
+                <p>
+                    <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
+                    </form>
+                </p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% for post in posts %}
+        {% include '_post.html' %}
+    {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
