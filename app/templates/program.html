@@ -3,7 +3,7 @@
 {% block app_content %}
     <table class="table table-hover">
         <tr>
-            <td width="256px"><img src="{{ program.image }}"></td>
+            <td width="256px"><img src="{{ program.image }}" alt="no image"></td>
             <td>
                 <h1>{{ program.name }}</h1>
                 {% if program.body %}<p>{{ program.body }}</p>{% endif %}
@@ -23,6 +23,10 @@
                     </form>
                 </p>
                 {% endif %}
+                <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
+                    </form>
             </td>
         </tr>
     </table>

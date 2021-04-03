@@ -46,3 +46,7 @@ class MessageForm(FlaskForm):
     message = TextAreaField(_l('Message'), validators=[
         DataRequired(), Length(min=0, max=140)])
     submit = SubmitField(_l('Submit'))
+
+class ProgramForm(FlaskForm):
+    name = StringField(_l('Add Program Name'), validators=[DataRequired()])
+    submit = SubmitField('Submit')

@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm
 from app.models import User, Post, Program, Message, Notification
 from app.translate import translate
 from app.main import bp
@@ -61,9 +61,16 @@ def explore():
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
 
-@bp.route('/programs')
+@bp.route('/programs', methods=['GET', 'POST'])
 @login_required
 def programs():
+    form = ProgramForm()
+    if form.validate_on_submit():
+        program = Program(name=form.name.data)
+        db.session.add(program)
+        db.session.commit()
+        flash(_('Program added!'))
+        return redirect(url_for('main.programs'))
     page = request.args.get('page', 1, type=int)
     programs = Program.query.order_by(Program.timestamp.desc()).paginate(
         page, current_app.config['POSTS_PER_PAGE'], False)
@@ -73,7 +80,7 @@ def programs():
         if programs.has_prev else None
     return render_template('programs.html', title=_('Programs'),
                            programs=programs.items, next_url=next_url,
-                           prev_url=prev_url)
+                           prev_url=prev_url, form=form)
 
 @bp.route('/program/<name>')
 @login_required
@@ -194,6 +201,15 @@ def unfollow_program(name):
         return redirect(url_for('main.program', name=name))
     else:
         return redirect(url_for('main.index'))
+
+@bp.route('/delete_program/<name>', methods=['POST'])
+@login_required
+def delete_program(name):
+    program = Program.query.filter_by(name=name).first()
+    db.session.delete(program)
+    db.session.commit()
+    flash(_('Program deleted!'))
+    return redirect(url_for('main.programs'))
 
 
 @bp.route('/translate', methods=['POST'])
