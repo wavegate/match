@@ -6,7 +6,7 @@ from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
-from app.models import User, Post
+from app.models import User, Post, Program
 from app.translate import translate
 from app.main import bp
 
@@ -59,6 +59,20 @@ def explore():
         if posts.has_prev else None
     return render_template('index.html', title=_('Explore'),
                            posts=posts.items, next_url=next_url,
+                           prev_url=prev_url)
+
+@bp.route('/programs')
+@login_required
+def programs():
+    page = request.args.get('page', 1, type=int)
+    programs = Program.query.order_by(Program.timestamp.desc()).paginate(
+        page, current_app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.programs', page=programs.next_num) \
+        if programs.has_next else None
+    prev_url = url_for('main.programs', page=programs.prev_num) \
+        if programs.has_prev else None
+    return render_template('index.html', title=_('Explore'),
+                           programs=programs.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -157,3 +171,10 @@ def search():
         if page > 1 else None
     return render_template('search.html', title=_('Search'), posts=posts,
                            next_url=next_url, prev_url=prev_url)
+
+@bp.route('/user/<username>/popup')
+@login_required
+def user_popup(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    form = EmptyForm()
+    return render_template('user_popup.html', user=user, form=form)
