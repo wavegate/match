@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-02 00:36-0500\n"
+"POT-Creation-Date: 2021-04-02 20:42-0500\n"
 "PO-Revision-Date: 2021-04-02 00:01-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: app/__init__.py:18
+#: app/__init__.py:19
 msgid "Please log in to access this page."
 msgstr ""
 
@@ -31,7 +31,7 @@ msgid "Error: the translation service failed."
 msgstr ""
 
 #: app/auth/email.py:8
-msgid "[Microblog] Reset Your Password"
+msgid "[Match] Reset Your Password"
 msgstr ""
 
 #: app/auth/forms.py:9 app/auth/forms.py:16 app/main/forms.py:10
@@ -99,7 +99,7 @@ msgstr ""
 msgid "About me"
 msgstr ""
 
-#: app/main/forms.py:13 app/main/forms.py:32
+#: app/main/forms.py:13 app/main/forms.py:32 app/main/forms.py:48
 msgid "Submit"
 msgstr ""
 
@@ -107,55 +107,71 @@ msgstr ""
 msgid "Say something"
 msgstr ""
 
-#: app/main/routes.py:35
+#: app/main/forms.py:36 app/main/routes.py:172
+msgid "Search"
+msgstr ""
+
+#: app/main/forms.py:46
+msgid "Message"
+msgstr ""
+
+#: app/main/routes.py:36
 msgid "Your post is now live!"
 msgstr ""
 
-#: app/main/routes.py:44 app/templates/base.html:21
+#: app/main/routes.py:45 app/templates/base.html:21
 msgid "Home"
 msgstr ""
 
-#: app/main/routes.py:59 app/templates/base.html:22
+#: app/main/routes.py:60 app/main/routes.py:74 app/templates/base.html:22
 msgid "Explore"
 msgstr ""
 
-#: app/main/routes.py:88
+#: app/main/routes.py:103
 msgid "Your changes have been saved."
 msgstr ""
 
-#: app/main/routes.py:93 app/templates/edit_profile.html:5
+#: app/main/routes.py:108 app/templates/edit_profile.html:5
 msgid "Edit Profile"
 msgstr ""
 
-#: app/main/routes.py:104 app/main/routes.py:124
+#: app/main/routes.py:119 app/main/routes.py:139
 #, python-format
 msgid "User %(username)s not found."
 msgstr ""
 
-#: app/main/routes.py:107
+#: app/main/routes.py:122
 msgid "You cannot follow yourself!"
 msgstr ""
 
-#: app/main/routes.py:111
+#: app/main/routes.py:126
 #, python-format
 msgid "You are following %(username)s!"
 msgstr ""
 
-#: app/main/routes.py:127
+#: app/main/routes.py:142
 msgid "You cannot unfollow yourself!"
 msgstr ""
 
-#: app/main/routes.py:131
+#: app/main/routes.py:146
 #, python-format
 msgid "You are not following %(username)s."
 msgstr ""
 
-#: app/templates/_post.html:14
+#: app/main/routes.py:192
+msgid "Your message has been sent."
+msgstr ""
+
+#: app/main/routes.py:194
+msgid "Send Message"
+msgstr ""
+
+#: app/templates/_post.html:16
 #, python-format
 msgid "%(username)s said %(when)s"
 msgstr ""
 
-#: app/templates/_post.html:25
+#: app/templates/_post.html:27
 msgid "Translate"
 msgstr ""
 
@@ -163,19 +179,23 @@ msgstr ""
 msgid "Welcome to Microblog"
 msgstr ""
 
-#: app/templates/base.html:26
+#: app/templates/base.html:33
 msgid "Login"
 msgstr ""
 
-#: app/templates/base.html:28
+#: app/templates/base.html:36 app/templates/messages.html:4
+msgid "Messages"
+msgstr ""
+
+#: app/templates/base.html:45
 msgid "Profile"
 msgstr ""
 
-#: app/templates/base.html:29
+#: app/templates/base.html:46
 msgid "Logout"
 msgstr ""
 
-#: app/templates/base.html:66
+#: app/templates/base.html:83
 msgid "Error: Could not contact server."
 msgstr ""
 
@@ -184,28 +204,53 @@ msgstr ""
 msgid "Hi, %(username)s!"
 msgstr ""
 
-#: app/templates/index.html:17 app/templates/user.html:41
+#: app/templates/index.html:17 app/templates/user.html:44
 msgid "Newer posts"
 msgstr ""
 
-#: app/templates/index.html:22 app/templates/user.html:46
+#: app/templates/index.html:22 app/templates/user.html:49
 msgid "Older posts"
+msgstr ""
+
+#: app/templates/messages.html:12
+msgid "Newer messages"
+msgstr ""
+
+#: app/templates/messages.html:17
+msgid "Older messages"
+msgstr ""
+
+#: app/templates/search.html:4
+msgid "Search Results"
+msgstr ""
+
+#: app/templates/search.html:12
+msgid "Previous results"
+msgstr ""
+
+#: app/templates/search.html:17
+msgid "Next results"
+msgstr ""
+
+#: app/templates/send_message.html:5
+#, python-format
+msgid "Send Message to %(recipient)s"
 msgstr ""
 
 #: app/templates/user.html:8
 msgid "User"
 msgstr ""
 
-#: app/templates/user.html:11
+#: app/templates/user.html:11 app/templates/user_popup.html:9
 msgid "Last seen on"
 msgstr ""
 
-#: app/templates/user.html:13
+#: app/templates/user.html:13 app/templates/user_popup.html:12
 #, python-format
 msgid "%(count)d followers"
 msgstr ""
 
-#: app/templates/user.html:13
+#: app/templates/user.html:13 app/templates/user_popup.html:13
 #, python-format
 msgid "%(count)d following"
 msgstr ""
@@ -214,12 +259,16 @@ msgstr ""
 msgid "Edit your profile"
 msgstr ""
 
-#: app/templates/user.html:20
+#: app/templates/user.html:20 app/templates/user_popup.html:20
 msgid "Follow"
 msgstr ""
 
-#: app/templates/user.html:27
+#: app/templates/user.html:27 app/templates/user_popup.html:27
 msgid "Unfollow"
+msgstr ""
+
+#: app/templates/user.html:32
+msgid "Send private message"
 msgstr ""
 
 #: app/templates/auth/login.html:12
@@ -257,4 +306,7 @@ msgstr ""
 #: app/templates/errors/500.html:5
 msgid "The administrator has been notified. Sorry for the inconvenience!"
 msgstr ""
+
+#~ msgid "[Microblog] Reset Your Password"
+#~ msgstr ""
 
