@@ -92,3 +92,4 @@ Traceback (most recent call last):
   File "A:\projects\match\app\models.py", line 134, in is_following_program
     return 1
 NameError: name 'console' is not defined
+2021-04-04 04:14:35,152 INFO: Match startup [in A:\projects\match\app\__init__.py:82]

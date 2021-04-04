@@ -2,40 +2,50 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            <h1>Add Interview Invite for {{ program.name }}</h1>
-            <form action="" method="post" novalidate>
-                {{ form.hidden_tag() }}
+<div class="row">
+    <div class="col-md-4">
+        <h1>Add Interview Invite for {{ program.name }}</h1>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.date.label(class_="col-form-label") }}<br>
+                {{ form.date(class_="form-control datepick") }}
+                {% for error in form.date.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <div class="form-group collapse" id="collapseTaskForm">
                 <p>
-                    {{ form.date.label }}<br>
-                    {{ form.date }}
+                    {{ form.supplemental_required(class_="form-check-input") }} 
+                    {{ form.supplemental_required.label(class_="form-check-label") }}
                 </p>
                 <p>
-                    {{ form.supplemental_required.label }}<br>
-                    {{ form.supplemental_required }}
+                    {{ form.method.label(class_="col-form-label") }}<br>
+                    {{ form.method(class_="form-control") }}
                 </p>
                 <p>
-                    {{ form.method.label }}<br>
-                    {{ form.method }}
+                    <label for="mdp" class_="col-form-label">Available Interview Dates</label>
+                    <input id="mdp" name="dates" class="form-control" placeholder="Click to add dates">
                 </p>
-                <label for="mdp">Available Interview Dates</label>
-                <input id="mdp" name="dates">
-                <p>{{ form.submit() }}</p>
-            </form>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-link btn-block" data-toggle="collapse" data-target="#collapseTaskForm" value="Details"></input>
+            <p>{{ form.submit(class_="btn-primary form-control") }}</p>
         </div>
+        </form>
     </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.multidatespicker.css') }}">
-    <script src="{{ url_for('static', filename='jquery-ui.js') }}"></script>
-    <script src="{{ url_for('static', filename='jquery-ui.multidatespicker.js') }}"></script>
-    <script>
-    	$(document).ready(function () {
-    		$('#mdp').multiDatesPicker();
-    	});
-    </script>
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.multidatespicker.css') }}">
+<script src="{{ url_for('static', filename='jquery-ui.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery-ui.multidatespicker.js') }}"></script>
+<script>
+ $(document).ready(function () {
+  $('#mdp').multiDatesPicker();
+});
+</script>
 {% endblock %}

@@ -80,3 +80,16 @@ def reset_password(token):
         flash(_('Your password has been reset.'))
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
+
+@bp.route('/create_admin', methods=['GET', 'POST'])
+def create_admin():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, admin=True)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash(_('Congratulations, you are now a registered user!'))
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', title=_('Register'),
+                           form=form)

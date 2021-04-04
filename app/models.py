@@ -75,6 +75,7 @@ class User(UserMixin, db.Model):
     interviews = db.relationship('Interview', backref='interviewee', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    admin = db.Column(db.Boolean())
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),

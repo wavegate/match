@@ -2,9 +2,11 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    {% if form %}
-    {{ wtf.quick_form(form) }}
-    <br>
+    {% if current_user.admin == True %}
+        {% if form %}
+        {{ wtf.quick_form(form) }}
+        <br>
+        {% endif %}
     {% endif %}
     {% for program in programs %}
         {% include '_program.html' %}
