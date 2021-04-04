@@ -112,13 +112,13 @@ def add_interview(name):
     program = Program.query.filter_by(name=name).first_or_404()
     form = AddInterviewForm(current_user.username, program)
     if form.validate_on_submit():
-        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user)
+        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data, dates = request.form['dates'])
         db.session.add(interview)
         db.session.commit()
         flash(_('Interview added!'))
         return redirect(url_for('main.program', name=name))
-    return render_template('add_interview.html',title=_('Add Interview'),
-                           form=form)
+    return render_template('add_interview.html',title=_('Add Interview Offer'),
+                           form=form, program=program)
 
 
 @bp.route('/user/<username>')

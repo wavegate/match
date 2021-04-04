@@ -228,6 +228,9 @@ class Interview(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    supplemental_required = db.Column(db.Boolean, default=0)
+    method = db.Column(db.String(128), index=True)
+    dates = db.Column(db.String(256), index=True)
 
     def __repr__(self):
         return '<Interview {}>'.format(self.program_id)

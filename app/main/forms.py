@@ -1,11 +1,10 @@
 from flask import request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, BooleanField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
 from app.models import User
 from wtforms.fields.html5 import DateField
-
 
 class EditProfileForm(FlaskForm):
     username = StringField(_l('Username'), validators=[DataRequired()])
@@ -24,7 +23,9 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError(_('Please use a different username.'))
 
 class AddInterviewForm(FlaskForm):
-    date = DateField('Date', validators=[DataRequired()])
+    date = DateField('Date invite was received', validators=[DataRequired()])
+    supplemental_required = BooleanField()
+    method = SelectField('How was the interview offered?', choices=['ERAS','Thalamus','Email'])
     submit = SubmitField(_l('Submit'))
 
     def __init__(self, user, program, *args, **kwargs):

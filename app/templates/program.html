@@ -4,7 +4,7 @@
 {% block app_content %}
 <table class="table table-hover">
     <tr>
-        <td width="256px"><img src="{{ program.image }}" alt="no image" width="400" height="400"></td>
+        <td width="256px"><img src="{{ program.image }}" alt="no image" width="200" height="200"></td>
         <td>
             <h1>{{ program.name }}</h1>
             <p>Interview structure: {% if program.body %}{{ program.body }}</p>{% endif %}
@@ -33,13 +33,16 @@
             <p>
                 <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
                     {{ form.hidden_tag() }}
-                    {{ form.submit(value=_('Add Interview Date'), class_='btn btn-default')}}
+                    {{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
                 </form>
             </p>
         </td>
     </tr>
 </table>
 <div id="divCalendar"></div>
+{% for interview in interviews %}
+{% include '_interview.html' %}
+{% endfor %}
 <p>
 {% if postform %}
 {{ wtf.quick_form(postform) }}
@@ -71,7 +74,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='fullcalendar.css') }}">
     <script src="{{ url_for('static', filename='fullcalendar.min.js') }}"></script>
     <script>
-        $(document).ready(function () {
+      /*  $(document).ready(function () {
 
     var date = new Date();
     var d = date.getDate();
@@ -122,6 +125,6 @@
         },
         events: myEvents
     });
-});
+});*/
     </script>
 {% endblock %}
