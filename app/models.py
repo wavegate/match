@@ -235,3 +235,6 @@ class Interview(db.Model):
 
     def __repr__(self):
         return '<Interview {}>'.format(self.program_id)
+
+    def get_program(self):
+        return Program.query.get(self.program_id)

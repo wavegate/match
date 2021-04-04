@@ -1,5 +1,5 @@
 <table class="table table-hover">
 	<tr>
-		On {{ interview.date.strftime('%m/%d/%Y') }}, <b>{{ program.name }}</b> offered <b>{{ interview.interviewee.username }}</b> the following dates to sign up for an interview: {{ interview.dates }}
+		On {{ interview.date.strftime('%m/%d/%Y') }}, <b>{{ interview.get_program().name }}</b> offered <b>{{ interview.interviewee.username }}</b> the following dates to sign up for an interview: {{ interview.dates }}
 	</tr>
 </table>
