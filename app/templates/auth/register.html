@@ -1,10 +1,55 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-    <h1>{{ _('Register') }}</h1>
-    <div class="row">
-        <div class="col-md-4">
-            {{ render_form(form) }}
-        </div>
-    </div>
+{% block content %}
+<div class="content">
+	<div class="row justify-content-center">
+		<div class="col-md-4">
+			<div class="card ">
+				<div class="card-header ">
+					<h5 class="card-title">Register</h5>
+				</div>
+				<div class="card-body ">
+					<form action="" method="post" novalidate>
+						{{ form.hidden_tag() }}
+						<div class="form-group">
+							<p>
+								{{ form.username.label(class_="col-form-label") }}<br>
+								{{ form.username(class_="form-control") }}
+								{% for error in form.username.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form.email.label(class_="col-form-label") }}<br>
+								{{ form.email(class_="form-control") }}
+								{% for error in form.email.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form.password.label(class_="col-form-label") }}<br>
+								{{ form.password(class_="form-control") }}
+								{% for error in form.password.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form.password2.label(class_="col-form-label") }}<br>
+								{{ form.password2(class_="form-control") }}
+								{% for error in form.password2.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+						</div>
+						<p>{{ form.submit(class_="btn-primary form-control") }}</p>
+					</form>
+
+				</div>
+				<div class="card-footer ">
+					<p><a href="{{ url_for('auth.login') }}">Already have an account?</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
