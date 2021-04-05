@@ -35,12 +35,13 @@ Coded by www.creative-tim.com
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/paper-dashboard.css') }}" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+  <link href="https://demos.creative-tim.com/bs3/paper-dashboard/assets/css/animate.min.css" rel="stylesheet">
   {% endblock %}
 </head>
 
 <body class="">
   <div class="wrapper ">
-    <div class="sidebar" data-color="white" data-active-color="danger">
+    <div class="sidebar off-canvas-sidebar" data-color="white" data-active-color="danger">
       <div class="logo">
         <a href="{{ url_for('main.index') }}" class="simple-text logo-mini">
           <div class="logo-image-small">
@@ -114,6 +115,7 @@ Coded by www.creative-tim.com
         <div class="navbar-wrapper">
           <div class="navbar-toggle">
             <button type="button" class="navbar-toggler">
+              <span class="sr-only">Toggle navigation</span>
               <span class="navbar-toggler-bar bar1"></span>
               <span class="navbar-toggler-bar bar2"></span>
               <span class="navbar-toggler-bar bar3"></span>
@@ -183,12 +185,13 @@ Coded by www.creative-tim.com
   <script src="{{ url_for('static', filename='js/core/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.4.0/perfect-scrollbar.min.js"></script>
   <script src="{{ url_for('static', filename='js/plugins/chartjs.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/plugins/bootstrap-notify.js') }}"></script>
   <script src="{{ url_for('static', filename='demo/demo.js') }}"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6QHjhcTjiiNmHCM2bPFRUanvNxerCgqE"></script>
   <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="{{ url_for('static', filename='js/paper-dashboard.js') }}"></script>
   <script>
 
     function showNotification(message, from, align) {
