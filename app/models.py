@@ -235,9 +235,18 @@ class Interview(db.Model):
     supplemental_required = db.Column(db.Boolean, default=0)
     method = db.Column(db.String(128), index=True)
     dates = db.Column(db.String(256), index=True)
+    unavailable_dates = db.Column(db.String(256), index=True)
 
     def __repr__(self):
         return '<Interview {}>'.format(self.program_id)
 
     def get_program(self):
         return Program.query.get(self.program_id)
+
+class Interview_Date(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
+    interview_id = db.Column(db.Integer, db.ForeignKey('interview.id'))
+    date = db.Column(db.DateTime, index=True)
+    full = db.Column(db.Boolean(), index=True)

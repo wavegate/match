@@ -112,7 +112,7 @@ def add_interview(name):
     program = Program.query.filter_by(name=name).first_or_404()
     form = AddInterviewForm(current_user.username, program)
     if form.validate_on_submit():
-        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data, dates = request.form['dates'])
+        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data, dates = request.form['dates'], unavailable_dates = request.form['unavailable_dates'])
         db.session.add(interview)
         db.session.commit()
         flash(_('Interview added!'))

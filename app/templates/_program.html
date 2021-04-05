@@ -28,7 +28,7 @@
 		</td>
 		<td>
 			Latest available/full dates: {% for interview in program.interviews %}
-				{{ interview.date }}
+				{{ interview.date }} || {{ interview.unavailable_dates }}
 			{% endfor %}
 		</td>
 	</tr>
