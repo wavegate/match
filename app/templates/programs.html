@@ -10,40 +10,52 @@
                 <p class="card-category"></p>
             </div>
             <div class="card-body ">
-                {% for program in programs %}
-                {% include '_program.html' %}
-                {% endfor %}
-                <nav aria-label="...">
-                    <ul class="pagination">
-                        <li class="page-item{% if not prev_url %} disabled{% endif %}">
-                            <a href="{{ prev_url or '#' }}" class="page-link">
-                                <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-                            </a>
-                        </li>
-                        <li class="page-item{% if not next_url %} disabled{% endif %}">
-                            <a href="{{ next_url or '#' }}" class="page-link">
-                                {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="table">
+                    <table class="table">
+                        <thead class="text-primary">
+                            <th>Name</th>
+                            <th>Specialty</th>
+                            <th>Latest invite dates</th>
+                            <th>Lates interview dates</th>
+                        </thead>
+                        <tbody>
+                            {% for program in programs %}
+                            {% include '_program.html' %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            <li class="page-item{% if not prev_url %} disabled{% endif %}">
+                                <a href="{{ prev_url or '#' }}" class="page-link">
+                                    <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+                                </a>
+                            </li>
+                            <li class="page-item{% if not next_url %} disabled{% endif %}">
+                                <a href="{{ next_url or '#' }}" class="page-link">
+                                    {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
-</div>
-</div>
-{% if current_user.admin == True %}
-{% if form %}
-<div class="row">
-  <div class="col-md-12">
-    <div class="card ">
-      <div class="card-header ">
-        <h5 class="card-title">Add Program</h5>
-        <p class="card-category"></p>
-    </div>
-    <div class="card-body ">
-        {{ render_form(form) }}
     </div>
 </div>
+    {% if current_user.admin == True %}
+    {% if form %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card ">
+          <div class="card-header ">
+            <h5 class="card-title">Add Program</h5>
+            <p class="card-category"></p>
+        </div>
+        <div class="card-body ">
+            {{ render_form(form) }}
+        </div>
+    </div>
 </div>
 </div>
 {% endif %}

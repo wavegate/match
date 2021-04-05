@@ -39,7 +39,6 @@
             </p>
         </div>
         <div class="card-body ">
-            {% if program.image %}<img src="{{ program.image }}" alt="no image" width="200" height="200">{% endif %}
             {% if program.body %}{{ program.body }}{% endif %}
             <br>
             {% for interview in interviews %}

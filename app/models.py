@@ -203,7 +203,7 @@ class Program(SearchableMixin, db.Model):
     interview_dates = db.relationship('Interview_Date', backref='interviewer', lazy='dynamic')
     posts = db.relationship('Post', backref='program', lazy='dynamic')
     language = db.Column(db.String(5))
-    image = db.Column(db.String(140))
+    image = db.Column(db.String(140), default='https://images.pexels.com/photos/4386464/pexels-photo-4386464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')
     def __repr__(self):
         return '<Program {}>'.format(self.body)
     def get_interviews(self):

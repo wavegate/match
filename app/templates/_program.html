@@ -1,35 +1,33 @@
-<table class="table table-hover">
-	<tr>
-		<td width="70px">
+
+<tr>
+	<td>
+		{% set program_link %}
+		<span class="program_popup">
 			<a href="{{ url_for('main.program', name=program.name) }}">
-				<img src="{{ program.image }}" width="70" height="70"/ alt="No image">
+				{{ program.name }}
 			</a>
-		</td>
-		<td>
-			{% set program_link %}
-			<span class="program_popup">
-				<a href="{{ url_for('main.program', name=program.name) }}">
-					{{ program.name }}
-				</a>
-			</span>
-			{% endset %}
-			{{ _('%(name)s',
-			name=program_link) }}
-			<br>
-			<span id="program{{ program.id }}">{{ program.body }}</span>
-		</td>
-		<td>
-			Specialty: {{ program.specialty }}
-		</td>
-		<td>
-			Latest invite dates: {% for interview in program.interviews %}
-				{{ interview.date }}
-			{% endfor %}
-		</td>
-		<td>
-			Latest available/full dates: {% for interview in program.interviews %}
-				{{ interview.date }} || {{ interview.unavailable_dates }}
-			{% endfor %}
-		</td>
-	</tr>
-</table>
+		</span>
+		{% endset %}
+		{{ _('%(name)s',
+		name=program_link) }}
+		<br>
+		<span id="program{{ program.id }}">{{ program.body }}</span>
+	</td>
+	<td>
+		{{ program.specialty }}
+	</td>
+	<td>
+		{% for interview in program.interviews|sort(attribute='date') %}
+		<span class="btn btn-primary">{{ interview.date.strftime('%m/%d/%y') }}</span>
+		{% endfor %}
+	<td>
+		{% for interview_date in program.interview_dates|sort(attribute='date') %}
+		{% if interview_date.full %}
+		<span class="btn btn-danger">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
+		{% else %}
+		<span class="btn btn-success">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
+		{% endif %}
+		{% endfor %}
+	</td>
+
+</tr>

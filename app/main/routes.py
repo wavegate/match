@@ -66,7 +66,7 @@ def explore():
 def programs():
     form = ProgramForm()
     if form.validate_on_submit():
-        program = Program(name=form.name.data, body=form.body.data, image=form.image.data)
+        program = Program(name=form.name.data, specialty=form.specialty.data, body=form.body.data, image=form.image.data)
         db.session.add(program)
         db.session.commit()
         flash(_('Program added!'))
@@ -86,6 +86,7 @@ def programs():
 @login_required
 def program(name):
     program = Program.query.filter_by(name=name).first_or_404()
+    interviews = program.interviews.order_by(Interview.date.desc())
     page = request.args.get('page', 1, type=int)
     postform = PostForm()
     if postform.validate_on_submit():
@@ -113,13 +114,21 @@ def add_interview(name):
     program = Program.query.filter_by(name=name).first_or_404()
     form = AddInterviewForm(current_user.username, program)
     if form.validate_on_submit():
-        available_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['dates'].split(",")))
-        unavailable_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['unavailable_dates'].split(",")))
         interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
-        dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), available_dates))
-        dates2 = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=True), available_dates))
-        dates = dates + dates2
-        interview.dates = dates
+        dates = None
+        dates2 = None
+        if request.form['dates'] != '':
+            available_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['dates'].split(',')))
+            dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), available_dates))
+        if request.form['unavailable_dates'] != '':
+            unavailable_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['unavailable_dates'].split(',')))
+            dates2 = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=True), unavailable_dates))
+        if dates:
+            interview.dates = dates
+        if dates2:
+            interview.dates = dates2
+        if dates and dates2:
+            interview.dates = dates + dates2
         db.session.add(interview)
         db.session.commit()
         flash(_('Interview added!'))
