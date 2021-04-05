@@ -73,6 +73,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     interviews = db.relationship('Interview', backref='interviewee', lazy='dynamic')
+    interview_dates = db.relationship('Interview_Date', backref='interviewee', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     admin = db.Column(db.Boolean())
@@ -199,6 +200,7 @@ class Program(SearchableMixin, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
     interviews = db.relationship('Interview', backref='interviewer', lazy='dynamic')
+    interview_dates = db.relationship('Interview_Date', backref='interviewer', lazy='dynamic')
     posts = db.relationship('Post', backref='program', lazy='dynamic')
     language = db.Column(db.String(5))
     image = db.Column(db.String(140))
@@ -234,7 +236,7 @@ class Interview(db.Model):
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     supplemental_required = db.Column(db.Boolean, default=0)
     method = db.Column(db.String(128), index=True)
-    dates = db.Column(db.String(256), index=True)
+    dates = db.relationship('Interview_Date', backref='invite', lazy='dynamic')
     unavailable_dates = db.Column(db.String(256), index=True)
 
     def __repr__(self):

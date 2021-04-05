@@ -6,9 +6,10 @@ from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm
-from app.models import User, Post, Program, Message, Notification, Interview
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date
 from app.translate import translate
 from app.main import bp
+import logging
 
 
 @bp.before_app_request
@@ -112,7 +113,13 @@ def add_interview(name):
     program = Program.query.filter_by(name=name).first_or_404()
     form = AddInterviewForm(current_user.username, program)
     if form.validate_on_submit():
-        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data, dates = request.form['dates'], unavailable_dates = request.form['unavailable_dates'])
+        available_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['dates'].split(",")))
+        unavailable_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['unavailable_dates'].split(",")))
+        interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
+        dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), available_dates))
+        dates2 = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=True), available_dates))
+        dates = dates + dates2
+        interview.dates = dates
         db.session.add(interview)
         db.session.commit()
         flash(_('Interview added!'))

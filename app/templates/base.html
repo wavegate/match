@@ -41,9 +41,9 @@ Coded by www.creative-tim.com
   <div class="wrapper ">
     <div class="sidebar" data-color="white" data-active-color="danger">
       <div class="logo">
-        <a href="https://www.creative-tim.com" class="simple-text logo-mini">
+        <a href="{{ url_for('main.index') }}" class="simple-text logo-mini">
           <div class="logo-image-small">
-            <img src="../assets/img/logo-small.png">
+            <img src="{{ url_for('static', filename='img/lao-gan-ma.jpg') }}">
           </div>
           <!-- <p>CT</p> -->
         </a>

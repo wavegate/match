@@ -23,7 +23,7 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError(_('Please use a different username.'))
 
 class AddInterviewForm(FlaskForm):
-    date = DateField('What day did you receive the invite?', validators=[DataRequired()])
+    date = DateField('What day did you receive the original invite?', validators=[DataRequired()])
     supplemental_required = BooleanField('Was a supplemental required?')
     method = SelectField('How was the interview offered?', choices=['','ERAS','Thalamus','Email'])
     submit = SubmitField(_l('Submit'))

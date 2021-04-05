@@ -41,6 +41,7 @@
         <div class="card-body ">
             {% if program.image %}<img src="{{ program.image }}" alt="no image" width="200" height="200">{% endif %}
             {% if program.body %}{{ program.body }}{% endif %}
+            <br>
             {% for interview in interviews %}
             {% include '_interview.html' %}
             {% endfor %}
@@ -104,10 +105,12 @@
         var y = date.getFullYear();
         var myEvents =[
         {% for interview in interviews %}
+        {% for interview_date in interview.dates %}
         {
             title: 'Interview',
-            start: '{{ interview.date.year }}-0{{ interview.date.month }}-0{{ interview.date.day }}'
+            start: '{{ interview_date.date.year }}-0{{ interview_date.date.month }}-0{{ interview_date.date.day }}'
         },
+        {% endfor %}
         {% endfor %}
         ];
         var calendar = $('#divCalendar').fullCalendar({
