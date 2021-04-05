@@ -192,6 +192,7 @@ class Program(SearchableMixin, db.Model):
     __tablename__ = 'program'
     __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
+    specialty = db.Column(db.String(140))
     name = db.Column(db.String(140))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -203,6 +204,8 @@ class Program(SearchableMixin, db.Model):
     image = db.Column(db.String(140))
     def __repr__(self):
         return '<Program {}>'.format(self.body)
+    def get_interviews(self):
+        return self.interviews.order_by(Interview.date.desc())
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
