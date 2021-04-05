@@ -93,3 +93,4 @@ Traceback (most recent call last):
     return 1
 NameError: name 'console' is not defined
 2021-04-04 04:14:35,152 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
+2021-04-05 09:04:26,901 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:82]

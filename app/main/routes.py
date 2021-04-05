@@ -121,7 +121,7 @@ def add_interview(name):
                            form=form, program=program)
 
 
-@bp.route('/user/<username>')
+@bp.route('/user/<username>', methods=['GET','POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -132,7 +132,16 @@ def user(username):
                        page=posts.next_num) if posts.has_next else None
     prev_url = url_for('main.user', username=user.username,
                        page=posts.prev_num) if posts.has_prev else None
-    form = EmptyForm()
+    form = EditProfileForm(current_user.username)
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash(_('Your changes have been saved.'))
+        return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items,next_url=next_url,prev_url=prev_url,form=form)
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
     return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items,
                            next_url=next_url, prev_url=prev_url, form=form)
 

@@ -8,6 +8,35 @@
           <div class="card-header ">
             <h5 class="card-title">{{ program.name }}</h5>
             <p class="card-category">Specialty: Psychiatry</p>
+            {% if not current_user.is_following_program(program) %}
+               <p>
+                <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
+                </form>
+            </p>
+            {% else %}
+            <p>
+                <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
+                </form>
+            </p>
+            {% endif %}
+            {% if current_user.admin == True %}
+            <p>
+                <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
+                </form>
+            </p>
+            {% endif %}
+            <p>
+                <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
+                </form>
+            </p>
         </div>
         <div class="card-body ">
             {% if program.image %}<img src="{{ program.image }}" alt="no image" width="200" height="200">{% endif %}
@@ -40,35 +69,6 @@
                 </ul>
             </div>
             <div class="card-footer ">
-               {% if not current_user.is_following_program(program) %}
-               <p>
-                <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
-                </form>
-            </p>
-            {% else %}
-            <p>
-                <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
-                </form>
-            </p>
-            {% endif %}
-            {% if current_user.admin == True %}
-            <p>
-                <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
-                </form>
-            </p>
-            {% endif %}
-            <p>
-                <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
-                </form>
-            </p>
         </div>
     </div>
 </div>

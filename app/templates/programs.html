@@ -33,26 +33,26 @@
         </div>
 </div>
 </div>
+{% if current_user.admin == True %}
+{% if form %}
 <div class="row">
   <div class="col-md-12">
     <div class="card ">
       <div class="card-header ">
         <h5 class="card-title">Add Program</h5>
-        <p class="card-category">Admin Access Only</p>
+        <p class="card-category"></p>
     </div>
     <div class="card-body ">
-        {% if current_user.admin == True %}
-        {% if form %}
         {{ render_form(form) }}
         <br>
-        {% endif %}
-        {% endif %}
         <div class="card-footer ">
         </div>
     </div>
 </div>
 </div>
 </div>
+{% endif %}
+{% endif %}
 </div>
 
 
