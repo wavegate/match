@@ -10,6 +10,7 @@ from app.models import User, Post, Program, Message, Notification, Interview, In
 from app.translate import translate
 from app.main import bp
 import logging
+import re
 
 
 @bp.before_app_request
@@ -339,4 +340,10 @@ def notifications():
 
 @bp.route('/base_test')
 def base_test():
-    return render_template('base_test.html')
+    with current_app.open_resource('static/names.txt', 'r') as f:
+        contents = f.read().replace('\n', ',').split(',')
+    for name in contents:
+        program = Program(name=name)
+        db.session.add(program)
+        db.session.commit()
+    return render_template('base_test.html', contents=contents)
