@@ -311,3 +311,7 @@ def notifications():
         'data': n.get_data(),
         'timestamp': n.timestamp
     } for n in notifications])
+
+@bp.route('/base_test')
+def base_test():
+    return render_template('base_test.html')

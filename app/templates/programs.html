@@ -1,28 +1,102 @@
-{% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% extends "base_test.html" %}
 
 {% block app_content %}
-    {% if current_user.admin == True %}
+{% if current_user.admin == True %}
+{% if form %}
+{{ render_template(form) }}
+<br>
+{% endif %}
+{% endif %}
+{% for program in programs %}
+{% include '_program.html' %}
+{% endfor %}
+<nav aria-label="...">
+    <ul class="pager">
+        <li class="previous{% if not prev_url %} disabled{% endif %}">
+            <a href="{{ prev_url or '#' }}">
+                <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+            </a>
+        </li>
+        <li class="next{% if not next_url %} disabled{% endif %}">
+            <a href="{{ next_url or '#' }}">
+                {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card ">
+          <div class="card-header ">
+            <h5 class="card-title">Programs</h5>
+            <p class="card-category">Specialty: Psychiatry</p>
+        </div>
+        <div class="card-body ">
+            {% for program in programs %}
+            {% include '_program.html' %}
+            {% endfor %}
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item{% if not prev_url %} disabled{% endif %}">
+                        <a href="{{ prev_url or '#' }}" class="page-link">
+                            <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+                        </a>
+                    </li>
+                    <li class="page-item{% if not next_url %} disabled{% endif %}">
+                        <a href="{{ next_url or '#' }}" class="page-link">
+                            {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer ">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card ">
+      <div class="card-header ">
+        <h5 class="card-title">Add Program</h5>
+        <p class="card-category">Admin Access Only</p>
+    </div>
+    <div class="card-body ">
+        {% if current_user.admin == True %}
         {% if form %}
-        {{ wtf.quick_form(form) }}
+        {{ render_form(form) }}
         <br>
         {% endif %}
-    {% endif %}
-    {% for program in programs %}
-        {% include '_program.html' %}
-    {% endfor %}
-    <nav aria-label="...">
-        <ul class="pager">
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
-                    <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-                </a>
-            </li>
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
-                    {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-                </a>
-            </li>
+        {% endif %}
+        <div class="card-footer ">
+        </div>
+    </div>
+</div>
+</div>
+
+<footer class="footer footer-black  footer-white ">
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="footer-nav">
+          <ul>
+            <li><a href="https://www.creative-tim.com" target="_blank">Creative Tim</a></li>
+            <li><a href="https://www.creative-tim.com/blog" target="_blank">Blog</a></li>
+            <li><a href="https://www.creative-tim.com/license" target="_blank">Licenses</a></li>
         </ul>
     </nav>
+    <div class="credits ml-auto">
+      <span class="copyright">
+        © <script>
+          document.write(new Date().getFullYear())
+      </script>, made with <i class="fa fa-heart heart"></i> by Creative Tim
+  </span>
+</div>
+</div>
+</div>
+</footer>
+</div>
 {% endblock %}
