@@ -66,7 +66,7 @@ def explore():
 def programs():
     form = ProgramForm()
     if form.validate_on_submit():
-        program = Program(name=form.name.data, specialty=form.specialty.data, body=form.body.data, image=form.image.data)
+        program = Program(name=form.name.data, specialty=form.specialty.data, body=form.body.data, image=form.image.data, state=form.state.data)
         db.session.add(program)
         db.session.commit()
         flash(_('Program added!'))

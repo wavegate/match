@@ -62,4 +62,5 @@ class ProgramForm(FlaskForm):
     specialty = StringField('Specialty', filters = [lambda x: x or None])
     body = TextAreaField(_l('Enter interview format'))
     image = StringField(_l('Image link:'), filters = [lambda x: x or None])
+    state = StringField('State')
     submit = SubmitField('Submit')

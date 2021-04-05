@@ -1,5 +1,8 @@
-
-<tr>
+<tr data-title="bootstrap table">
+	
+	<td>
+		{{ program.state }}
+	</td>
 	<td>
 		{% set program_link %}
 		<span class="program_popup">
@@ -20,6 +23,7 @@
 		{% for interview in program.interviews|sort(attribute='date') %}
 		<span class="btn btn-primary">{{ interview.date.strftime('%m/%d/%y') }}</span>
 		{% endfor %}
+	</td>
 	<td>
 		{% for interview_date in program.interview_dates|sort(attribute='date') %}
 		{% if interview_date.full %}

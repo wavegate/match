@@ -34,6 +34,7 @@ Coded by www.creative-tim.com
   <!-- CSS Files -->
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/paper-dashboard.css') }}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
   {% endblock %}
 </head>
 
@@ -43,7 +44,7 @@ Coded by www.creative-tim.com
       <div class="logo">
         <a href="{{ url_for('main.index') }}" class="simple-text logo-mini">
           <div class="logo-image-small">
-            <img src="{{ url_for('static', filename='img/lao-gan-ma.jpg') }}">
+            <img src="{{ url_for('static', filename='img/lao-gan-ma.png') }}">
           </div>
           <!-- <p>CT</p> -->
         </a>
@@ -101,12 +102,7 @@ Coded by www.creative-tim.com
           </a>
         </li>
         {% endif %}
-        <li class="active-pro">
-          <a href="./upgrade.html">
-            <i class="nc-icon nc-spaceship"></i>
-            <p>Upgrade to PRO</p>
-          </a>
-        </li>
+
       </ul>
     </div>
   </div>
@@ -192,6 +188,7 @@ Coded by www.creative-tim.com
   <script src="{{ url_for('static', filename='js/plugins/bootstrap-notify.js') }}"></script>
   <script src="{{ url_for('static', filename='demo/demo.js') }}"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6QHjhcTjiiNmHCM2bPFRUanvNxerCgqE"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
   <script>
 
     function showNotification(message, from, align) {

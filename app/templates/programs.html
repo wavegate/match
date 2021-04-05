@@ -10,13 +10,15 @@
                 <p class="card-category"></p>
             </div>
             <div class="card-body ">
+                <!--<table  id="table"></table>-->
                 <div class="table">
-                    <table class="table">
+                    <table class="table"  data-toggle="table" data-search="true" data-pagination="true" data-show-columns="true">
                         <thead class="text-primary">
-                            <th>Name</th>
-                            <th>Specialty</th>
-                            <th>Latest invite dates</th>
-                            <th>Lates interview dates</th>
+                            <th data-sortable="true" data-field="1">State</th>
+                            <th data-sortable="true" data-field="2">Name</th>
+                            <th data-sortable="true" data-field="3">Specialty</th>
+                            <th data-field="4">Latest invite dates</th>
+                            <th data-field="5">Latest interview dates</th>
                         </thead>
                         <tbody>
                             {% for program in programs %}
@@ -24,20 +26,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <nav aria-label="...">
-                        <ul class="pagination">
-                            <li class="page-item{% if not prev_url %} disabled{% endif %}">
-                                <a href="{{ prev_url or '#' }}" class="page-link">
-                                    <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-                                </a>
-                            </li>
-                            <li class="page-item{% if not next_url %} disabled{% endif %}">
-                                <a href="{{ next_url or '#' }}" class="page-link">
-                                    {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
@@ -62,6 +50,12 @@
 {% endif %}
 </div>
 
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
 
 
 {% endblock %}
