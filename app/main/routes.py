@@ -72,16 +72,9 @@ def programs():
         db.session.commit()
         flash(_('Program added!'))
         return redirect(url_for('main.programs'))
-    page = request.args.get('page', 1, type=int)
-    programs = Program.query.order_by(Program.timestamp.desc()).paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.programs', page=programs.next_num) \
-        if programs.has_next else None
-    prev_url = url_for('main.programs', page=programs.prev_num) \
-        if programs.has_prev else None
+    programs = Program.query.order_by(Program.timestamp.desc())
     return render_template('programs.html', title=_('Programs'),
-                           programs=programs.items, next_url=next_url,
-                           prev_url=prev_url, form=form)
+                           programs=programs, form=form)
 
 @bp.route('/program/<name>', methods=['GET','POST'])
 @login_required
@@ -343,6 +336,8 @@ def base_test():
     with current_app.open_resource('static/names.txt', 'r') as f:
         contents = f.read().replace('\n', ',').split(',')
     for name in contents:
+
+        flash(name)
         program = Program(name=name)
         db.session.add(program)
         db.session.commit()
