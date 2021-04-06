@@ -1,6 +1,6 @@
 <table class="table table-hover">
 	<tr>
-		<span class="btn btn-primary">{{ interview.date.strftime('%m/%d/%Y') }}</span> <b>{{ interview.get_program().name }}</b> offered <b>{{ interview.interviewee.username }}</b> the following dates to sign up for an interview: {% for interview_date in interview.dates %}
+		On <b>{{ interview.date.strftime('%m/%d/%Y') }}, {{ interview.get_program().name }}</b> offered <b>{{ interview.interviewee.username }}</b> the following dates to sign up for an interview: {% for interview_date in interview.dates %}
 			{% if interview_date.full %}
 		<span class="btn btn-danger">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
 			{% else %}

@@ -14,18 +14,17 @@
 		{{ _('%(name)s',
 		name=program_link) }}
 		<br>
-		<span id="program{{ program.id }}">{{ program.body }}</span>
 	</td>
 	<td>
 		{{ program.specialty }}
 	</td>
 	<td>
-		{% for interview in program.interviews|sort(attribute='date') %}
+		{% for interview in program.get_latest_interviews() %}
 		<span class="btn btn-primary">{{ interview.date.strftime('%m/%d/%y') }}</span>
 		{% endfor %}
 	</td>
 	<td>
-		{% for interview_date in program.interview_dates|sort(attribute='date') %}
+		{% for interview_date in program.get_latest_interview_dates() %}
 		{% if interview_date.full %}
 		<span class="btn btn-danger">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
 		{% else %}

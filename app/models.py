@@ -207,8 +207,10 @@ class Program(SearchableMixin, db.Model):
     image = db.Column(db.String(140), default='https://images.pexels.com/photos/4386464/pexels-photo-4386464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')
     def __repr__(self):
         return '<Program {}>'.format(self.body)
-    def get_interviews(self):
-        return self.interviews.order_by(Interview.date.desc())
+    def get_latest_interviews(self):
+        return self.interviews.order_by(Interview.date.desc())[0:3]
+    def get_latest_interview_dates(self):
+        return self.interview_dates.order_by(Interview_Date.date.desc())[0:6]
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)

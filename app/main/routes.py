@@ -63,7 +63,6 @@ def explore():
                            prev_url=prev_url)
 
 @bp.route('/programs', methods=['GET', 'POST'])
-@login_required
 def programs():
     form = ProgramForm()
     if form.validate_on_submit():
@@ -336,9 +335,15 @@ def base_test():
     with current_app.open_resource('static/names.txt', 'r') as f:
         contents = f.read().replace('\n', ',').split(',')
     for name in contents:
-
         flash(name)
-        program = Program(name=name)
+        program = Program(name=name, state="MO", specialty="Psychiatry")
+        #Interview(date=,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
         db.session.add(program)
         db.session.commit()
     return render_template('base_test.html', contents=contents)
+
+@bp.route('/delete_programs')
+def delete_programs():
+    Program.query.delete()
+    db.session.commit()
+    return render_template('index.html')
