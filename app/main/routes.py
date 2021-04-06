@@ -22,46 +22,48 @@ def before_request():
     g.locale = str(get_locale())
 
 
+#@bp.route('/', methods=['GET', 'POST'])
+#@bp.route('/index', methods=['GET', 'POST'])
+#@login_required
+#def index():
+#    form = PostForm()
+#    if form.validate_on_submit():
+#        language = guess_language(form.post.data)
+#        if language == 'UNKNOWN' or len(language) > 5:
+#            language = ''
+#        post = Post(body=form.post.data, author=current_user,
+#                    language=language)
+#        db.session.add(post)
+#        db.session.commit()
+#        flash(_('Your post is now live!'))
+#        return redirect(url_for('main.index'))
+#    page = request.args.get('page', 1, type=int)
+#    posts = current_user.followed_posts().paginate(
+#        page, current_app.config['POSTS_PER_PAGE'], False)
+#    next_url = url_for('main.index', page=posts.next_num) \
+#        if posts.has_next else None
+#    prev_url = url_for('main.index', page=posts.prev_num) \
+#        if posts.has_prev else None
+#    return render_template('index.html', title=_('Home'), form=form,
+#                           posts=posts.items, next_url=next_url,
+#                           prev_url=prev_url)
+
+#@bp.route('/explore')
+#@login_required
+#def explore():
+#    page = request.args.get('page', 1, type=int)
+#    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
+#        page, current_app.config['POSTS_PER_PAGE'], False)
+#    next_url = url_for('main.explore', page=posts.next_num) \
+#        if posts.has_next else None
+#    prev_url = url_for('main.explore', page=posts.prev_num) \
+#        if posts.has_prev else None
+#    return render_template('programs.html', title=_('Explore'),
+#                           posts=posts.items, next_url=next_url,
+#                           prev_url=prev_url)
+
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
-def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        language = guess_language(form.post.data)
-        if language == 'UNKNOWN' or len(language) > 5:
-            language = ''
-        post = Post(body=form.post.data, author=current_user,
-                    language=language)
-        db.session.add(post)
-        db.session.commit()
-        flash(_('Your post is now live!'))
-        return redirect(url_for('main.index'))
-    page = request.args.get('page', 1, type=int)
-    posts = current_user.followed_posts().paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.index', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('main.index', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('index.html', title=_('Home'), form=form,
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
-
-@bp.route('/explore')
-@login_required
-def explore():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('main.explore', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('main.explore', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('index.html', title=_('Explore'),
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
-
 @bp.route('/programs', methods=['GET', 'POST'])
 def programs():
     form = ProgramForm()
@@ -180,7 +182,7 @@ def follow(username):
         user = User.query.filter_by(username=username).first()
         if user is None:
             flash(_('User %(username)s not found.', username=username))
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.programs'))
         if user == current_user:
             flash(_('You cannot follow yourself!'))
             return redirect(url_for('main.user', username=username))
@@ -189,7 +191,7 @@ def follow(username):
         flash(_('You are following %(username)s!', username=username))
         return redirect(url_for('main.user', username=username))
     else:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.programs'))
 
 
 @bp.route('/unfollow/<username>', methods=['POST'])
@@ -200,7 +202,7 @@ def unfollow(username):
         user = User.query.filter_by(username=username).first()
         if user is None:
             flash(_('User %(username)s not found.', username=username))
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.programs'))
         if user == current_user:
             flash(_('You cannot unfollow yourself!'))
             return redirect(url_for('main.user', username=username))
@@ -209,7 +211,7 @@ def unfollow(username):
         flash(_('You are not following %(username)s.', username=username))
         return redirect(url_for('main.user', username=username))
     else:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.programs'))
 
 @bp.route('/follow_program/<name>', methods=['POST'])
 @login_required
@@ -219,13 +221,13 @@ def follow_program(name):
         program = Program.query.filter_by(name=name).first()
         if program is None:
             flash(_('Program %(name)s not found.', name=name))
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.programs'))
         current_user.follow_program(program)
         db.session.commit()
         flash(_('You are following %(name)s!', name=name))
         return redirect(url_for('main.program', name=name))
     else:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.programs'))
 
 
 @bp.route('/unfollow_program/<name>', methods=['POST'])
@@ -236,13 +238,13 @@ def unfollow_program(name):
         program = Program.query.filter_by(name=name).first()
         if program is None:
             flash(_('Program %(name)s not found.', name=name))
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.programs'))
         current_user.unfollow_program(program)
         db.session.commit()
         flash(_('You are not following %(name)s.', name=name))
         return redirect(url_for('main.program', name=name))
     else:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.programs'))
 
 @bp.route('/delete_program/<name>', methods=['POST'])
 @login_required
@@ -346,4 +348,4 @@ def base_test():
 def delete_programs():
     Program.query.delete()
     db.session.commit()
-    return render_template('index.html')
+    return render_template('programs.html')
