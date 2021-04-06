@@ -1,192 +1,69 @@
 {% extends "base.html" %}
-
-{% block app_content %}
-    <table class="table table-hover">
-        <tr>
-            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
-            <td>
-                {% if user == current_user %}
-                <p><a href="{{ url_for('main.edit_profile') }}">{{ _('Edit your profile') }}</a></p>
-                {% elif not current_user.is_following(user) %}
-                <p>
-                    <form action="{{ url_for('main.follow', username=user.username) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
-                    </form>
-                </p>
-                {% else %}
-                <p>
-                    <form action="{{ url_for('main.unfollow', username=user.username) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
-                    </form>
-                </p>
-                {% endif %}
-                {% if user != current_user %}
-                <p><a href="{{ url_for('main.send_message', recipient=user.username) }}">{{ _('Send private message') }}</a></p>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
-    {% for post in posts %}
-        {% include '_post.html' %}
-    {% endfor %}
-    {% for interview in interviews %}
-        {% include '_interview.html' %}
-    {% endfor %}
-    <nav aria-label="...">
-        <ul class="pager">
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
-                    <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
-                </a>
-            </li>
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
-                    {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-{% endblock %}
-
+{% block page_head %}{{user.username}}'s Profile {% endblock %}
 {% block content %}
 <div class="content">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card card-user">
-              <div class="image">
-                <img src="" alt="...">
-              </div>
-              <div class="card-body">
-                <div class="author">
-                  <a href="#">
-                    <img class="avatar border-gray" src="{{ user.avatar(256) }}" alt="...">
-                    <h5 class="title">{{ user.username }}</h5>
-                  </a>
-                  <p class="description">
-                    @School
-                  </p>
-                  {% if user != current_user %}
-                <p><a href="{{ url_for('main.send_message', recipient=user.username) }}" class="btn btn-default">{{ _('Send private message') }}</a></p>
-                {% endif %}
-                </div>
-                <p class="description text-center">
-                  {% if user.about_me %}{{ user.about_me }}{% endif %}
-                </p>
-              </div>
-              <div class="card-footer">
-                <hr>
-                <div class="button-container">
-                  <div class="row">
-                    <div class="col-lg-3 col-md-6 col-6 ml-auto">
-                      <h5>x<br><small>Programs</small></h5>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
-                      <h5>2GB<br><small>x</small></h5>
-                    </div>
-                    <div class="col-lg-3 mr-auto">
-                      <h5>24,6$<br><small>x</small></h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Team Members</h4>
-              </div>
-              <div class="card-body">
-                <ul class="list-unstyled team-members">
-                  <li>
-                    <div class="row">
-                      <div class="col-md-2 col-2">
-                        <div class="avatar">
-                          <img src="../assets/img/faces/ayo-ogunseinde-2.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
-                        </div>
-                      </div>
-                      <div class="col-md-7 col-7">
-                        DJ Khaled
-                        <br />
-                        <span class="text-muted"><small>Offline</small></span>
-                      </div>
-                      <div class="col-md-3 col-3 text-right">
-                        <btn class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-envelope"></i></btn>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="row">
-                      <div class="col-md-2 col-2">
-                        <div class="avatar">
-                          <img src="../assets/img/faces/joe-gardner-2.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
-                        </div>
-                      </div>
-                      <div class="col-md-7 col-7">
-                        Creative Tim
-                        <br />
-                        <span class="text-success"><small>Available</small></span>
-                      </div>
-                      <div class="col-md-3 col-3 text-right">
-                        <btn class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-envelope"></i></btn>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="row">
-                      <div class="col-md-2 col-2">
-                        <div class="avatar">
-                          <img src="../assets/img/faces/clem-onojeghuo-2.jpg" alt="Circle Image" class="img-circle img-no-padding img-responsive">
-                        </div>
-                      </div>
-                      <div class="col-ms-7 col-7">
-                        Flume
-                        <br />
-                        <span class="text-danger"><small>Busy</small></span>
-                      </div>
-                      <div class="col-md-3 col-3 text-right">
-                        <btn class="btn btn-sm btn-outline-success btn-round btn-icon"><i class="fa fa-envelope"></i></btn>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          {% if user == current_user %}
-          <div class="col-md-8">
-            <div class="card card-user">
-              <div class="card-header">
-                <h5 class="card-title">Edit Profile</h5>
-              </div>
-              <div class="card-body">
-                {{ render_form(form) }}
-              </div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-      <footer class="footer footer-black  footer-white ">
-        <div class="container-fluid">
-          <div class="row">
-            <nav class="footer-nav">
-              <ul>
-                <li><a href="https://www.creative-tim.com" target="_blank">Creative Tim</a></li>
-                <li><a href="https://www.creative-tim.com/blog" target="_blank">Blog</a></li>
-                <li><a href="https://www.creative-tim.com/license" target="_blank">Licenses</a></li>
-              </ul>
-            </nav>
-            <div class="credits ml-auto">
-              <span class="copyright">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>, made with <i class="fa fa-heart heart"></i> by Creative Tim
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </div>
-  {% endblock %}
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card card-user">
+				<div class="image">
+					<img src="{{ url_for('static', filename='img/mountains2.jpg') }}">
+				</div>
+				<div class="card-body">
+					<div class="author">
+						<a href="#">
+							<img class="avatar border-gray" src="{{ user.avatar(256) }}">
+							<h5 class="title">{{ user.username }}</h5>
+						</a>
+						<p class="description">
+							@School
+						</p>
+						{% if user != current_user %}
+						<p><a href="{{ url_for('main.send_message', recipient=user.username) }}" class="btn btn-default">{{ _('Send private message') }}</a></p>
+						{% endif %}
+					</div>
+					<p class="description text-center">
+						{% if user.about_me %}{{ user.about_me }}{% endif %}
+					</p>
+					user card
+					residency application information
+				</div>
+				<div class="card-footer">
+					<hr>
+					<div class="button-container">
+						<div class="row">
+							<div class="col-lg-3 col-md-6 col-6 ml-auto">
+								<h5>x<br><small>Programs</small></h5>
+							</div>
+							<div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
+								<h5>2GB<br><small>x</small></h5>
+							</div>
+							<div class="col-lg-3 mr-auto">
+								<h5>24,6$<br><small>x</small></h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-body">
+					Programs applied to
+				</div>
+			</div>
+		</div>
+		{% if user == current_user %}
+		<div class="col-md-8">
+			<div class="card card-user">
+				<div class="card-header">
+					<h5 class="card-title">Edit Profile</h5>
+				</div>
+				<div class="card-body">
+					{{ render_form(form) }}
+					Programs feeds
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}

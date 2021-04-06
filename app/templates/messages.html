@@ -6,76 +6,57 @@
 {% include '_post.html' %}
 {% endfor %}
 <nav aria-label="...">
-    <ul class="pager">
-        <li class="previous{% if not prev_url %} disabled{% endif %}">
-            <a href="{{ prev_url or '#' }}">
-                <span aria-hidden="true">&larr;</span> {{ _('Newer messages') }}
-            </a>
-        </li>
-        <li class="next{% if not next_url %} disabled{% endif %}">
-            <a href="{{ next_url or '#' }}">
-                {{ _('Older messages') }} <span aria-hidden="true">&rarr;</span>
-            </a>
-        </li>
-    </ul>
+	<ul class="pager">
+		<li class="previous{% if not prev_url %} disabled{% endif %}">
+			<a href="{{ prev_url or '#' }}">
+				<span aria-hidden="true">&larr;</span> {{ _('Newer messages') }}
+			</a>
+		</li>
+		<li class="next{% if not next_url %} disabled{% endif %}">
+			<a href="{{ next_url or '#' }}">
+				{{ _('Older messages') }} <span aria-hidden="true">&rarr;</span>
+			</a>
+		</li>
+	</ul>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div class="content">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card ">
-          <div class="card-header ">
-            <h5 class="card-title">Messages</h5>
-            <p class="card-category"></p>
-        </div>
-        <div class="card-body ">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card ">
+				<div class="card-header ">
+					<h5 class="card-title">Messages</h5>
+					<p class="card-category"></p>
+				</div>
+				<div class="card-body ">
+					{% for post in messages %}
+					{% include '_post.html' %}
+					{% endfor %}
+					<nav aria-label="...">
+						<ul class="pagination">
+							<li class="page-item{% if not prev_url %} disabled{% endif %}">
+								<a href="{{ prev_url or '#' }}" class="page-link">
+									<span aria-hidden="true">&larr;</span> {{ _('Newer messages') }}
+								</a>
+							</li>
+							<li class="page-item{% if not next_url %} disabled{% endif %}">
+								<a href="{{ next_url or '#' }}" class="page-link">
+									{{ _('Older messages') }} <span aria-hidden="true">&rarr;</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
 
+					<div class="row">
+						<div class="card-footer ">
+						</div>
+					</div>
+				</div>
+			</div>
 
-            {% for post in messages %}
-            {% include '_post.html' %}
-            {% endfor %}
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item{% if not prev_url %} disabled{% endif %}">
-                        <a href="{{ prev_url or '#' }}" class="page-link">
-                            <span aria-hidden="true">&larr;</span> {{ _('Newer messages') }}
-                        </a>
-                    </li>
-                    <li class="page-item{% if not next_url %} disabled{% endif %}">
-                        <a href="{{ next_url or '#' }}" class="page-link">
-                            {{ _('Older messages') }} <span aria-hidden="true">&rarr;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <div class="row">
-                <div class="card-footer ">
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer class="footer footer-black  footer-white ">
-        <div class="container-fluid">
-          <div class="row">
-            <nav class="footer-nav">
-              <ul>
-                <li><a href="https://www.creative-tim.com" target="_blank">Creative Tim</a></li>
-                <li><a href="https://www.creative-tim.com/blog" target="_blank">Blog</a></li>
-                <li><a href="https://www.creative-tim.com/license" target="_blank">Licenses</a></li>
-            </ul>
-        </nav>
-        <div class="credits ml-auto">
-          <span class="copyright">
-            © <script>
-              document.write(new Date().getFullYear())
-          </script>, made with <i class="fa fa-heart heart"></i> by Creative Tim
-      </span>
-  </div>
-</div>
-</div>
-</footer>
+		</div>
+	</div>
 </div>
 {% endblock %}
