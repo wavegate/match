@@ -6,7 +6,7 @@ from app import db
 from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm, \
     ResetPasswordRequestForm, ResetPasswordForm
-from app.models import User
+from app.models import User, Message
 from app.auth.email import send_password_reset_email
 
 
@@ -42,10 +42,14 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
+        msg = Message(author=user, recipient=user,
+                      body="Welcome to Matchtest0912! Application is currently under development.")
+        db.session.add(msg)
         db.session.add(user)
         db.session.commit()
         flash(_('Congratulations, you are now a registered user!'))
-        return redirect(url_for('auth.login'))
+        login_user(user)
+        return redirect(url_for('main.index'))
     return render_template('auth/register.html', title=_('Register'),
                            form=form)
 

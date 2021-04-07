@@ -90,10 +90,10 @@
 
 {% block scripts %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.multidatespicker.css') }}">
-<script src="{{ url_for('static', filename='jquery-ui.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery-ui.multidatespicker.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.multidatespicker.css') }}">
+<script src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-ui.multidatespicker.js') }}"></script>
 <script>
  $(document).ready(function () {
   $('#mdp').multiDatesPicker();

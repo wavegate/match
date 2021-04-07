@@ -2,99 +2,96 @@
 
 {% block content %}
 <div class="content">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                    <h5 class="card-title">Interview invites for {{ program.name }}</h5>
-                </div>
-                <div class="col-md-3">
-                    {% if not current_user.is_following_program(program) %}
-                    <form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Follow'), class_='btn btn-default') }}
-                    </form>
-                    {% else %}
+	<div class="row">
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title">Interview invites for {{ program.name }} ({{ program.specialty }})</h5>
+					</div>
+					<div class="card-body">
+						{% for interview in interviews %}
+						{% include '_interview.html' %}
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+			<div class="row">
+				<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title">Impressions</h5>
+					</div>
+					<div class="card-body">
+						{% if postform %}
+						{{ render_form(postform) }}
+						{% endif %}
+						<p>
+							{% for post in posts %}
+							{% include '_post.html' %}
+							{% endfor %}
+						</p>
+						<nav aria-label="...">
+							<ul class="pagination">
+								<li class="page-item{% if not prev_url %} disabled{% endif %}">
+									<a href="{{ prev_url or '#' }}" class="page-link">
+										<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+									</a>
+								</li>
+								<li class="page-item{% if not next_url %} disabled{% endif %}">
+									<a href="{{ next_url or '#' }}" class="page-link">
+										{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
 
-                    <form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
-                    </form>
-
-                    {% endif %}
-                    {% if current_user.admin == True %}
-                    <form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Delete'), class_='btn btn-default')}}
-                    </form>
-                    {% endif %}
-                </div>
-                <div class="col-md-3">
-                    <form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
-                    </form>
-
-                </div>
-            </div>
-        </div>
-                <div class="card-body">
-                    {% for interview in interviews %}
-                    {% include '_interview.html' %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card ">
-              <div class="card-header ">
-                <div class="card-header ">
-                    <h5 class="card-title">{{ program.name }}</h5>
-                    <p class="card-category">Specialty: {{ program.specialty }}</p>
-                </div>
-                <p class="card-category"></p>
-            </div>
-            <div class="card-body align-items-center">
-                {{ program.body }} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-<div class="col-md-12">
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Impressions</h5>
-        </div>
-        <div class="card-body">
-            {% if postform %}
-            {{ render_form(postform) }}
-            {% endif %}
-            <p>
-                {% for post in posts %}
-                {% include '_post.html' %}
-                {% endfor %}
-            </p>
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item{% if not prev_url %} disabled{% endif %}">
-                        <a href="{{ prev_url or '#' }}" class="page-link">
-                            <span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-                        </a>
-                    </li>
-                    <li class="page-item{% if not next_url %} disabled{% endif %}">
-                        <a href="{{ next_url or '#' }}" class="page-link">
-                            {{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+		<div class="col-md-4">
+			<div class="card ">
+				<div class="card-header ">
+					<div class="card-header ">
+						<div class="btn-group" role="group">
+							{% if not current_user.is_following_program(program) %}
+							<form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
+								{{ form.hidden_tag() }}
+								{{ form.submit(value=_('Follow'), class_='btn btn-default') }}
+							</form>
+							{% else %}
+							<form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
+								{{ form.hidden_tag() }}
+								{{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
+							</form>
+							{% endif %}
+							{% if current_user.admin == True %}
+							<form action="{{ url_for('main.delete_program', name=program.name)}}" method="post">
+								{{ form.hidden_tag() }}
+								{{ form.submit(value=_('Delete'), class_='btn btn-default')}}
+							</form>
+							{% endif %}
+							<form action="{{ url_for('main.add_interview', name=program.name)}}" method="post">
+								{{ form.hidden_tag() }}
+								{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
+							</form>
+						</div>
+						<h5 class="card-title">{{ program.name }}</h5>
+						<p class="card-category">Specialty: {{ program.specialty }}</p>
+						<p class="card-category"></p>
+					</div>
+					<div class="card-body align-items-center">
+						{{ program.body }} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+					</div>
+					<p>Other programs from institution. Open house / meet and greet dates. LOI updates. Map
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
@@ -103,59 +100,59 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='fullcalendar.css') }}">
 <script src="{{ url_for('static', filename='fullcalendar.min.js') }}"></script>
 <script>
-    $(document).ready(function () {
+	$(document).ready(function () {
 
-        var date = new Date();
-        var d = date.getDate();
-        var m = date.getMonth();
-        var y = date.getFullYear();
-        var myEvents =[
-        {% for interview in interviews %}
-        {% for interview_date in interview.dates %}
-        {
-            title: 'Interview',
-            start: '{{ interview_date.date.year }}-0{{ interview_date.date.month }}-0{{ interview_date.date.day }}'
-        },
-        {% endfor %}
-        {% endfor %}
-        ];
-        var calendar = $('#divCalendar').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,basicWeek ,basicDay'
-            },
-            buttonText: {
-                prev: 'prev',
-                next: 'next'
-            },
-            timeFormat: 'h(:mm)t',
-            selectable: true,
-            dayClick: function (date, allDay, jsEvent, view) {
-                alert(date);
-            },
-            eventClick: function (calEvent, jsEvent, view) {
-                alert('Event: ' + calEvent.title);
-            // change the border color just for fun
-            $(this).css('border-color', 'red');
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		var myEvents =[
+		{% for interview in interviews %}
+		{% for interview_date in interview.dates %}
+		{
+			title: 'Interview',
+			start: '{{ interview_date.date.year }}-0{{ interview_date.date.month }}-0{{ interview_date.date.day }}'
+		},
+		{% endfor %}
+		{% endfor %}
+		];
+		var calendar = $('#divCalendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,basicWeek ,basicDay'
+			},
+			buttonText: {
+				prev: 'prev',
+				next: 'next'
+			},
+			timeFormat: 'h(:mm)t',
+			selectable: true,
+			dayClick: function (date, allDay, jsEvent, view) {
+				alert(date);
+			},
+			eventClick: function (calEvent, jsEvent, view) {
+				alert('Event: ' + calEvent.title);
+			// change the border color just for fun
+			$(this).css('border-color', 'red');
 
-        },
-        select: function (start, end, allDay) {
-            var title = prompt('Event Title:');
-            if (title) {
-                calendar.fullCalendar('renderEvent', {
-                    title: title,
-                    start: start,
-                    end: end,
-                    allDay: allDay
-                },
-                true // make the event "stick"
-                );
-            }
-            calendar.fullCalendar('unselect');
-        },
-        events: myEvents
-    });
-    });
+		},
+		select: function (start, end, allDay) {
+			var title = prompt('Event Title:');
+			if (title) {
+				calendar.fullCalendar('renderEvent', {
+					title: title,
+					start: start,
+					end: end,
+					allDay: allDay
+				},
+				true // make the event "stick"
+				);
+			}
+			calendar.fullCalendar('unselect');
+		},
+		events: myEvents
+	});
+	});
 </script>
 {% endblock %}

@@ -88,6 +88,8 @@ def add_interview(name):
             interview.dates = dates2
         if dates and dates2:
             interview.dates = dates + dates2
+        if not current_user.is_following_program(program):
+            current_user.follow_program(program)
         db.session.add(interview)
         db.session.commit()
         flash(_('Interview added!'))
@@ -116,7 +118,7 @@ def user(username):
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items,
+    return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
                            next_url=next_url, prev_url=prev_url, form=form)
 
 

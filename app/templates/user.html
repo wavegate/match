@@ -32,13 +32,13 @@
 					<div class="button-container">
 						<div class="row">
 							<div class="col-lg-3 col-md-6 col-6 ml-auto">
-								<h5>x<br><small>Programs</small></h5>
+								<h5>x<br><small>x</small></h5>
 							</div>
 							<div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
-								<h5>2GB<br><small>x</small></h5>
+								<h5>x<br><small>x</small></h5>
 							</div>
 							<div class="col-lg-3 mr-auto">
-								<h5>24,6$<br><small>x</small></h5>
+								<h5>x<br><small>x</small></h5>
 							</div>
 						</div>
 					</div>
@@ -46,19 +46,51 @@
 			</div>
 			<div class="card">
 				<div class="card-body">
-					Programs applied to
+					Programs applied to, todo list
 				</div>
 			</div>
 		</div>
 		{% if user == current_user %}
 		<div class="col-md-8">
-			<div class="card card-user">
-				<div class="card-header">
-					<h5 class="card-title">Edit Profile</h5>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<h5>My Programs</h5>
+						</div>
+						<div class="card-body">
+							<div class="table">
+                    <table class="table"  data-toggle="table" data-search="true" data-pagination="true" data-show-columns="true">
+                        <thead class="text-primary">
+                            <th data-sortable="true" data-field="1">State</th>
+                            <th data-sortable="true" data-field="2">Name</th>
+                            <th data-sortable="true" data-field="3">Specialty</th>
+                            <th data-field="4">Latest invite dates</th>
+                            <th data-field="5">Latest interview dates</th>
+                        </thead>
+                        <tbody>
+                            {% for program in programs %}
+                            {% include '_program.html' %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+							{% for interview in user.interviews %}
+							{{ interview.date }}
+							{% endfor %}
+						</div>
+					</div>
 				</div>
-				<div class="card-body">
-					{{ render_form(form) }}
-					Programs feeds
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+				<div class="card card-user">
+					<div class="card-header">
+						<h5 class="card-title">Edit Profile</h5>
+					</div>
+					<div class="card-body">
+						{{ render_form(form) }}
+					</div>
 				</div>
 			</div>
 		</div>
