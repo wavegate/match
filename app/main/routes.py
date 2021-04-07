@@ -18,7 +18,7 @@ def index():
 	if current_user.is_authenticated:
 		return redirect(url_for('main.user', username=current_user.username))
 	else:
-		return render_template('index.html')
+		return redirect(url_for('main.programs'))
 
 @bp.before_app_request
 def before_request():
