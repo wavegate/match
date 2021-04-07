@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 
+{% block page_head %}Programs{% endblock %}
+
 {% block content %}
 <div class="content">
     <div class="row">
       <div class="col-md-12">
         <div class="card ">
-            <div class="card-header ">
-                <h5 class="card-title">Programs</h5>
-                <p class="card-category"></p>
-            </div>
             <div class="card-body ">
                 <!--<table  id="table"></table>-->
                 <div class="table">
@@ -26,6 +24,19 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-footer">
+                    <div class="chart-legend">
+                        <i class="fa fa-circle text-primary"></i>Date interview was offered
+                        <i class="fa fa-circle text-success"></i>Interview date (still available)
+                        <i class="fa fa-circle text-danger"></i>Interview date (already full)
+                    </div>
+                    <hr />
+                    <div class="card-stats">
+                        <i class="fa fa-check"></i> Last update: 
+                    </div>
                 </div>
             </div>
         </div>
