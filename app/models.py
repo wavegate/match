@@ -147,6 +147,8 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+    def get_program(self):
+        return self.program or None
 
 class Program(db.Model):
     __tablename__ = 'program'
@@ -176,6 +178,8 @@ class Message(db.Model):
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    def get_program(self):
+        return None
 
     def __repr__(self):
         return '<Message {}>'.format(self.body)
