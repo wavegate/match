@@ -34,6 +34,7 @@ Coded by www.creative-tim.com
   <!-- CSS Files -->
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/paper-dashboard.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/custom2.css') }}" rel="stylesheet"/>
   <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
   <link href="https://demos.creative-tim.com/bs3/paper-dashboard/assets/css/animate.min.css" rel="stylesheet">
   {% endblock %}
@@ -61,11 +62,17 @@ Coded by www.creative-tim.com
             </a>
           </li>
           <li>
+            <a href="{{ url_for('main.feedback') }}">
+              <i class="nc-icon nc-satisfied"></i>
+              <p>{{ _('Send Feedback') }}</p>
+            </a>
+          </li>
+          <!--<li>
             <a href="{{ url_for('main.experimental') }}">
               <i class="nc-icon nc-atom"></i>
               <p>{{ _('Experimental') }}</p>
             </a>
-          </li>
+          </li>-->
         </ul>
       </div>
     </div>
@@ -92,17 +99,14 @@ Coded by www.creative-tim.com
           </button>
           <div class="collapse navbar-collapse justify-content-end" id="navigation">
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.about') }}">
-                  <i class="nc-icon nc-satisfied"></i>
-                  <p>
-                  <span class="d-lg-none d-md-block">About</span>
-                </p>
+              <li class="nav-item" >
+                <a class="nav-link" href="{{ url_for('main.about') }}" data-toggle="tooltip" data-placement="bottom" title="About">
+                  <i class="nc-icon nc-alert-circle-i"></i>
                 </a>
               </li>
               {% if not current_user.is_anonymous %}
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.messages') }}">
+                <a class="nav-link" href="{{ url_for('main.messages') }}"  data-toggle="tooltip" data-placement="bottom" title="Messages">
                   <i class="nc-icon nc-chat-33"></i>
                   {% set new_messages = current_user.new_messages() %}
                   {% if new_messages %}
@@ -115,7 +119,7 @@ Coded by www.creative-tim.com
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.settings') }}">
+              <a class="nav-link" href="{{ url_for('main.settings') }}"  data-toggle="tooltip" data-placement="bottom" title="Settings">
                 <i class="nc-icon nc-settings-gear-65"></i>
                 <p>
                   <span class="d-lg-none d-md-block">Settings</span>
@@ -220,6 +224,7 @@ Coded by www.creative-tim.com
       {% endfor %}
       {% endif %}
       {% endwith %}
+      $('[data-toggle="tooltip"]').tooltip({ boundary: 'window' });
     });
   </script>
   {% endblock %}

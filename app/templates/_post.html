@@ -17,7 +17,7 @@
 			username=user_link, when=moment(post.timestamp).fromNow()) }}
 			<br>
 			<span id="post{{ post.id }}">{{ post.body }}</span>
-			{% if post.author == current_user %}
+			{% if post.author == current_user and post.program %}
 			<a href="{{ url_for('main.delete_post',post=post.id,program=post.get_program().name)}}">Delete</a>
 			{% endif %}
 

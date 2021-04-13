@@ -12,3 +12,9 @@ def send_password_reset_email(user):
                                          user=user, token=token),
                html_body=render_template('email/reset_password.html',
                                          user=user, token=token))
+
+def send_feedback_email(form):
+	send_email('Feedback', sender=current_app.config['ADMINS'][0],
+		recipients=['matchtest0912@gmail.com'],
+		text_body=form.feedback.data,
+		html_body=form.feedback.data)

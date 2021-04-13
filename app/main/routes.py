@@ -5,10 +5,11 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm
 from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date
 from app.translate import translate
 from app.main import bp
+from app.auth.email import send_feedback_email
 import logging
 import re
 
@@ -346,4 +347,13 @@ def settings():
 @bp.route('/experimental')
 def experimental():
 	return render_template('experimental.html')
+
+@bp.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+	form = FeedbackForm()
+	if form.validate_on_submit():
+		send_feedback_email(form)
+		flash(_('Feedback submitted!'))
+		return redirect(url_for('main.feedback'))
+	return render_template('feedback.html', form=form)
 
