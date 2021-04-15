@@ -102,6 +102,9 @@ Coded by www.creative-tim.com
               <li class="nav-item" >
                 <a class="nav-link" href="{{ url_for('main.about') }}" data-toggle="tooltip" data-placement="bottom" title="About">
                   <i class="nc-icon nc-alert-circle-i"></i>
+                <p>
+                  <span class="d-lg-none d-md-block">About</span>
+                </p>
                 </a>
               </li>
               {% if not current_user.is_anonymous %}
