@@ -12,6 +12,10 @@ from app.main import bp
 from app.auth.email import send_feedback_email
 import logging
 import re
+import flask_excel as excel
+import pandas as pd
+import datetime as dt
+import dateutil.parser
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -215,7 +219,6 @@ def follow_program(name):
 	else:
 		return redirect(url_for('main.programs'))
 
-
 @bp.route('/unfollow_program/<name>', methods=['POST'])
 @login_required
 def unfollow_program(name):
@@ -329,6 +332,57 @@ def base_test():
 		db.session.add(program)
 		db.session.commit()
 	return render_template('base_test.html', contents=contents)
+
+def try_parsing_date(dates):
+	d = []
+	for date in dates:
+		print(date)
+		try:
+			d.append(dt.datetime.strptime(date+"/2020", '%m/%d/%Y'))
+		except ValueError:
+			pass
+	return d
+
+def create_programs(info):
+	text = ""
+	for row in info.itertuples():
+		state = row[1]
+		name = row[2]
+		dates = row[3]
+		program = Program(name=name, state=state, specialty="Psychiatry")
+		interview = Interview(date=datetime.utcnow(),interviewer=program,interviewee=current_user)
+		dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+		interview.dates = dates
+		db.session.add(interview)
+		db.session.commit()
+	return text
+
+@bp.route("/upload", methods=['GET', 'POST'])
+def upload_file():
+	if request.method == 'POST':
+		print(request.files['file'])
+		f = request.files['file']
+		f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
+		f = f.drop(labels=[0],axis=0,inplace=False)
+		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: str(x).replace(" ","").split(','))
+		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
+		return create_programs(f)
+		#return f.to_html()
+	return '''
+	<!doctype html>
+	<title>Upload an excel file</title>
+	<h1>Excel file upload (csv, tsv, csvz, tsvz only)</h1>
+	<form action="" method=post enctype=multipart/form-data>
+	<p><input type=file name=file><input type=submit value=Upload>
+	</form>
+	'''
+
+@bp.route('/analyze')
+def analyze():
+	with current_app.open_resource('static/data/psych2021.xlsx', encoding="utf8") as f:
+		contents = f.read()
+		flash(contents)
+	return render_template('index.html')
 
 @bp.route('/delete_programs')
 def delete_programs():
