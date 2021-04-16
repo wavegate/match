@@ -24,15 +24,13 @@
 					<p class="description text-center">
 						{% if user.about_me %}{{ user.about_me }}{% endif %}
 					</p>
-					user card
-					residency application information
 				</div>
 				<div class="card-footer">
 					<hr>
 					<div class="button-container">
 						<div class="row">
 							<div class="col-lg-3 col-md-6 col-6 ml-auto">
-								<h5>x<br><small>x</small></h5>
+								<h5>{{ programs.count() }}<br><small>Programs</small></h5>
 							</div>
 							<div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
 								<h5>x<br><small>x</small></h5>
@@ -43,12 +41,12 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div><!--
 			<div class="card">
 				<div class="card-body">
-					Programs applied to, todo list
+					#To-do list
 				</div>
-			</div>
+			</div>-->
 		</div>
 		{% if user == current_user %}
 		<div class="col-md-8">
@@ -75,9 +73,9 @@
                         </tbody>
                     </table>
                 </div>
-							{% for interview in user.interviews %}
+							<!--{% for interview in user.interviews %}
 							{{ interview.date }}
-							{% endfor %}
+							{% endfor %}-->
 						</div>
 					</div>
 				</div>
