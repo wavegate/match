@@ -461,7 +461,6 @@ def unity():
 	return render_template('unity.html')
 
 @bp.route("/det", methods = ['GET'])
-@login_required
 def det():
 	return render_template('det.html')
 
