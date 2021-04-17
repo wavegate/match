@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+
+{% block page_head %}Cognitive Testing{% endblock %}
+
+{% block content %}
+<div class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title">Take a Test!</h5>
+				</div>
+				<div class="card-body">
+					<a class="btn btn-primary" href="{{url_for('main.test1')}}">Example Test</a>
+					<a class="btn btn-primary" href="{{url_for('main.subitizing')}}">subitizing</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title">Test Results</h5>
+				</div>
+				<div class="card-body">
+					<div class="table">
+						<table id="program_table" class="table table-responsive" data-toggle="table" data-pagination="true">
+							<thead class="text-primary">
+								<th data-sortable="true" data-field="1">Test Name</th>
+								<th data-sortable="true" data-field="2">Accuracy</th>
+								<th data-sortable="true" data-field="3">Average Reaction Time</th>
+								<th data-field=""></th>
+							</thead>
+							<tbody>
+								{% for test in tests %}
+								<tr data-title="bootstrap table">
+									<td>
+										{{ test.testname }}
+									</td>
+									<td>
+										{{ test.score }}%
+									</td>
+									<td>
+										{{ test.reaction_time }} ms
+									</td>
+									<td>
+										<a href="{{ url_for('main.delete_test', test_id=test.id) }}">Remove score</a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

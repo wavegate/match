@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Subitizing   </title>
+    <script type="text/javascript" src="{{ url_for('static', filename='jspsych-6.0.5/jspsych.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jspsych-6.0.5/plugins/jspsych-image-slider-response.js') }}"></script>
+    <link href="{{ url_for('static', filename='jspsych-6.0.5/css/jspsych.css') }}" rel="stylesheet" type="text/css"></link>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+  </head>
+  <body></body>
+  <script>
+
+    /* create timeline */
+    var timeline = [];
+
+    var score;
+    var rt;
+    var accuracy;
+
+    /* define welcome message trial */
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+    timeline.push(welcome);
+
+    /* define instructions trial */
+    var instructions = {
+      type: "html-keyboard-response",
+      stimulus: "<p>In this experiment, a random number of dots will appear in the center " +
+          "of the screen.</p><p>Press the number on your keyboard corresponding to the number of dots.</p>"+
+          "<p>Press any key to begin.</p>",
+      post_trial_gap: 2000
+    };
+    timeline.push(instructions);
+
+    var correct_answers;
+    var test_stimuli = [];
+    var images = [];
+
+    function define_stimuli(result2){
+      for (i = 0; i < result2.length; i++) {
+        images.push("{{ url_for('static', filename='CODE') }}".replace("CODE",result2[i]['loc']))
+        test_stimuli.push(
+        { stimulus: "{{ url_for('static', filename='CODE') }}".replace("CODE",result2[i]['loc']), data: { test_part: 'test', correct_response: result2[i]['index'] } }
+        );
+      }
+      return test_stimuli;
+    };
+
+    function assign_stimuli(result3){
+      var test_procedure = {
+        timeline: [fixation, test],
+        timeline_variables: test_stimuli,
+        repetitions: 1,
+        randomize_order: true
+      }
+      timeline.push(test_procedure);
+      return('resolved')
+    }
+
+    $.get("/generate_images")
+    .then(result => $.parseJSON(result))
+    .then(result2 => define_stimuli(result2))
+    .then(result3 => assign_stimuli(result3))
+    .then(result4 => debrief(result4))
+    .then(result5 => init(result5))
+
+    var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: function(){
+        return jsPsych.randomization.sampleWithoutReplacement([750, 1000, 1250], 1)[0];
+      },
+      data: {test_part: 'fixation'}
+    }
+
+    var test = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+      stimulus_duration: 200,
+      trial_duration: 2000,
+      response_ends_trial: false,
+      data: jsPsych.timelineVariable('data'),
+      on_finish: function(data){
+        data.correct = data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode(data.correct_response);
+      },
+    }
+
+    //var test_procedure = {
+    //  timeline: [fixation, test],
+    //  timeline_variables: test_stimuli,
+    //  repetitions: 1,
+    //  randomize_order: true
+    //}
+    //console.log(test_procedure)
+    //timeline.push(test_procedure);
+
+    /* define debrief */
+    function debrief(result4) {
+      var debrief_block = {
+        type: "html-keyboard-response",
+        stimulus: function() {
+
+          var trials = jsPsych.data.get().filter({test_part: 'test'});
+          var correct_trials = trials.filter({correct: true});
+          accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+          rt = Math.round(correct_trials.select('rt').mean());
+          score = accuracy;
+          return "<p>You responded correctly on "+accuracy+"% of the trials.</p>"+
+          "<p>Your average response time was "+rt+"ms.</p>"+
+          "<p>Press any key to complete the experiment. Thank you!</p>";
+
+        }
+      };
+      timeline.push(debrief_block);
+      return("resolved")
+    }
+
+    /* start the experiment */
+    function init(result5){
+      jsPsych.init({
+      timeline: timeline,
+      preload_images: images,
+      on_finish: function() {
+        $.post( "/postmethod", { 
+          score: score,
+          accuracy: accuracy,
+          rt: rt,
+          test_name: 'Subitizing' 
+        }).done(function(response) {
+          window.location.href = '/cognition'
+        }).fail(function() {
+          alert("fail");
+        });
+      }
+    });
+    }
+  </script>
+</html>

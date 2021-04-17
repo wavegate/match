@@ -49,6 +49,7 @@ class User(UserMixin, db.Model):
     last_message_read_time = db.Column(db.DateTime)
     notifications = db.relationship('Notification', backref='user',
                                     lazy='dynamic')
+    tests = db.relationship('Test', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -217,3 +218,16 @@ class Interview_Date(db.Model):
     interview_id = db.Column(db.Integer, db.ForeignKey('interview.id'))
     date = db.Column(db.DateTime, index=True)
     full = db.Column(db.Boolean(), index=True)
+
+class Test(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    testname = db.Column(db.String(140))
+    score = db.Column(db.String(140))
+    accuracy = db.Column(db.String(140))
+    reaction_time = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    language = db.Column(db.String(5))
+
+    def __repr__(self):
+        return '<Test {}: {}>'.format(self.testname, self.score)
