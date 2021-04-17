@@ -68,3 +68,10 @@ class ProgramForm(FlaskForm):
 class FeedbackForm(FlaskForm):
 	feedback = TextAreaField('Enter feedback')
 	submit = SubmitField('Submit')
+
+class SLUMSForm(FlaskForm):
+	day = StringField('What day of the week is it?')
+	year = StringField('What is the year?')
+	state = StringField('What state are we in?')
+	objects = StringField('Please remember these five objects. I will ask you what they are later.')
+	submit = SubmitField('Submit')
