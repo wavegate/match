@@ -411,6 +411,8 @@ def analyze():
 @bp.route('/delete_programs')
 def delete_programs():
 	Program.query.delete()
+	Interview.query.delete()
+	Interview_Date.query.delete()
 	db.session.commit()
 	return render_template('programs.html')
 
