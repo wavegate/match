@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
-from app import db, csrf
+from app import db, csrf, celery
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm
 from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test
 from app.translate import translate
@@ -381,16 +381,25 @@ def create_programs(info):
 				db.session.commit()
 	return text
 
+@celery.task
+def process_programs(data):
+	f = data.files['file']
+	f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
+	f = f.drop(labels=[0],axis=0,inplace=False)
+	f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
+	create_programs(f)
+
 @bp.route("/upload", methods=['GET', 'POST'])
 @csrf.exempt
 def upload_file():
 	if request.method == 'POST':
-		print(request.files['file'])
-		f = request.files['file']
-		f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
-		f = f.drop(labels=[0],axis=0,inplace=False)
-		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
-		return create_programs(f)
+		process_programs(request)
+		#print(request.files['file'])
+		#f = request.files['file']
+		#f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
+		#f = f.drop(labels=[0],axis=0,inplace=False)
+		#f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
+		return redirect(url_for('main.index'))
 		#return f.to_html()
 	return '''
 	<!doctype html>

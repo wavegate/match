@@ -12,6 +12,7 @@ from flask_babel import Babel, lazy_gettext as _l
 #from elasticsearch import Elasticsearch
 from config import Config
 from flask_wtf.csrf import CSRFProtect
+from celery import Celery
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -23,6 +24,7 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 csrf = CSRFProtect()
+celery = Celery()
 
 
 def create_app(config_class=Config):
@@ -37,6 +39,8 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     csrf.init_app(app)
+    celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
     #app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
     #    if app.config['ELASTICSEARCH_URL'] else None
 
