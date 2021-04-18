@@ -199,7 +199,7 @@ class Interview(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
-    date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    date = db.Column(db.DateTime, index=True)
     supplemental_required = db.Column(db.Boolean, default=0)
     method = db.Column(db.String(128), index=True)
     dates = db.relationship('Interview_Date', backref='invite', lazy='dynamic')

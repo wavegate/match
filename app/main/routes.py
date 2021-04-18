@@ -26,6 +26,8 @@ import os
 import base64
 import json
 import glob
+import dateparser
+import math
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -52,7 +54,7 @@ def programs():
 		db.session.commit()
 		flash(_('Program added!'))
 		return redirect(url_for('main.programs'))
-	programs = Program.query.order_by(Program.timestamp.desc()).limit(100)
+	programs = Program.query.order_by(Program.timestamp.desc())
 	return render_template('programs.html', title=_('Programs'),
 						   programs=programs, form=form)
 
@@ -343,38 +345,50 @@ def base_test():
 		db.session.commit()
 	return render_template('base_test.html', contents=contents)
 
-def try_parsing_date(dates):
+def try_parsing_date(datestrings):
 	d = []
+	if datestrings != datestrings:
+		return None
+	dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
 	for date in dates:
-		print(date)
 		try:
-			d.append(dt.datetime.strptime(date+"/2020", '%m/%d/%Y'))
+			parsed = dateparser.parse(date)
+			if parsed:
+				if parsed.month > 6:
+					parsed = parsed.replace(year=2020)
+				d.append(parsed)
 		except ValueError:
 			pass
 	return d
 
 def create_programs(info):
-	text = ""
+	text = info.to_html()
 	for row in info.itertuples():
 		state = row[1]
 		name = row[2]
 		dates = row[3]
-		program = Program(name=name, state=state, specialty="Psychiatry")
-		interview = Interview(date=datetime.utcnow(),interviewer=program,interviewee=current_user)
-		dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-		interview.dates = dates
-		db.session.add(interview)
-		db.session.commit()
+		if name == name and dates:
+			program = Program(name=name, state=state, specialty="Psychiatry")
+			interview = Interview(interviewer=program,interviewee=current_user)
+			dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+			interview.dates = dates
+			db.session.add(interview)
+			db.session.commit()
+		else:
+			if name == name:
+				program = Program(name=name, state=state, specialty="Psychiatry")
+				db.session.add(program)
+				db.session.commit()
 	return text
 
 @bp.route("/upload", methods=['GET', 'POST'])
+@csrf.exempt
 def upload_file():
 	if request.method == 'POST':
 		print(request.files['file'])
 		f = request.files['file']
 		f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
 		f = f.drop(labels=[0],axis=0,inplace=False)
-		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: str(x).replace(" ","").split(','))
 		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
 		return create_programs(f)
 		#return f.to_html()

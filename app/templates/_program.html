@@ -20,7 +20,7 @@
 	</td>
 	<td>
 		{% for interview in program.get_latest_interviews() %}
-		<span class="btn btn-primary btn-sm">{{ interview.date.strftime('%m/%d/%y') }}</span>
+		{% if interview.date %}<span class="btn btn-primary btn-sm">{{ interview.date.strftime('%m/%d/%y') }}</span>{% endif %}
 		{% endfor %}
 	</td>
 	<td>
