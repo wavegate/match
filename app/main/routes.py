@@ -392,20 +392,19 @@ def upload_file():
 			f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
 			f = f.drop(labels=[0],axis=0,inplace=False)
 			for index, row in f.iterrows():
-				datestrings = str(row['Available Interview Dates'])
+				datestrings = row['Available Interview Dates']
 				d = []
-				if datestrings != datestrings:
-					break
-				dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
-				for date in dates:
-					try:
-						parsed = dateparser.parse(date)
-						if parsed:
-							if parsed.month > 6:
-								parsed = parsed.replace(year=2020)
-							d.append(parsed)
-					except ValueError:
-						pass
+				if datestrings == datestrings:
+					dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
+					for date in dates:
+						try:
+							parsed = dateparser.parse(date)
+							if parsed:
+								if parsed.month > 6:
+									parsed = parsed.replace(year=2020)
+								d.append(parsed)
+						except ValueError:
+							pass
 				state = row[0]
 				name = row[1]
 				dates = d
