@@ -1,2 +1,2 @@
-web: flask db upgrade; flask translate compile; gunicorn match:app
+web: flask db upgrade; flask translate compile; gunicorn match:app --timeout 600
 worker: celery worker --app=tasks.app

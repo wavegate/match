@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, g, \
-	jsonify, current_app
+	jsonify, current_app, Response, stream_with_context
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
@@ -28,6 +28,7 @@ import json
 import glob
 import dateparser
 import math
+import time
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -386,42 +387,43 @@ def create_programs(info):
 @csrf.exempt
 def upload_file():
 	if request.method == 'POST':
-		f = request.files['file']
-		f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
-		f = f.drop(labels=[0],axis=0,inplace=False)
-		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
-		return create_programs(f)
+		def generate():
+			f = request.files['file']
+			f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
+			f = f.drop(labels=[0],axis=0,inplace=False)
+			for index, row in f.iterrows():
+				datestrings = str(row['Available Interview Dates'])
+				d = []
+				if datestrings != datestrings:
+					break
+				dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
+				for date in dates:
+					try:
+						parsed = dateparser.parse(date)
+						if parsed:
+							if parsed.month > 6:
+								parsed = parsed.replace(year=2020)
+							d.append(parsed)
+					except ValueError:
+						pass
+				state = row[0]
+				name = row[1]
+				dates = d
+				if name == name and dates:
+					program = Program(name=name, state=state, specialty="Psychiatry")
+					interview = Interview(interviewer=program,interviewee=current_user)
+					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+					interview.dates = dates
+					db.session.add(interview)
+					db.session.commit()
+				else:
+					if name == name:
+						program = Program(name=name, state=state, specialty="Psychiatry")
+						db.session.add(program)
+						db.session.commit()
+				yield(str(index))
+		return Response(stream_with_context(generate()))
 	return render_template('upload.html')
-
-@bp.route('/status/<task_id>')
-def taskstatus(task_id):
-	task = process_programs2.AsyncResult(task_id)
-	if task.state == 'PENDING':
-		# job did not start yet
-		response = {
-			'state': task.state,
-			'current': 0,
-			'total': 1,
-			'status': 'Pending...'
-		}
-	elif task.state != 'FAILURE':
-		response = {
-			'state': task.state,
-			'current': task.info.get('current', 0),
-			'total': task.info.get('total', 1),
-			'status': task.info.get('status', '')
-		}
-		if 'result' in task.info:
-			response['result'] = task.info['result']
-	else:
-		# something went wrong in the background job
-		response = {
-			'state': task.state,
-			'current': 1,
-			'total': 1,
-			'status': str(task.info),  # this is the exception raised
-		}
-	return jsonify(response)
 
 @bp.route('/analyze')
 def analyze():
