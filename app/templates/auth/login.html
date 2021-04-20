@@ -12,20 +12,20 @@
             <h5 class="card-title">Login</h5>
         </div>
         <div class="card-body ">
-            <b>TEST with Username and Password both 's'</b>
+            <b>TEST with Username and Password both 'a'</b>
             <form action="" method="post" novalidate>
                 {{ form.hidden_tag() }}
                 <div class="form-group">
                     <p>
                         {{ form.username.label(class_="col-form-label") }}<br>
-                        {{ form.username(class_="form-control", value="s") }}
+                        {{ form.username(class_="form-control", value="a") }}
                         {% for error in form.username.errors %}
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </p>
                     <p>
                         {{ form.password.label(class_="col-form-label") }}<br>
-                        {{ form.password(class_="form-control", value="s") }}
+                        {{ form.password(class_="form-control", value="a") }}
                         {% for error in form.password.errors %}
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
