@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_head %}Upload Excel{% endblock %}
+
+{% block content %}
+<div class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card ">
+				<div class="card-body ">
+					<form id="upload-file" method="post" enctype="multipart/form-data">
+						<fieldset>
+							<label for="file">Select a file</label>
+							<input name="file" type="file">
+						</fieldset>
+						<fieldset>
+							<input type="submit" class="btn btn-primary">Upload</input>
+						</fieldset>
+					</form>
+					<div id="progress"></div>
+				</div>
+			</div>
+		</div>
+		{% endblock %}
+
+		{% block scripts %}
+		{{ super() }}
+
+    {% endblock %}

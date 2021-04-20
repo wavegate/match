@@ -12,7 +12,6 @@ from flask_babel import Babel, lazy_gettext as _l
 #from elasticsearch import Elasticsearch
 from config import Config
 from flask_wtf.csrf import CSRFProtect
-from celery import Celery
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -24,8 +23,6 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 csrf = CSRFProtect()
-celery = Celery()
-
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -39,8 +36,7 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     csrf.init_app(app)
-    celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-    celery.conf.update(app.config)
+
     #app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
     #    if app.config['ELASTICSEARCH_URL'] else None
 
@@ -52,6 +48,9 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    from app.cognition import bp as cognition_bp
+    app.register_blueprint(cognition_bp, url_prefix='/cognition')
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:

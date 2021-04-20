@@ -1,19 +1,11 @@
 <tr data-title="bootstrap table">
-	
 	<td>
 		{{ program.state }}
 	</td>
 	<td>
-		{% set program_link %}
-		<span class="program_popup">
-			<a href="{{ url_for('main.program', name=program.name) }}">
-				{{ program.name }}
-			</a>
-		</span>
-		{% endset %}
-		{{ _('%(name)s',
-		name=program_link) }}
-		<br>
+		<a href="{{ url_for('main.program', name ='') }}{{ program.name }}">
+			{{ program.name }}
+		</a>
 	</td>
 	<td>
 		{{ program.specialty }}

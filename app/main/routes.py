@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
-from app import db, csrf, celery
+from app import db, csrf
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm
 from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test
 from app.translate import translate
@@ -347,6 +347,7 @@ def base_test():
 
 def try_parsing_date(datestrings):
 	d = []
+	print(datestrings)
 	if datestrings != datestrings:
 		return None
 	dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
@@ -381,34 +382,46 @@ def create_programs(info):
 				db.session.commit()
 	return text
 
-@celery.task
-def process_programs(data):
-	f = data.files['file']
-	f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
-	f = f.drop(labels=[0],axis=0,inplace=False)
-	f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
-	create_programs(f)
-
 @bp.route("/upload", methods=['GET', 'POST'])
 @csrf.exempt
 def upload_file():
 	if request.method == 'POST':
-		process_programs(request)
-		#print(request.files['file'])
-		#f = request.files['file']
-		#f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
-		#f = f.drop(labels=[0],axis=0,inplace=False)
-		#f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
-		return redirect(url_for('main.index'))
-		#return f.to_html()
-	return '''
-	<!doctype html>
-	<title>Upload an excel file</title>
-	<h1>Excel file upload (csv, tsv, csvz, tsvz only)</h1>
-	<form action="" method=post enctype=multipart/form-data>
-	<p><input type=file name=file><input type=submit value=Upload>
-	</form>
-	'''
+		f = request.files['file']
+		f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
+		f = f.drop(labels=[0],axis=0,inplace=False)
+		f['Available Interview Dates'] = f['Available Interview Dates'].apply(lambda x: try_parsing_date(x))
+		return create_programs(f)
+	return render_template('upload.html')
+
+@bp.route('/status/<task_id>')
+def taskstatus(task_id):
+	task = process_programs2.AsyncResult(task_id)
+	if task.state == 'PENDING':
+		# job did not start yet
+		response = {
+			'state': task.state,
+			'current': 0,
+			'total': 1,
+			'status': 'Pending...'
+		}
+	elif task.state != 'FAILURE':
+		response = {
+			'state': task.state,
+			'current': task.info.get('current', 0),
+			'total': task.info.get('total', 1),
+			'status': task.info.get('status', '')
+		}
+		if 'result' in task.info:
+			response['result'] = task.info['result']
+	else:
+		# something went wrong in the background job
+		response = {
+			'state': task.state,
+			'current': 1,
+			'total': 1,
+			'status': str(task.info),  # this is the exception raised
+		}
+	return jsonify(response)
 
 @bp.route('/analyze')
 def analyze():
@@ -433,10 +446,6 @@ def about():
 def settings():
 	return render_template('settings.html')
 
-@bp.route('/experimental')
-def experimental():
-	return render_template('experimental.html')
-
 @bp.route('/feedback', methods=['GET', 'POST'])
 def feedback():
 	form = FeedbackForm()
@@ -445,92 +454,3 @@ def feedback():
 		flash(_('Feedback submitted!'))
 		return redirect(url_for('main.feedback'))
 	return render_template('feedback.html', form=form)
-
-@bp.route('/postmethod', methods = ['POST'])
-@csrf.exempt
-def get_post_javascript_data():
-	test_name = request.form['test_name']
-	accuracy = request.form['accuracy']
-	score = accuracy
-	rt = request.form['rt']
-	#print(jsdata, file=sys.stderr)
-	#with open('somefile.txt', 'a') as the_file:
-	#    the_file.write(jsdata)
-	files = glob.glob('app/static/img/subitizing/*') #remove subitizing images, must change once more tests added
-	for f in files:
-		os.remove(f)
-	test = Test(testname=test_name, score=score, reaction_time=rt, accuracy=accuracy, author=current_user)
-	db.session.add(test)
-	db.session.commit()
-	return rt
-
-@bp.route("/cognition", methods = ['GET'])
-@login_required
-def cognition():
-	tests = current_user.tests.order_by(Test.timestamp.desc()).all()
-	return render_template('cognition.html', tests=tests)
-
-@bp.route("/test1", methods = ['GET'])
-@login_required
-def test1():
-	return render_template('test1.html')
-
-@bp.route("/subitizing", methods = ['GET'])
-@login_required
-def subitizing():
-	return render_template('subitizing.html')
-
-@bp.route("/unity", methods = ['GET'])
-@login_required
-def unity():
-	return render_template('unity.html')
-
-@bp.route("/det", methods = ['GET'])
-def det():
-	return render_template('det.html')
-
-@bp.route("/slums", methods = ['GET', 'POST'])
-@login_required
-def slums():
-	form = SLUMSForm()
-	if form.validate_on_submit():
-		return render_template('slums.html', form=form)
-	return render_template('slums.html', form=form)
-
-@bp.route('/delete_test/<int:test_id>')
-@login_required
-def delete_test(test_id):
-	test = Test.query.get(test_id)
-	if test.author == current_user:
-		db.session.delete(test)
-		db.session.commit()
-	return redirect(request.referrer or url_for('cognition'))
-
-@bp.route('/generate_images')
-def generate_images():
-	sequence = []
-	for i in range(5):
-		N = np.random.random_integers(1,9)
-		x = np.random.rand(N)
-		y = np.random.rand(N)
-		new_dict = {}
-		new_dict['index'] = str(N)
-
-		colors = 'k'
-		area = 20
-
-		plt.scatter(x, y, s=area, c=colors)
-		plt.axis([0, 1, 0, 1])
-		plt.axis('scaled')
-
-		plt.axis('off')
-		loc = 'img/subitizing/{}.png'.format(np.random.random_integers(10000000,90000000))
-		loc2 = 'app/static/' + loc
-		new_dict['loc'] = loc
-		if os.path.isfile(loc2):
-			os.remove(loc2)
-
-		plt.savefig(loc2)
-		sequence.append(new_dict)
-		plt.clf()
-	return json.dumps(sequence)
