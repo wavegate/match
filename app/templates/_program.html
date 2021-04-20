@@ -1,9 +1,12 @@
 <tr data-title="bootstrap table">
 	<td>
-		{{ program.state }}
+		{{ program.state }}{% if current_user.admin == True %}<form action="{{ url_for('main.delete_program', program_id=program.id) }}" method="post">
+			{{ form.hidden_tag() }}
+			{{ form.submit(value=_('Delete'), class_='btn btn-default btn-sm')}}
+		</form>{% endif %}
 	</td>
 	<td>
-		<a href="{{ url_for('main.program', name=program.name) }}">
+		<a href="{{ url_for('main.program', program_id=program.id) }}">
 			{{ program.name }}
 		</a>
 	</td>

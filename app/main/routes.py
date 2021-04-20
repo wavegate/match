@@ -56,10 +56,10 @@ def programs(specialty):
 	return render_template('programs.html', title=_('Programs'),
 						   programs=programs, form=form, specialty=specialty)
 
-@bp.route('/program/<name>', methods=['GET','POST'])
+@bp.route('/program/<program_id>', methods=['GET','POST'])
 @login_required
-def program(name):
-	program = Program.query.filter_by(name=name).first_or_404()
+def program(program_id):
+	program = Program.query.filter_by(id=program_id).first_or_404()
 	interviews = program.interviews.order_by(Interview.date.desc())
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
@@ -72,15 +72,23 @@ def program(name):
 		db.session.add(post)
 		db.session.commit()
 		flash(_('Your post is now live!'))
-		return redirect(url_for('main.program', name=name))
+		return redirect(url_for('main.program', program_id=program_id))
 	posts = program.posts.order_by(Post.timestamp.desc()).paginate(
 		page, current_app.config['POSTS_PER_PAGE'], False)
-	next_url = url_for('main.program', name=name,
+	next_url = url_for('main.program', id=program_id,
 					   page=posts.next_num) if posts.has_next else None
-	prev_url = url_for('main.program', name=name,
+	prev_url = url_for('main.program', id=program_id,
 					   page=posts.prev_num) if posts.has_prev else None
 	form = EmptyForm()
 	return render_template('program.html', next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, posts=posts.items)
+
+@bp.route('/delete_program/<int:program_id>', methods=['POST'])
+@login_required
+def delete_program(program_id):
+	program = Program.query.get(program_id)
+	db.session.delete(program)
+	db.session.commit()
+	return redirect(url_for('main.specialties'))
 
 @bp.route('/delete_post/<int:post>?program=<program>', methods=['GET','POST'])
 @login_required
@@ -93,10 +101,10 @@ def delete_post(post, program):
 	#return redirect(url_for('main.index'))
 	return redirect(url_for('main.program',name=program))
 
-@bp.route('/add_interview/<name>', methods=['GET', 'POST'])
+@bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])
 @login_required
-def add_interview(name):
-	program = Program.query.filter_by(name=name).first_or_404()
+def add_interview(program_id):
+	program = Program.query.filter_by(id=program_id).first_or_404()
 	form = AddInterviewForm(current_user.username, program)
 	if form.validate_on_submit():
 		interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
@@ -119,7 +127,7 @@ def add_interview(name):
 		db.session.add(interview)
 		db.session.commit()
 		flash(_('Interview added!'))
-		return redirect(url_for('main.program', name=name))
+		return redirect(url_for('main.program', id=program_id))
 	return render_template('add_interview.html',title=_('Add Interview Offer'),
 						   form=form, program=program)
 
@@ -244,16 +252,6 @@ def unfollow_program(name):
 		return redirect(url_for('main.program', name=name))
 	else:
 		return redirect(url_for('main.programs'))
-
-@bp.route('/delete_program/<name>', methods=['POST'])
-@login_required
-def delete_program(name):
-	program = Program.query.filter_by(name=name).first()
-	db.session.delete(program)
-	db.session.commit()
-	flash(_('Program deleted!'))
-	return redirect(url_for('main.programs'))
-
 
 @bp.route('/translate', methods=['POST'])
 @login_required
@@ -487,7 +485,42 @@ def upload_file():
 						db.session.add(program)
 						db.session.commit()
 				yield(str(index))
-		return Response(stream_with_context(generate_neuro2021()))
+		def generate_obgyn2021():
+			f = request.files['file']
+			f = pd.read_excel(f, engine='openpyxl', sheet_name='20-21 IV Dates', header=1, usecols=[0,1,3])
+			f = f.drop(labels=[0],axis=0,inplace=False)
+			#return f.to_html()
+			for index, row in f.iterrows():
+				datestrings = row[2]
+				d = []
+				if datestrings == datestrings:
+					dates = str(datestrings).replace("(full)","").replace("+/d* ","").replace(" ","").split(',')
+					for date in dates:
+						try:
+							parsed = dateparser.parse(date)
+							if parsed:
+								if parsed.month > 6:
+									parsed = parsed.replace(year=2020)
+								d.append(parsed)
+						except ValueError:
+							pass
+				state = row[0]
+				name = row[1]
+				dates = d
+				if name == name and dates:
+					program = Program(name=name, state=state, specialty="OB-GYN")
+					interview = Interview(interviewer=program,interviewee=current_user)
+					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+					interview.dates = dates
+					db.session.add(interview)
+					db.session.commit()
+				else:
+					if name == name:
+						program = Program(name=name, state=state, specialty="OB-GYN")
+						db.session.add(program)
+						db.session.commit()
+				yield(str(index))
+		return Response(stream_with_context(generate_obgyn2021()))
 	return render_template('upload.html')
 
 @bp.route('/analyze')
