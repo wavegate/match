@@ -6,7 +6,7 @@
 		</form>{% endif %}
 	</td>
 	<td>
-		<a href="{{ url_for('main.program', program_id=program.id) }}">
+		<span style="display:none">{{ program.name }}</span><a href="{{ url_for('main.program', program_id=program.id) }}">
 			{{ program.name }}
 		</a>
 	</td>

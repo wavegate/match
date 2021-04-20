@@ -559,7 +559,39 @@ def upload_file():
 						db.session.add(program)
 						db.session.commit()
 				yield(str(index))
-		return Response(stream_with_context(generate_prelimty2021()))
+		def generate_gensurg2021():
+			f = request.files['file']
+			f = pd.read_excel(f, engine='openpyxl')
+			for index, row in f.iterrows():
+				d = []
+				if row[2] == row[2]:
+					dates = str(row[2]).replace(" ","").split(',')
+					for date in dates:
+						try:
+							parsed = dateparser.parse(date)
+							if parsed:
+								if parsed.month > 6:
+									parsed = parsed.replace(year=2020)
+								d.append(parsed)
+						except ValueError:
+							pass
+				state = row[0]
+				name = row[1]
+				dates = d
+				if name == name and dates:
+					program = Program(name=name, state=state, specialty="General Surgery")
+					interview = Interview(interviewer=program,interviewee=current_user)
+					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+					interview.dates = dates
+					db.session.add(interview)
+					db.session.commit()
+				else:
+					if name == name:
+						program = Program(name=name, state=state, specialty="General Surgery")
+						db.session.add(program)
+						db.session.commit()
+				yield(str(index))
+		return Response(stream_with_context(generate_gensurg2021()))
 	return render_template('upload.html')
 
 @bp.route('/analyze')
