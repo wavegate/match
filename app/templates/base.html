@@ -44,21 +44,23 @@ Coded by www.creative-tim.com
   <div class="wrapper ">
     <div class="sidebar off-canvas-sidebar" data-color="white" data-active-color="danger">
       <div class="logo">
-        <a href="{{ url_for('main.programs') }}"><img src="{{ url_for('static', filename='img/logo.png') }}"/>
+        <a href="{{ url_for('main.specialties') }}"><img src="{{ url_for('static', filename='img/logo.png') }}"/>
         </a>
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="active ">
-            <a href="{{ url_for('main.index') }}" class="nav-link">
+          {% if not current_user.is_anonymous %}
+          <li>
+            <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
               <i class="nc-icon nc-single-02"></i>
-              <p>{{ _('Home') }}</p>
+              <p>{{ _('Dashboard') }}</p>
             </a>
           </li>
+          {% endif %}
           <li>
-            <a href="{{ url_for('main.programs') }}">
+            <a href="{{ url_for('main.specialties') }}">
               <i class="nc-icon nc-bank"></i>
-              <p>{{ _('All Programs') }}</p>
+              <p>{{ _('Programs') }}</p>
             </a>
           </li>
           <li>

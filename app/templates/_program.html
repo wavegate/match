@@ -3,13 +3,13 @@
 		{{ program.state }}
 	</td>
 	<td>
-		<a href="{{ url_for('main.program', name ='') }}{{ program.name }}">
+		<a href="{{ url_for('main.program', name=program.name) }}">
 			{{ program.name }}
 		</a>
 	</td>
-	<td>
+	<!--<td>
 		{{ program.specialty }}
-	</td>
+	</td>-->
 	<td>
 		{% for interview in program.get_latest_interviews() %}
 		{% if interview.date %}<span class="btn btn-primary btn-sm">{{ interview.date.strftime('%m/%d/%y') }}</span>{% endif %}

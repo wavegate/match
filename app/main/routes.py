@@ -33,10 +33,7 @@ import time
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-	if current_user.is_authenticated:
-		return redirect(url_for('main.user', username=current_user.username))
-	else:
-		return redirect(url_for('main.programs'))
+	return redirect(url_for('main.specialties'))
 
 #@bp.before_app_request
 #def before_request():
@@ -46,8 +43,8 @@ def index():
 #		g.search_form = SearchForm()
 #	g.locale = str(get_locale())
 
-@bp.route('/programs', methods=['GET', 'POST'])
-def programs():
+@bp.route('/programs/<specialty>', methods=['GET', 'POST'])
+def programs(specialty):
 	form = ProgramForm()
 	if form.validate_on_submit():
 		program = Program(name=form.name.data, specialty=form.specialty.data, body=form.body.data, image=form.image.data, state=form.state.data)
@@ -55,9 +52,9 @@ def programs():
 		db.session.commit()
 		flash(_('Program added!'))
 		return redirect(url_for('main.programs'))
-	programs = Program.query.order_by(Program.timestamp.desc())
+	programs = Program.query.filter_by(specialty=specialty).order_by(Program.timestamp.desc())
 	return render_template('programs.html', title=_('Programs'),
-						   programs=programs, form=form)
+						   programs=programs, form=form, specialty=specialty)
 
 @bp.route('/program/<name>', methods=['GET','POST'])
 @login_required
@@ -499,3 +496,7 @@ def feedback():
 		flash(_('Feedback submitted!'))
 		return redirect(url_for('main.feedback'))
 	return render_template('feedback.html', form=form)
+
+@bp.route('/specialties', methods=['GET'])
+def specialties():
+	return render_template('specialties.html')

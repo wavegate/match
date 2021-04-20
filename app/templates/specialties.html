@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block page_head %}Programs{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <form>
+            <label>Select a year</label>
+            <select class="form-select" aria-label="Select year">
+              <option selected>2020-2021</option>
+            </select>
+        </form>
+    </div>
+    <div class="row">
+        <a href="{{ url_for('main.programs', specialty='Pediatrics') }}" class="btn btn-primary">Pediatrics</a>
+        <a href="{{ url_for('main.programs', specialty='Psychiatry') }}" class="btn btn-primary">Psychiatry</a>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}
