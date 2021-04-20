@@ -221,35 +221,35 @@ def unfollow(username):
 	else:
 		return redirect(url_for('main.programs'))
 
-@bp.route('/follow_program/<name>', methods=['POST'])
+@bp.route('/follow_program/<int:program_id>', methods=['POST'])
 @login_required
-def follow_program(name):
+def follow_program(program_id):
 	form = EmptyForm()
 	if form.validate_on_submit():
-		program = Program.query.filter_by(name=name).first()
+		program = Program.query.filter_by(id=program_id).first()
 		if program is None:
-			flash(_('Program %(name)s not found.', name=name))
+			flash(_('Program not found.'))
 			return redirect(url_for('main.programs'))
 		current_user.follow_program(program)
 		db.session.commit()
-		flash(_('You are following %(name)s!', name=name))
-		return redirect(url_for('main.program', name=name))
+		flash(_('You are following %(name)s!', name=program.name))
+		return redirect(url_for('main.program', program_id=program_id))
 	else:
 		return redirect(url_for('main.programs'))
 
-@bp.route('/unfollow_program/<name>', methods=['POST'])
+@bp.route('/unfollow_program/<int:program_id>', methods=['POST'])
 @login_required
-def unfollow_program(name):
+def unfollow_program(program_id):
 	form = EmptyForm()
 	if form.validate_on_submit():
-		program = Program.query.filter_by(name=name).first()
+		program = Program.query.filter_by(id=program_id).first()
 		if program is None:
-			flash(_('Program %(name)s not found.', name=name))
+			flash(_('Program not found.'))
 			return redirect(url_for('main.programs'))
 		current_user.unfollow_program(program)
 		db.session.commit()
-		flash(_('You are not following %(name)s.', name=name))
-		return redirect(url_for('main.program', name=name))
+		flash(_('You are not following %(name)s.', name=program.name))
+		return redirect(url_for('main.program', program_id=program_id))
 	else:
 		return redirect(url_for('main.programs'))
 

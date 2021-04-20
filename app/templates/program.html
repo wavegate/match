@@ -69,12 +69,12 @@
 				<div class="card-header ">
 					<div class="card-header ">
 							{% if not current_user.is_following_program(program) %}
-							<form action="{{ url_for('main.follow_program', name=program.name) }}" method="post">
+							<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post">
 								{{ form.hidden_tag() }}
 								{{ form.submit(value=_('Follow'), class_='btn btn-default') }}
 							</form>
 							{% else %}
-							<form action="{{ url_for('main.unfollow_program', name=program.name) }}" method="post">
+							<form action="{{ url_for('main.unfollow_program', program_id=program.id) }}" method="post">
 								{{ form.hidden_tag() }}
 								{{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
 							</form>
