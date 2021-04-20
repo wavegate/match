@@ -387,7 +387,7 @@ def create_programs(info):
 @csrf.exempt
 def upload_file():
 	if request.method == 'POST':
-		def generate():
+		def generate_psychiatry2021():
 			f = request.files['file']
 			f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
 			f = f.drop(labels=[0],axis=0,inplace=False)
@@ -421,7 +421,41 @@ def upload_file():
 						db.session.add(program)
 						db.session.commit()
 				yield(str(index))
-		return Response(stream_with_context(generate()))
+		def generate_pediatrics2021():
+			f = request.files['file']
+			f = pd.read_excel(f, engine='openpyxl', sheet_name='Intv Tally', header=1, usecols=[0,2,9], parse_dates=[2])
+			f = f.drop(labels=[0],axis=0,inplace=False)
+			for index, row in f.iterrows():
+				datestrings = row['Interview Dates']
+				d = []
+				if datestrings == datestrings:
+					dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
+					for date in dates:
+						try:
+							parsed = dateparser.parse(date)
+							if parsed:
+								if parsed.month > 6:
+									parsed = parsed.replace(year=2020)
+								d.append(parsed)
+						except ValueError:
+							pass
+				state = row[0]
+				name = row[1]
+				dates = d
+				if name == name and dates:
+					program = Program(name=name, state=state, specialty="Pediatrics")
+					interview = Interview(interviewer=program,interviewee=current_user)
+					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
+					interview.dates = dates
+					db.session.add(interview)
+					db.session.commit()
+				else:
+					if name == name:
+						program = Program(name=name, state=state, specialty="Pediatrics")
+						db.session.add(program)
+						db.session.commit()
+				yield(str(index))
+		return Response(stream_with_context(generate_pediatrics2021()))
 	return render_template('upload.html')
 
 @bp.route('/analyze')
@@ -436,6 +470,16 @@ def delete_programs():
 	Program.query.delete()
 	Interview.query.delete()
 	Interview_Date.query.delete()
+	db.session.commit()
+	return render_template('programs.html')
+
+@bp.route('/delete_peds')
+def delete_peds():
+	programs = Program.query.filter_by(specialty='Pediatrics')
+	for item in programs:
+		item.interviews.delete()
+		item.interview_dates.delete()
+	programs.delete()
 	db.session.commit()
 	return render_template('programs.html')
 
