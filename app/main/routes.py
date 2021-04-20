@@ -378,190 +378,13 @@ def create_programs(info):
 				db.session.commit()
 	return text
 
-@bp.route("/upload", methods=['GET', 'POST'])
+@bp.route("/upload/<specialty>", methods=['GET', 'POST'])
 @csrf.exempt
-def upload_file():
+def upload_file(specialty):
 	if request.method == 'POST':
-		def generate_psychiatry2021():
+		def generate():
 			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name='IV (Program)', header=1, usecols=[0,2,6], parse_dates=[2])
-			f = f.drop(labels=[0],axis=0,inplace=False)
-			for index, row in f.iterrows():
-				datestrings = row['Available Interview Dates']
-				d = []
-				if datestrings == datestrings:
-					dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								d.append(parsed)
-						except ValueError:
-							pass
-				state = row[0]
-				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty="Psychiatry")
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty="Psychiatry")
-						db.session.add(program)
-						db.session.commit()
-				yield(str(index))
-		def generate_pediatrics2021():
-			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name='Intv Tally', header=1, usecols=[0,2,9], parse_dates=[2])
-			f = f.drop(labels=[0],axis=0,inplace=False)
-			for index, row in f.iterrows():
-				datestrings = row['Interview Dates']
-				d = []
-				if datestrings == datestrings:
-					dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								d.append(parsed)
-						except ValueError:
-							pass
-				state = row[0]
-				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty="Pediatrics")
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty="Pediatrics")
-						db.session.add(program)
-						db.session.commit()
-				yield(str(index))
-		def generate_neuro2021():
-			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name='IV Offers', header=0, usecols=[0,1,3])
-			f = f.drop(labels=[0],axis=0,inplace=False)
-			#return f.to_html()
-			for index, row in f.iterrows():
-				datestrings = row['Interview Dates Offered']
-				d = []
-				if datestrings == datestrings:
-					dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								d.append(parsed)
-						except ValueError:
-							pass
-				state = row[0]
-				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty="Neurology")
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty="Neurology")
-						db.session.add(program)
-						db.session.commit()
-				yield(str(index))
-		def generate_obgyn2021():
-			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name='20-21 IV Dates', header=1, usecols=[0,1,3])
-			f = f.drop(labels=[0],axis=0,inplace=False)
-			#return f.to_html()
-			for index, row in f.iterrows():
-				datestrings = row[2]
-				d = []
-				if datestrings == datestrings:
-					dates = str(datestrings).replace("(full)","").replace("+/d* ","").replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								d.append(parsed)
-						except ValueError:
-							pass
-				state = row[0]
-				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty="OB-GYN")
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty="OB-GYN")
-						db.session.add(program)
-						db.session.commit()
-				yield(str(index))
-		def generate_prelimty2021():
-			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name='Interview Invites', header=0, usecols=[0,1,2,3])
-			f = f.drop(labels=[0],axis=0,inplace=False)
-			#return f.to_html()
-			for index, row in f.iterrows():
-				datestrings = None
-				if row[2] == row[2] and row[3] == row[3]:
-					datestrings = str(row[2]) + "," + str(row[3])
-				else:
-					datestrings = row[2]
-				d = []
-				if datestrings == datestrings:
-					dates = str(datestrings).replace("(full)","").replace("+/d* ","").replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								d.append(parsed)
-						except ValueError:
-							pass
-				state = row[0]
-				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty="Prelim-TY")
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty="Prelim-TY")
-						db.session.add(program)
-						db.session.commit()
-				yield(str(index))
-		def generate_gensurg2021():
-			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl')
+			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty)
 			for index, row in f.iterrows():
 				d = []
 				if row[2] == row[2]:
@@ -579,7 +402,7 @@ def upload_file():
 				name = row[1]
 				dates = d
 				if name == name and dates:
-					program = Program(name=name, state=state, specialty="General Surgery")
+					program = Program(name=name, state=state, specialty=specialty)
 					interview = Interview(interviewer=program,interviewee=current_user)
 					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
 					interview.dates = dates
@@ -587,11 +410,11 @@ def upload_file():
 					db.session.commit()
 				else:
 					if name == name:
-						program = Program(name=name, state=state, specialty="General Surgery")
+						program = Program(name=name, state=state, specialty=specialty)
 						db.session.add(program)
 						db.session.commit()
 				yield(str(index))
-		return Response(stream_with_context(generate_gensurg2021()))
+		return Response(stream_with_context(generate()))
 	return render_template('upload.html')
 
 @bp.route('/analyze')
