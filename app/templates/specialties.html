@@ -5,21 +5,38 @@
 {% block content %}
 <div class="content">
     <div class="row">
-        <form>
-            <label>Select a year</label>
-            <select class="form-select" aria-label="Select year">
-              <option selected>2020-2021</option>
-            </select>
-        </form>
-    </div>
-    <div class="row">
-        <a href="{{ url_for('main.programs', specialty='General Surgery') }}" class="btn btn-primary">General Surgery</a>
-        <a href="{{ url_for('main.programs', specialty='Neurology') }}" class="btn btn-primary">Neurology</a>
-        <a href="{{ url_for('main.programs', specialty='OB-GYN') }}" class="btn btn-primary">OB-GYN</a>
-        <a href="{{ url_for('main.programs', specialty='Ophthalmology') }}" class="btn btn-primary">Ophthalmology</a>
-        <a href="{{ url_for('main.programs', specialty='Pediatrics') }}" class="btn btn-primary">Pediatrics</a>
-        <a href="{{ url_for('main.programs', specialty='Prelim-TY') }}" class="btn btn-primary">Prelim-TY</a>
-        <a href="{{ url_for('main.programs', specialty='Psychiatry') }}" class="btn btn-primary">Psychiatry</a>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                    <label>Select a year</label>
+                    <select class="form-select form-control" aria-label="Select year">
+                      <option selected>2020-2021</option>
+                    </select>
+                    </form>
+                    <a href="{{ url_for('main.programs', specialty='Child Neurology') }}" class="btn btn-primary disabled">Child Neurology</a>
+                    <a href="{{ url_for('main.programs', specialty='Dermatology') }}" class="btn btn-primary disabled">Dermatology</a>
+                    <a href="{{ url_for('main.programs', specialty='Emergency Medicine') }}" class="btn btn-primary disabled">Emergency Medicine</a>
+                    <a href="{{ url_for('main.programs', specialty='Family Medicine') }}" class="btn btn-primary disabled">Family Medicine</a>
+                    <a href="{{ url_for('main.programs', specialty='General Surgery') }}" class="btn btn-primary">General Surgery</a>
+                    <a href="{{ url_for('main.programs', specialty='Neurology') }}" class="btn btn-primary">Neurology</a>
+                    <a href="{{ url_for('main.programs', specialty='Neurosurgery') }}" class="btn btn-primary disabled">Neurosurgery</a>
+                    <a href="{{ url_for('main.programs', specialty='OB-GYN') }}" class="btn btn-primary">OB-GYN</a>
+                    <a href="{{ url_for('main.programs', specialty='Ophthalmology') }}" class="btn btn-primary">Ophthalmology</a>
+                    <a href="{{ url_for('main.programs', specialty='Otolaryngology') }}" class="btn btn-primary disabled">Otolaryngology</a>
+                    <a href="{{ url_for('main.programs', specialty='Pediatrics') }}" class="btn btn-primary">Pediatrics</a>
+                    <a href="{{ url_for('main.programs', specialty='Plasticy Surgery') }}" class="btn btn-primary disabled">Plasticy Surgery</a>
+                    <a href="{{ url_for('main.programs', specialty='PM&R') }}" class="btn btn-primary disabled">Dermatology</a>
+                    <a href="{{ url_for('main.programs', specialty='Prelim-TY') }}" class="btn btn-primary">Prelim-TY</a>
+                    <a href="{{ url_for('main.programs', specialty='Psychiatry') }}" class="btn btn-primary">Psychiatry</a>
+                    <a href="{{ url_for('main.programs', specialty='Radiation Oncology') }}" class="btn btn-primary disabled">Radiation Oncology</a>
+                    <a href="{{ url_for('main.programs', specialty='Radiology') }}" class="btn btn-primary disabled">Radiology</a>
+                    <a href="{{ url_for('main.programs', specialty='Thoracic Surgery') }}" class="btn btn-primary disabled">Thoracic Surgery</a>
+                    <a href="{{ url_for('main.programs', specialty='Urology') }}" class="btn btn-primary disabled">Urology</a>
+                    <a href="{{ url_for('main.programs', specialty='Vascular Surgery') }}" class="btn btn-primary disabled">Vascular Surgery</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
