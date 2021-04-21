@@ -395,6 +395,8 @@ def upload_file(specialty):
 							if parsed:
 								if parsed.month > 6:
 									parsed = parsed.replace(year=2020)
+								else:
+									parsed = parsed.replace(year=2021)
 								d.append(parsed)
 						except ValueError:
 							pass
@@ -436,8 +438,8 @@ def delete_programs():
 def delete_specialty(specialty):
 	programs = Program.query.filter_by(specialty=specialty)
 	for item in programs:
-		item.interviews.delete()
 		item.interview_dates.delete()
+		item.interviews.delete()
 	programs.delete()
 	db.session.commit()
 	return render_template('programs.html')
