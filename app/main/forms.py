@@ -1,7 +1,7 @@
 from flask import request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, TextAreaField, BooleanField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Length
+from wtforms.validators import ValidationError, DataRequired, Length, Optional
 from flask_babel import _, lazy_gettext as _l
 from app.models import User, Specialty
 from wtforms.fields.html5 import DateField
@@ -27,7 +27,7 @@ class CreateSpecialtyForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 class AddInterviewForm(FlaskForm):
-	date = DateField('What day did you receive the original invite?', validators=[DataRequired()])
+	date = DateField('What day did you receive the original invite?', validators=[Optional()])
 	supplemental_required = BooleanField('Was a supplemental required?')
 	method = SelectField('How was the interview offered?', choices=['','ERAS','Thalamus','Email'])
 	submit = SubmitField(_l('Submit'))
@@ -67,7 +67,7 @@ class ProgramForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 class FeedbackForm(FlaskForm):
-	feedback = TextAreaField('Enter feedback')
+	feedback = TextAreaField('Submit Feedback / Suggestions / Bug Reports:')
 	submit = SubmitField('Submit')
 
 class SLUMSForm(FlaskForm):

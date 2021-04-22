@@ -1,49 +1,12 @@
 {% extends "base.html" %}
 
-{% block app_content %}
-<div class="row">
-    <div class="col-md-4">
-        <h1>Add Interview Invite for {{ program.name }}</h1>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.date.label(class_="col-form-label") }}<br>
-                {{ form.date(class_="form-control datepick") }}
-                {% for error in form.date.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <div class="form-group collapse" id="collapseTaskForm">
-                <p>
-                    {{ form.supplemental_required(class_="form-check-input") }} 
-                    {{ form.supplemental_required.label(class_="form-check-label") }}
-                </p>
-                <p>
-                    {{ form.method.label(class_="col-form-label") }}<br>
-                    {{ form.method(class_="form-control") }}
-                </p>
-                <p>
-                    <label for="mdp" class_="col-form-label">Available Interview Dates</label>
-                    <input id="mdp" name="dates" class="form-control" placeholder="Click to add dates">
-                </p>
-            </div>
-            <div class="form-group">
-                <input class="btn btn-link btn-block" data-toggle="collapse" data-target="#collapseTaskForm" value="Details"></input>
-                <p>{{ form.submit(class_="btn-primary form-control") }}</p>
-            </div>
-        </form>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="content">
     <div class="row">
       <div class="col-md-12">
             <div class="card ">
               <div class="card-header ">
-                <h5 class="card-title">Add Interview Invite for {{ program.name }}</h5>
-                <p class="card-category">Specialty: Psychiatry</p>
+                <h5 class="card-title">Add Interview Invite for {{ program.name }} ({{ program.specialty.name }})</h5>
             </div>
             <div class="card-body ">
                 <form action="" method="post" novalidate>
@@ -55,7 +18,7 @@
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </div>
-                    <div class="form-group collapse" id="collapseTaskForm">
+                    <div class="form-group">
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 {{ form.supplemental_required(class_="custom-control-input") }} 
@@ -76,8 +39,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input class="btn btn-link btn-block" data-toggle="collapse" data-target="#collapseTaskForm" value="Details"></input>
-                        <p>{{ form.submit(class_="btn-primary form-control") }}</p>
+                        <p>{{ form.submit(class_="btn btn-primary btn-md") }}</p>
                     </div>
                 </form>
             </div>

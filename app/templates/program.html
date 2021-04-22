@@ -8,7 +8,7 @@
 				<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
-						<h5 class="card-title">Interview invites for {{ program.name }} ({{ program.specialty }})</h5>
+						<h5 class="card-title">Interview invites for {{ program.name }} ({{ program.specialty.name }})</h5>
 					</div>
 					<div class="card-body">
 						{% for interview in interviews %}
@@ -68,6 +68,7 @@
 			<div class="card ">
 				<div class="card-header ">
 					<div class="card-header ">
+						{% if not current_user.is_anonymous %}
 							{% if not current_user.is_following_program(program) %}
 							<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post">
 								{{ form.hidden_tag() }}
@@ -89,8 +90,9 @@
 								{{ form.hidden_tag() }}
 								{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
 							</form>
+							{% endif %}
 						<h5 class="card-title">{{ program.name }}</h5>
-						<p class="card-category">Specialty: {{ program.specialty }}</p>
+						<p class="card-category">Specialty: {{ program.specialty.name }}</p>
 						<p class="card-category"></p>
 					</div>
 					<!--<div class="card-body align-items-center">

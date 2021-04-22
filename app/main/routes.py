@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, g, \
-	jsonify, current_app, Response, stream_with_context, make_response
+	jsonify, current_app, Response, stream_with_context, make_response, session
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
@@ -33,7 +33,13 @@ import time
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-	return redirect(url_for('main.specialties'))
+	specialties = [(s.id, s.name) for s in Specialty.query.all()]
+	form = SpecialtyForm()
+	form.specialty.choices = specialties
+	if request.method == 'POST':
+		specialty = form.specialty.data[0]
+		return redirect(url_for('main.specialty', id=specialty))
+	return render_template('landing.html', specialties = specialties, form=form)
 
 #@bp.before_app_request
 #def before_request():
@@ -57,8 +63,8 @@ def programs(specialty):
 						   programs=programs, form=form, specialty=specialty)
 
 @bp.route('/program/<program_id>', methods=['GET','POST'])
-@login_required
 def program(program_id):
+	specialty2 = session.get('specialty')
 	program = Program.query.filter_by(id=program_id).first_or_404()
 	interviews = program.interviews.order_by(Interview.date.desc())
 	page = request.args.get('page', 1, type=int)
@@ -80,15 +86,16 @@ def program(program_id):
 	prev_url = url_for('main.program', id=program_id,
 					   page=posts.prev_num) if posts.has_prev else None
 	form = EmptyForm()
-	return render_template('program.html', next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, posts=posts.items)
+	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, posts=posts.items)
 
 @bp.route('/delete_program/<int:program_id>', methods=['POST'])
 @login_required
 def delete_program(program_id):
 	program = Program.query.get(program_id)
+	specialty = program.specialty
 	db.session.delete(program)
 	db.session.commit()
-	return redirect(url_for('main.specialties'))
+	return redirect(url_for('main.specialty', id=specialty.id))
 
 @bp.route('/delete_post/<int:post>?program=<program>', methods=['GET','POST'])
 @login_required
@@ -104,6 +111,7 @@ def delete_post(post, program):
 @bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])
 @login_required
 def add_interview(program_id):
+	specialty2 = session.get('specialty')
 	program = Program.query.filter_by(id=program_id).first_or_404()
 	form = AddInterviewForm(current_user.username, program)
 	if form.validate_on_submit():
@@ -127,8 +135,8 @@ def add_interview(program_id):
 		db.session.add(interview)
 		db.session.commit()
 		flash(_('Interview added!'))
-		return redirect(url_for('main.program', id=program_id))
-	return render_template('add_interview.html',title=_('Add Interview Offer'),
+		return redirect(url_for('main.program', program_id=program.id))
+	return render_template('add_interview.html',specialty2=specialty2, title=_('Add Interview Offer'),
 						   form=form, program=program)
 
 @bp.route('/delete_interview/<int:interview>', methods=['POST'])
@@ -138,11 +146,12 @@ def delete_interview(interview):
 	program = interview.interviewer
 	db.session.delete(interview)
 	db.session.commit()
-	return redirect(url_for('main.program', name=program.name))
+	return redirect(url_for('main.program', program_id=program.id))
 
 @bp.route('/user/<username>', methods=['GET','POST'])
 @login_required
 def user(username):
+	specialty2 = session.get('specialty')
 	user = User.query.filter_by(username=username).first_or_404()
 	page = request.args.get('page', 1, type=int)
 	posts = user.posts.order_by(Post.timestamp.desc()).paginate(
@@ -161,7 +170,7 @@ def user(username):
 	elif request.method == 'GET':
 		form.username.data = current_user.username
 		form.about_me.data = current_user.about_me
-	return render_template('user.html', user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
+	return render_template('user.html', specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
 						   next_url=next_url, prev_url=prev_url, form=form)
 
 
@@ -302,6 +311,7 @@ def send_message(recipient):
 @bp.route('/messages')
 @login_required
 def messages():
+	specialty2 = session.get('specialty')
 	current_user.last_message_read_time = datetime.utcnow()
 	current_user.add_notification('unread_message_count', 0)
 	db.session.commit()
@@ -313,7 +323,7 @@ def messages():
 		if messages.has_next else None
 	prev_url = url_for('main.messages', page=messages.prev_num) \
 		if messages.has_prev else None
-	return render_template('messages.html', messages=messages.items,
+	return render_template('messages.html', specialty2=specialty2, messages=messages.items,
 						   next_url=next_url, prev_url=prev_url)
 
 
@@ -434,13 +444,20 @@ def delete_programs():
 	db.session.commit()
 	return render_template('programs.html')
 
-@bp.route('/about')
+@bp.route('/about', methods=['GET','POST'])
 def about():
-	return render_template('about.html')
+	specialty2 = session.get('specialty')
+	form = FeedbackForm()
+	if form.validate_on_submit():
+		send_feedback_email(form)
+		flash(_('Feedback submitted!'))
+		return redirect(url_for('main.about'))
+	return render_template('about.html', specialty2=specialty2, form=form)
 
 @bp.route('/settings')
 def settings():
-	return render_template('settings.html')
+	specialty2 = session.get('specialty')
+	return render_template('settings.html', specialty2=specialty2)
 
 @bp.route('/feedback', methods=['GET', 'POST'])
 def feedback():
@@ -460,25 +477,24 @@ def specialties():
 
 @bp.route('/specialty/<int:id>', methods=['GET', 'POST'])
 def specialty(id):
-	#if not request.cookies.get('specialty'):
-	#	res = redirect(url_for('main.specialty',id=id))
-	#	res.set_cookie('specialty', str(id), max_age=60*60*24*365*2)
-	#	return res
+	session['specialty'] = str(id)
+	specialty2 = session.get('specialty')
 	form = ProgramForm()
 	specialty = Specialty.query.get(id)
 	current_user.specialty_id = id
 	db.session.commit()
 	if form.validate_on_submit():
-		program = Program(name=form.name.data, specialtyObject=specialty, state=form.state.data)
+		program = Program(name=form.name.data, specialty=specialty, state=form.state.data)
 		db.session.add(program)
 		db.session.commit()
 		flash(_('Program added!'))
-		return redirect(url_for('main.index'))
-	return render_template('specialty.html', specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.timestamp.desc()), form=form)
+		return redirect(url_for('main.specialty', id=specialty.id))
+	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.timestamp.desc()), form=form)
 
 @bp.route('/create_specialty', methods=['GET','POST'])
 def create_specialty():
 	if current_user.admin:
+		specialty2 = session.get('specialty')
 		form = CreateSpecialtyForm()
 		if form.validate_on_submit():
 			specialty = Specialty(name=form.name.data)
@@ -486,7 +502,7 @@ def create_specialty():
 			db.session.commit()
 			flash(_('Specialty Created!'))
 			return redirect(url_for('main.index'))
-		return render_template('create_specialty.html', form=form)
+		return render_template('create_specialty.html', form=form, specialty2=specialty2)
 	else:
 		return render_template('landing.html')
 
@@ -499,6 +515,9 @@ def delete_specialty(id):
 
 @bp.route('/chat/<int:id>', methods=['GET', 'POST'])
 def chat(id):
+	#if request.cookies.get('specialty'):
+	#	return redirect(url_for('main.specialty', id=request.cookies.get('specialty')))
+	specialty2 = session.get('specialty')
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
 	specialty = Specialty.query.get(id)
@@ -515,7 +534,7 @@ def chat(id):
 					   page=posts.next_num) if posts.has_next else None
 	prev_url = url_for('main.specialty', id=specialty_id,
 					   page=posts.prev_num) if posts.has_prev else None
-	return render_template('chat.html', next_url=next_url, prev_url=prev_url, specialty=specialty, postform=postform, posts=posts.items)
+	return render_template('chat.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, specialty=specialty, postform=postform, posts=posts.items)
 
 @bp.route('/landing', methods=['GET','POST'])
 def landing():

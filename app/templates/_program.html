@@ -1,17 +1,11 @@
 <tr data-title="bootstrap table">
 	<td>
-		{{ program.state }}{% if current_user.admin == True %}<form action="{{ url_for('main.delete_program', program_id=program.id) }}" method="post">
-			{{ form.hidden_tag() }}
-			{{ form.submit(value=_('Delete'), class_='btn btn-default btn-sm')}}
-		</form>{% endif %}
+		{{ program.state }}
 	</td>
 	<td>
 		<span style="display:none">{{ program.name }}</span><a href="{{ url_for('main.program', program_id=program.id) }}">
 			{{ program.name }}
 		</a>
-	</td>
-	<td>
-		{{ program.specialty }}
 	</td>
 	<td>
 		{% for interview in program.get_latest_interviews() %}
@@ -26,6 +20,14 @@
 		<span class="btn btn-success btn-sm">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
 		{% endif %}
 		{% endfor %}
+	</td>
+	{% if current_user.admin %}
+	<td>
+	<form action="{{ url_for('main.delete_program', program_id=program.id) }}" method="post">
+			{{ form.hidden_tag() }}
+			{{ form.submit(value=_('Delete'), class_='btn btn-default btn-sm')}}
+		</form>
+	{% endif %}
 	</td>
 
 </tr>

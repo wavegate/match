@@ -1,6 +1,37 @@
 {% extends "base.html" %}
 
-{% block page_head %}{{ specialty.name }}{% endblock %}
+{% block page_head %}{{ specialty.name }} Interview Invites{% endblock %}
+
+{% block sidebar %}
+{% if not current_user.is_anonymous %}
+          <li>
+            <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
+              <i class="nc-icon nc-single-02"></i>
+              <p>My Profile</p>
+            </a>
+          </li>
+          {% endif %}
+          {% if specialty2 %}
+          <li class="active">
+            <a href="{{ url_for('main.specialty', id=specialty2) }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Interview Invites</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.chat', id=specialty2) }}">
+              <i class="nc-icon nc-chat-33"></i>
+              <p>Chat</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.index') }}">
+              <i class="nc-icon nc-minimal-right"></i>
+              <p>Change Specialty</p>
+            </a>
+          </li>
+          {% endif %}
+          {% endblock %}
 
 {% block content %}
 <div class="content">
@@ -14,9 +45,11 @@
                         <thead class="text-primary">
                             <th data-sortable="true" data-field="1">State</th>
                             <th data-sortable="true" data-field="2">Name</th>
-                            <th data-sortable="true" data-field="3">Specialty</th>
                             <th data-sortable="true" data-field="4">Latest invite dates</th>
                             <th data-sortable="true" data-field="5">Latest interview dates</th>
+                            {% if current_user.admin %}
+                            <th data-field="6">Functions</th>
+                            {% endif %}
                         </thead>
                         <tbody>
                             {% for program in programs %}

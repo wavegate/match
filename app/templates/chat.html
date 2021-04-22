@@ -2,6 +2,37 @@
 
 {% block page_head %}{{ specialty.name }} Chat{% endblock %}
 
+{% block sidebar %}
+          {% if not current_user.is_anonymous %}
+          <li>
+            <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
+              <i class="nc-icon nc-single-02"></i>
+              <p>My Profile</p>
+            </a>
+          </li>
+          {% endif %}
+          {% if specialty2 %}
+          <li>
+            <a href="{{ url_for('main.specialty', id=specialty2) }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Interview Invites</p>
+            </a>
+          </li>
+          <li class="active">
+            <a href="{{ url_for('main.chat', id=specialty2) }}">
+              <i class="nc-icon nc-chat-33"></i>
+              <p>Chat</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.index') }}">
+              <i class="nc-icon nc-minimal-right"></i>
+              <p>Change Specialty</p>
+            </a>
+          </li>
+          {% endif %}
+          {% endblock %}
+
 {% block content %}
 <div class="content">
     <div class="row">
@@ -13,7 +44,7 @@
 					{{ render_form(postform) }}
 					{% endif %}
 					{% else %}
-					Please log in to chat.
+					<p>Please log in to chat.</p>
 					{% endif %}
                     {% for post in posts %}
 					{% include '_post.html' %}

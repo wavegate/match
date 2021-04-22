@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_babel import _
@@ -12,8 +12,9 @@ from app.auth.email import send_password_reset_email
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    specialty2 = session.get('specialty')
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.user', username=current_user.username))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -23,19 +24,21 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('main.index')
+            next_page = url_for('main.user', username=user.username)
         return redirect(next_page)
-    return render_template('auth/login.html', title=_('Sign In'), form=form)
+    return render_template('auth/login.html', specialty2=specialty2,title=_('Sign In'), form=form)
 
 
 @bp.route('/logout')
 def logout():
+    specialty2 = session.get('specialty')
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.specialty', id=specialty2))
 
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
+    specialty2 = session.get('specialty')
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     form = RegistrationForm()
@@ -50,7 +53,7 @@ def register():
         flash(_('Congratulations, you are now a registered user!'))
         login_user(user)
         return redirect(url_for('main.index'))
-    return render_template('auth/register.html', title=_('Register'),
+    return render_template('auth/register.html', specialty2=specialty2, title=_('Register'),
                            form=form)
 
 
