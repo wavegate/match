@@ -14,7 +14,7 @@ from config import Config
 from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(render_as_batch=True)
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')

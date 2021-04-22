@@ -18,7 +18,9 @@
 			<br>
 			<span id="post{{ post.id }}">{{ post.body }}</span>
 			{% if post.author == current_user and post.program %}
-			<a href="{{ url_for('main.delete_post',post=post.id,program=post.get_program().name)}}">Delete</a>
+			<a class="float-right" href="{{ url_for('main.delete_post',post=post.id,program=post.get_program().name)}}">Delete</a>
+			{% elif post.author == current_user and post.specialty %}
+			<a class="float-right" href="{{ url_for('main.chat', id=post.specialty.id) }}">Delete</a>
 			{% endif %}
 
 			{% if post.language and post.language != g.locale %}

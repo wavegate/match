@@ -53,22 +53,44 @@ Coded by www.creative-tim.com
           <li>
             <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
               <i class="nc-icon nc-single-02"></i>
-              <p>{{ _('Dashboard') }}</p>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          {% endif %}
+          {% if current_user.specialty_id %}
+          <li>
+            <a href="{{ url_for('main.specialty', id=current_user.specialty_id) }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Interview Invites</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.chat', id=current_user.specialty_id) }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Chat</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.landing') }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Change Specialty</p>
             </a>
           </li>
           {% endif %}
           <li>
-            <a href="{{ url_for('main.specialties') }}">
-              <i class="nc-icon nc-bank"></i>
-              <p>{{ _('Programs') }}</p>
-            </a>
-          </li>
-          <li>
             <a href="{{ url_for('main.feedback') }}">
               <i class="nc-icon nc-satisfied"></i>
-              <p>{{ _('Send Feedback') }}</p>
+              <p>Send Feedback</p>
             </a>
           </li>
+          {% if current_user.admin %}
+          <li>
+            <a href="{{ url_for('main.admin') }}">
+              <i class="nc-icon nc-bank"></i>
+              <p>Admin</p>
+            </a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
@@ -194,8 +216,8 @@ Coded by www.creative-tim.com
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6QHjhcTjiiNmHCM2bPFRUanvNxerCgqE"></script>
   <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
   <script src="{{ url_for('static', filename='js/paper-dashboard.js') }}"></script>
+  {{ moment.include_moment() }}
   <script>
-
     function showNotification(message, from, align) {
       color = 'primary';
 

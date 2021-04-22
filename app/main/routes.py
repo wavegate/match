@@ -1,12 +1,12 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, g, \
-	jsonify, current_app, Response, stream_with_context
+	jsonify, current_app, Response, stream_with_context, make_response
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db, csrf
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty
 from app.translate import translate
 from app.main import bp
 from app.auth.email import send_feedback_email
@@ -434,16 +434,6 @@ def delete_programs():
 	db.session.commit()
 	return render_template('programs.html')
 
-@bp.route('/delete_specialty/<specialty>')
-def delete_specialty(specialty):
-	programs = Program.query.filter_by(specialty=specialty)
-	for item in programs:
-		item.interview_dates.delete()
-		item.interviews.delete()
-	programs.delete()
-	db.session.commit()
-	return render_template('programs.html')
-
 @bp.route('/about')
 def about():
 	return render_template('about.html')
@@ -463,4 +453,80 @@ def feedback():
 
 @bp.route('/specialties', methods=['GET'])
 def specialties():
-	return render_template('specialties.html')
+	#if request.cookies.get('specialty'):
+	#	return redirect(url_for('main.specialty', id=request.cookies.get('specialty')))
+	specialties = Specialty.query.all()
+	return render_template('specialties.html', specialties=specialties)
+
+@bp.route('/specialty/<int:id>', methods=['GET', 'POST'])
+def specialty(id):
+	#if not request.cookies.get('specialty'):
+	#	res = redirect(url_for('main.specialty',id=id))
+	#	res.set_cookie('specialty', str(id), max_age=60*60*24*365*2)
+	#	return res
+	form = ProgramForm()
+	specialty = Specialty.query.get(id)
+	current_user.specialty_id = id
+	db.session.commit()
+	if form.validate_on_submit():
+		program = Program(name=form.name.data, specialtyObject=specialty, state=form.state.data)
+		db.session.add(program)
+		db.session.commit()
+		flash(_('Program added!'))
+		return redirect(url_for('main.index'))
+	return render_template('specialty.html', specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.timestamp.desc()), form=form)
+
+@bp.route('/create_specialty', methods=['GET','POST'])
+def create_specialty():
+	if current_user.admin:
+		form = CreateSpecialtyForm()
+		if form.validate_on_submit():
+			specialty = Specialty(name=form.name.data)
+			db.session.add(specialty)
+			db.session.commit()
+			flash(_('Specialty Created!'))
+			return redirect(url_for('main.index'))
+		return render_template('create_specialty.html', form=form)
+	else:
+		return render_template('landing.html')
+
+@bp.route('/delete_specialty/<int:id>', methods=['GET','POST'])
+def delete_specialty(id):
+	specialty = Specialty.query.get(id)
+	db.session.delete(specialty)
+	db.session.commit()
+	return redirect(url_for('main.index'))
+
+@bp.route('/chat/<int:id>', methods=['GET', 'POST'])
+def chat(id):
+	page = request.args.get('page', 1, type=int)
+	postform = PostForm()
+	specialty = Specialty.query.get(id)
+	if postform.validate_on_submit():
+		post = Post(body=postform.post.data, author=current_user,
+					specialty=Specialty.query.get(id))
+		db.session.add(post)
+		db.session.commit()
+		flash(_('Your post is now live!'))
+		return redirect(url_for('main.chat', id=specialty.id))
+	posts = specialty.posts.order_by(Post.timestamp.desc()).paginate(
+		page, current_app.config['POSTS_PER_PAGE'], False)
+	next_url = url_for('main.specialty', id=specialty_id,
+					   page=posts.next_num) if posts.has_next else None
+	prev_url = url_for('main.specialty', id=specialty_id,
+					   page=posts.prev_num) if posts.has_prev else None
+	return render_template('chat.html', next_url=next_url, prev_url=prev_url, specialty=specialty, postform=postform, posts=posts.items)
+
+@bp.route('/landing', methods=['GET','POST'])
+def landing():
+	specialties = [(s.id, s.name) for s in Specialty.query.all()]
+	form = SpecialtyForm()
+	form.specialty.choices = specialties
+	if request.method == 'POST':
+		specialty = form.specialty.data[0]
+		return redirect(url_for('main.specialty', id=specialty))
+	return render_template('landing.html', specialties = specialties, form=form)
+
+@bp.route('/admin', methods=['GET', 'POST'])
+def admin():
+	return redirect(url_for('main.create_specialty'))

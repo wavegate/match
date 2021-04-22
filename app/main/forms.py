@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, TextAreaField, BooleanField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
-from app.models import User
+from app.models import User, Specialty
 from wtforms.fields.html5 import DateField
 
 class EditProfileForm(FlaskForm):
@@ -22,6 +22,10 @@ class EditProfileForm(FlaskForm):
 			if user is not None:
 				raise ValidationError(_('Please use a different username.'))
 
+class CreateSpecialtyForm(FlaskForm):
+	name = StringField('Name')
+	submit = SubmitField('Submit')
+
 class AddInterviewForm(FlaskForm):
 	date = DateField('What day did you receive the original invite?', validators=[DataRequired()])
 	supplemental_required = BooleanField('Was a supplemental required?')
@@ -38,7 +42,7 @@ class EmptyForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-	post = TextAreaField(_l('Enter interview review:'), validators=[DataRequired()])
+	post = TextAreaField(_l('Enter post:'), validators=[DataRequired()])
 	submit = SubmitField(_l('Submit'))
 
 
@@ -58,10 +62,7 @@ class MessageForm(FlaskForm):
 	submit = SubmitField(_l('Submit'))
 
 class ProgramForm(FlaskForm):
-	name = StringField(_l('Add Program Name'), validators=[DataRequired()])
-	specialty = StringField('Specialty', filters = [lambda x: x or None])
-	body = TextAreaField(_l('Enter interview format'))
-	image = StringField(_l('Image link:'), filters = [lambda x: x or None])
+	name = StringField('Name')
 	state = StringField('State')
 	submit = SubmitField('Submit')
 
@@ -74,4 +75,8 @@ class SLUMSForm(FlaskForm):
 	year = StringField('What is the year?')
 	state = StringField('What state are we in?')
 	objects = StringField('Please remember these five objects. I will ask you what they are later.')
+	submit = SubmitField('Submit')
+
+class SpecialtyForm(FlaskForm):
+	specialty = SelectField('Specialty', choices=[])
 	submit = SubmitField('Submit')
