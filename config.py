@@ -24,11 +24,15 @@ class Config(object):
     DEVELOPMENT = False
 
 class ProductionConfig(Config):
-    pass
+    DEBUG = False
 
 class StagingConfig(Config):
     DEBUG = True
+    DEVELOPMENT = True
 
 class DevelopmentConfig(Config):
     DEBUG = True
     DEVELOPMENT = True
+
+class TestingConfig(Config):
+    TESTING = True

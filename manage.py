@@ -1,21 +1,16 @@
+import os
 from flask_script import Manager
-from flask_script import Command
+from flask_migrate import Migrate, MigrateCommand
 
-app = Flask(__name__)
-# configure your app
+from app import create_app, db
 
+app = create_app()
+
+migrate = Migrate(app, db)
 manager = Manager(app)
 
+manager.add_command('db', MigrateCommand)
+
 if __name__ == "__main__":
-	manager.add_command('hello', Hello())
-    manager.run()
-
-   class Hello(Command):
-    "prints hello world"
-
-    def run(self):
-        print "hello world"
-
-@manager.command
-def seed():
+	manager.run()
 	

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 43d3195e594c
+Revision ID: bedba32f07ba
 Revises: 
-Create Date: 2021-04-21 20:34:10.180375
+Create Date: 2021-04-21 22:06:27.052749
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '43d3195e594c'
+revision = 'bedba32f07ba'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,10 +36,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['specialty_id'], ['specialty.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
-        batch_op.create_index(batch_op.f('ix_user_username'), ['username'], unique=True)
-
+    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
+    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('followers',
     sa.Column('follower_id', sa.Integer(), nullable=True),
     sa.Column('followed_id', sa.Integer(), nullable=True),
@@ -56,9 +54,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['sender_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('message', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_message_timestamp'), ['timestamp'], unique=False)
-
+    op.create_index(op.f('ix_message_timestamp'), 'message', ['timestamp'], unique=False)
     op.create_table('notification',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=True),
@@ -68,10 +64,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('notification', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_notification_name'), ['name'], unique=False)
-        batch_op.create_index(batch_op.f('ix_notification_timestamp'), ['timestamp'], unique=False)
-
+    op.create_index(op.f('ix_notification_name'), 'notification', ['name'], unique=False)
+    op.create_index(op.f('ix_notification_timestamp'), 'notification', ['timestamp'], unique=False)
     op.create_table('program',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('specialty_id', sa.Integer(), nullable=True),
@@ -86,9 +80,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('program', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_program_timestamp'), ['timestamp'], unique=False)
-
+    op.create_index(op.f('ix_program_timestamp'), 'program', ['timestamp'], unique=False)
     op.create_table('test',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('testname', sa.String(length=140), nullable=True),
@@ -101,9 +93,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('test', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_test_timestamp'), ['timestamp'], unique=False)
-
+    op.create_index(op.f('ix_test_timestamp'), 'test', ['timestamp'], unique=False)
     op.create_table('interview',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -116,11 +106,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('interview', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_interview_date'), ['date'], unique=False)
-        batch_op.create_index(batch_op.f('ix_interview_method'), ['method'], unique=False)
-        batch_op.create_index(batch_op.f('ix_interview_unavailable_dates'), ['unavailable_dates'], unique=False)
-
+    op.create_index(op.f('ix_interview_date'), 'interview', ['date'], unique=False)
+    op.create_index(op.f('ix_interview_method'), 'interview', ['method'], unique=False)
+    op.create_index(op.f('ix_interview_unavailable_dates'), 'interview', ['unavailable_dates'], unique=False)
     op.create_table('link',
     sa.Column('user', sa.Integer(), nullable=True),
     sa.Column('program', sa.Integer(), nullable=True),
@@ -140,9 +128,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('post', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_post_timestamp'), ['timestamp'], unique=False)
-
+    op.create_index(op.f('ix_post_timestamp'), 'post', ['timestamp'], unique=False)
     op.create_table('interview__date',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -155,53 +141,35 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    with op.batch_alter_table('interview__date', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_interview__date_date'), ['date'], unique=False)
-        batch_op.create_index(batch_op.f('ix_interview__date_full'), ['full'], unique=False)
-
+    op.create_index(op.f('ix_interview__date_date'), 'interview__date', ['date'], unique=False)
+    op.create_index(op.f('ix_interview__date_full'), 'interview__date', ['full'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    with op.batch_alter_table('interview__date', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_interview__date_full'))
-        batch_op.drop_index(batch_op.f('ix_interview__date_date'))
-
+    op.drop_index(op.f('ix_interview__date_full'), table_name='interview__date')
+    op.drop_index(op.f('ix_interview__date_date'), table_name='interview__date')
     op.drop_table('interview__date')
-    with op.batch_alter_table('post', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_post_timestamp'))
-
+    op.drop_index(op.f('ix_post_timestamp'), table_name='post')
     op.drop_table('post')
     op.drop_table('link')
-    with op.batch_alter_table('interview', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_interview_unavailable_dates'))
-        batch_op.drop_index(batch_op.f('ix_interview_method'))
-        batch_op.drop_index(batch_op.f('ix_interview_date'))
-
+    op.drop_index(op.f('ix_interview_unavailable_dates'), table_name='interview')
+    op.drop_index(op.f('ix_interview_method'), table_name='interview')
+    op.drop_index(op.f('ix_interview_date'), table_name='interview')
     op.drop_table('interview')
-    with op.batch_alter_table('test', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_test_timestamp'))
-
+    op.drop_index(op.f('ix_test_timestamp'), table_name='test')
     op.drop_table('test')
-    with op.batch_alter_table('program', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_program_timestamp'))
-
+    op.drop_index(op.f('ix_program_timestamp'), table_name='program')
     op.drop_table('program')
-    with op.batch_alter_table('notification', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_notification_timestamp'))
-        batch_op.drop_index(batch_op.f('ix_notification_name'))
-
+    op.drop_index(op.f('ix_notification_timestamp'), table_name='notification')
+    op.drop_index(op.f('ix_notification_name'), table_name='notification')
     op.drop_table('notification')
-    with op.batch_alter_table('message', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_message_timestamp'))
-
+    op.drop_index(op.f('ix_message_timestamp'), table_name='message')
     op.drop_table('message')
     op.drop_table('followers')
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_user_username'))
-        batch_op.drop_index(batch_op.f('ix_user_email'))
-
+    op.drop_index(op.f('ix_user_username'), table_name='user')
+    op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.drop_table('specialty')
     # ### end Alembic commands ###
