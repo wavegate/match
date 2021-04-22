@@ -134,3 +134,5 @@ NameError: name 'console' is not defined
 2021-04-21 20:34:06,115 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
 2021-04-21 20:34:10,070 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
 2021-04-21 20:34:14,432 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
+2021-04-21 21:42:17,579 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
+2021-04-21 21:44:00,711 INFO: Match startup [in A:\projects\match\app\__init__.py:89]
