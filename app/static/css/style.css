@@ -82,6 +82,17 @@ a:hover, a:focus, a:active {
     -webkit-box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
   }
+  .probootstrap-navbar img {
+    display:None;
+  }
+  .probootstrap-navbar.removed {
+    display:None;
+  }
+}
+
+.probootstrap-navbar .navbar-header: {
+  display: none;
+  visibility: hidden;
 }
 
 .probootstrap-navbar .navbar-toggle:focus,
@@ -487,7 +498,7 @@ a:hover, a:focus, a:active {
   background-position: left top;
   padding: 9em 0 15em 0;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 @media screen and (max-width: 768px) {
