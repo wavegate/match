@@ -25,7 +25,6 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 csrf = CSRFProtect()
-admin = Admin()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -39,6 +38,7 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     csrf.init_app(app)
+    admin = Admin()
     admin.init_app(app)
     admin.add_view(AdminView(models.User, db.session))
     admin.add_view(AdminView(models.Specialty, db.session))

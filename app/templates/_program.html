@@ -27,7 +27,7 @@
 		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
 			<div class="btn-group mr-2" role="group" aria-label="First group">
 				<form action="{{ url_for('main.add_interview', program_id=program.id) }}" method="post" novalidate>
-				<button href="" class="btn btn-primary btn-sm">Add Interview Invite</button>
+				<button href="" class="btn btn-primary btn-sm" title="Add Interview Invite"><i class="nc-icon nc-simple-add"></i></button>
 				{{ form.hidden_tag() }}
 				</form>
 				{% if not current_user.is_following_program(program) %}

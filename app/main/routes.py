@@ -29,6 +29,7 @@ import glob
 import dateparser
 import math
 import time
+import ast
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -283,38 +284,22 @@ def notifications():
 def upload_file(specialty):
 	if request.method == 'POST':
 		def generate():
+			spec = Specialty.query.filter_by(name=specialty).first_or_404()
 			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty)
+			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2])
 			for index, row in f.iterrows():
-				d = []
-				if row[2] == row[2]:
-					dates = str(row[2]).replace(" ","").split(',')
-					for date in dates:
-						try:
-							parsed = dateparser.parse(date)
-							if parsed:
-								if parsed.month > 6:
-									parsed = parsed.replace(year=2020)
-								else:
-									parsed = parsed.replace(year=2021)
-								d.append(parsed)
-						except ValueError:
-							pass
 				state = row[0]
 				name = row[1]
-				dates = d
-				if name == name and dates:
-					program = Program(name=name, state=state, specialty=specialty)
-					interview = Interview(interviewer=program,interviewee=current_user)
-					dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-					interview.dates = dates
-					db.session.add(interview)
-					db.session.commit()
-				else:
-					if name == name:
-						program = Program(name=name, state=state, specialty=specialty)
-						db.session.add(program)
-						db.session.commit()
+				dates = ast.literal_eval(row[2])
+				d = []
+				for date in dates:
+					d.append(dt.datetime.strptime(date, '%m/%d/%Y'))
+				program = Program(name=name, state=state, specialty=spec)
+				interview = Interview(interviewer=program,interviewee=current_user)
+				dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), d))
+				interview.dates = dates
+				db.session.add(interview)
+				db.session.commit()
 				yield(str(index))
 		return Response(stream_with_context(generate()))
 	return render_template('upload.html')
