@@ -4,7 +4,7 @@ import os
 from flask import Flask, request, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -12,6 +12,8 @@ from flask_babel import Babel, lazy_gettext as _l
 #from elasticsearch import Elasticsearch
 from config import Config
 from flask_wtf.csrf import CSRFProtect
+from flask_admin import Admin, BaseView, expose
+from flask_admin.contrib.sqla import ModelView
 
 db = SQLAlchemy()
 migrate = Migrate(render_as_batch=True)
@@ -23,12 +25,11 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 csrf = CSRFProtect()
+admin = Admin()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    #env_config = os.getenv("APP_SETTINGS", "config.DevelopmentConfig")
-    #app.config.from_object(env_config)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -38,9 +39,15 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     csrf.init_app(app)
-
-    #app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
-    #    if app.config['ELASTICSEARCH_URL'] else None
+    admin.init_app(app)
+    admin.add_view(AdminView(models.User, db.session))
+    admin.add_view(AdminView(models.Specialty, db.session))
+    admin.add_view(AdminView(models.Program, db.session))
+    admin.add_view(AdminView(models.Interview, db.session))
+    admin.add_view(AdminView(models.Interview_Date, db.session))
+    admin.add_view(AdminView(models.Notification, db.session))
+    admin.add_view(AdminView(models.Message, db.session))
+    admin.add_view(AdminView(models.Post, db.session))
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -101,5 +108,12 @@ def create_app(config_class=Config):
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(current_app.config['LANGUAGES'])
+
+class AdminView(ModelView):
+    def is_accessible(self):
+        if current_user.is_authenticated:
+            return current_user.admin
+        else:
+            return False
 
 from app import models

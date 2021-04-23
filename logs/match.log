@@ -1,138 +1,71 @@
-2021-04-03 10:40:42,525 ERROR: Exception on /program/Mass Gen [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
-Traceback (most recent call last):
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "a:\projects\match\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
-    raise value
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "A:\projects\match\app\main\routes.py", line 90, in program
-    return render_template('program.html', program=program, form=form)
-  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 137, in render_template
-    return _render(
-  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 120, in _render
-    rv = template.render(context)
-  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "a:\projects\match\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "A:\projects\match\app\templates\program.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "A:\projects\match\app\templates\base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block "doc"
-    {%- block html %}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 20, in block "html"
-    {% block body -%}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 23, in block "body"
-    {% block content -%}
-  File "A:\projects\match\app\templates\base.html", line 66, in block "content"
-    {% block app_content %}{% endblock %}
-  File "A:\projects\match\app\templates\program.html", line 11, in block "app_content"
-    {% if not current_user.is_following_program(program) %}
-  File "A:\projects\match\app\models.py", line 134, in is_following_program
-    console.log(self.programs)
-NameError: name 'console' is not defined
-2021-04-03 10:41:47,775 ERROR: Exception on /program/Mass Gen [GET] [in a:\projects\match\venv\lib\site-packages\flask\app.py:1891]
-Traceback (most recent call last):
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "a:\projects\match\venv\lib\site-packages\flask\_compat.py", line 39, in reraise
-    raise value
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "a:\projects\match\venv\lib\site-packages\flask\app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "a:\projects\match\venv\lib\site-packages\flask_login\utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "A:\projects\match\app\main\routes.py", line 90, in program
-    return render_template('program.html', program=program, form=form)
-  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 137, in render_template
-    return _render(
-  File "a:\projects\match\venv\lib\site-packages\flask\templating.py", line 120, in _render
-    rv = template.render(context)
-  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "a:\projects\match\venv\lib\site-packages\jinja2\environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "a:\projects\match\venv\lib\site-packages\jinja2\_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "A:\projects\match\app\templates\program.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "A:\projects\match\app\templates\base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block "doc"
-    {%- block html %}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 20, in block "html"
-    {% block body -%}
-  File "a:\projects\match\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 23, in block "body"
-    {% block content -%}
-  File "A:\projects\match\app\templates\base.html", line 66, in block "content"
-    {% block app_content %}{% endblock %}
-  File "A:\projects\match\app\templates\program.html", line 11, in block "app_content"
-    {% if not current_user.is_following_program(program) %}
-  File "A:\projects\match\app\models.py", line 134, in is_following_program
-    return 1
-NameError: name 'console' is not defined
-2021-04-04 04:14:35,152 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-05 09:04:26,901 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:82]
-2021-04-05 09:44:45,948 INFO: Match startup [in C:\Users\ccfra\projects\match\app\__init__.py:82]
-2021-04-05 18:35:33,445 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-05 18:37:01,969 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-05 19:10:48,775 INFO: Match startup [in A:\projects\match\app\__init__.py:85]
-2021-04-06 15:44:45,098 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-06 15:58:26,043 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-11 20:22:59,597 INFO: Match startup [in A:\projects\match\app\__init__.py:82]
-2021-04-16 17:27:38,898 INFO: Match startup [in A:\projects\match\app\__init__.py:85]
-2021-04-16 17:51:42,858 INFO: Match startup [in A:\projects\match\app\__init__.py:85]
-2021-04-18 00:44:00,080 INFO: Match startup [in A:\projects\match\app\__init__.py:85]
-2021-04-18 12:54:21,844 INFO: Match startup [in A:\projects\match\app\__init__.py:94]
-2021-04-19 21:14:27,322 INFO: Match startup [in A:\projects\match\app\__init__.py:96]
-2021-04-21 12:44:59,897 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 12:45:04,929 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 12:45:10,145 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 12:45:14,532 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 14:44:30,856 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 14:44:37,515 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 14:47:45,257 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 14:47:51,660 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 14:47:57,394 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:05:28,637 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:05:33,443 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:06:55,362 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:08:28,746 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:08:36,144 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:08:44,710 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:08:48,939 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:11:18,649 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:11:23,410 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:11:28,115 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:22:20,658 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:22:27,512 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:22:32,444 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:29:10,875 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:29:16,136 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 15:29:20,288 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 20:34:06,115 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 20:34:10,070 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 20:34:14,432 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 21:42:17,579 INFO: Match startup [in A:\projects\match\app\__init__.py:88]
-2021-04-21 21:44:00,711 INFO: Match startup [in A:\projects\match\app\__init__.py:89]
+2021-04-22 15:13:19,439 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 15:19:18,161 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 15:19:18,765 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 15:21:03,458 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 15:21:17,919 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 16:36:08,570 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 16:38:44,746 INFO: Match startup [in A:\projects\match\app\__init__.py:92]
+2021-04-22 16:38:50,133 INFO: Match startup [in A:\projects\match\app\__init__.py:93]
+2021-04-22 16:46:12,546 INFO: Match startup [in A:\projects\match\app\__init__.py:95]
+2021-04-22 16:48:48,074 INFO: Match startup [in A:\projects\match\app\__init__.py:95]
+2021-04-22 16:48:49,980 INFO: Match startup [in A:\projects\match\app\__init__.py:95]
+2021-04-22 16:51:48,502 INFO: Match startup [in A:\projects\match\app\__init__.py:100]
+2021-04-22 16:54:24,822 INFO: Match startup [in A:\projects\match\app\__init__.py:103]
+2021-04-22 16:55:05,181 INFO: Match startup [in A:\projects\match\app\__init__.py:103]
+2021-04-22 17:04:13,449 INFO: Match startup [in A:\projects\match\app\__init__.py:103]
+2021-04-22 17:10:30,230 INFO: Match startup [in A:\projects\match\app\__init__.py:95]
+2021-04-22 17:13:03,203 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 17:16:21,497 INFO: Match startup [in A:\projects\match\app\__init__.py:90]
+2021-04-22 17:18:11,209 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 17:19:06,159 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 17:19:12,654 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 17:22:05,125 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 17:25:28,172 INFO: Match startup [in A:\projects\match\app\__init__.py:101]
+2021-04-22 17:26:09,866 INFO: Match startup [in A:\projects\match\app\__init__.py:101]
+2021-04-22 17:26:37,871 INFO: Match startup [in A:\projects\match\app\__init__.py:101]
+2021-04-22 17:26:53,466 INFO: Match startup [in A:\projects\match\app\__init__.py:101]
+2021-04-22 17:27:28,328 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:28:17,896 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:29:04,931 INFO: Match startup [in A:\projects\match\app\__init__.py:105]
+2021-04-22 17:29:20,668 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:30:32,709 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:30:47,102 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:31:14,315 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:42:36,764 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:43:23,054 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:44:44,555 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:44:56,720 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:45:04,326 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:45:25,696 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:45:56,301 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:53:17,961 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 17:59:41,090 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:00:12,373 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:00:24,693 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:01:01,910 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:29:47,219 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:40:19,331 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:41:29,361 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:41:34,792 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:42:18,670 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:43:19,379 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:43:25,884 INFO: Match startup [in A:\projects\match\app\__init__.py:104]
+2021-04-22 18:44:52,156 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:45:00,886 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:45:04,078 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:46:03,727 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:46:11,500 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:48:52,266 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 18:49:04,359 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:10:33,914 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:12:31,300 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:12:38,960 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:12:49,979 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:13:01,102 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:14:03,140 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:14:18,210 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:14:18,804 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:14:26,577 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:14:51,162 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:16:13,038 INFO: Match startup [in A:\projects\match\app\__init__.py:97]
+2021-04-22 21:16:21,742 INFO: Match startup [in A:\projects\match\app\__init__.py:97]

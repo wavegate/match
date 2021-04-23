@@ -33,13 +33,13 @@ import time
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-	specialties = [(s.id, s.name) for s in Specialty.query.all()]
-	form = SpecialtyForm()
-	form.specialty.choices = specialties
-	if request.method == 'POST':
-		specialty = form.specialty.data[0]
-		return redirect(url_for('main.specialty', id=specialty))
-	return render_template('landing.html', specialties = specialties, form=form)
+	#specialties = [(s.id, s.name) for s in Specialty.query.all()]
+	#form = SpecialtyForm()
+	#form.specialty.choices = specialties
+	#if request.method == 'POST':
+	#	specialty = form.specialty.data[0]
+	#	return redirect(url_for('main.specialty', id=specialty))
+	return render_template('landing.html', specialties = Specialty.query.order_by(Specialty.name))
 
 #@bp.before_app_request
 #def before_request():
@@ -536,16 +536,10 @@ def chat(id):
 					   page=posts.prev_num) if posts.has_prev else None
 	return render_template('chat.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, specialty=specialty, postform=postform, posts=posts.items)
 
-@bp.route('/landing', methods=['GET','POST'])
-def landing():
-	specialties = [(s.id, s.name) for s in Specialty.query.all()]
-	form = SpecialtyForm()
-	form.specialty.choices = specialties
-	if request.method == 'POST':
-		specialty = form.specialty.data[0]
-		return redirect(url_for('main.specialty', id=specialty))
-	return render_template('landing.html', specialties = specialties, form=form)
-
-@bp.route('/admin', methods=['GET', 'POST'])
-def admin():
-	return redirect(url_for('main.create_specialty'))
+@bp.route('/seedspecialties')
+def seedspecialties():
+	specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
+	for specialty in specialties:
+		db.session.add(Specialty(name=specialty))
+		db.session.commit()
+	return redirect(url_for('main.index'))

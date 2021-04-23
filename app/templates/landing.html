@@ -8,7 +8,7 @@
     <meta name="keywords" content="Free website templates, Free bootstrap themes, Free template, Free bootstrap, Free website template">
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles-merged.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fonts/icomoon/style.css') }}">
 
     <!--[if lt IE 9]>
@@ -47,17 +47,18 @@
         <div class="row intro-text">
           <div class="col-md-8 col-md-offset-2 text-center">
             <h1 class="probootstrap-heading probootstrap-animate">/r/medicalschool Residency Interview Spreadsheets <br><em>All In One Place</em></h1>
-            <div class="probootstrap-subheading center">
-              <p class="probootstrap-animate">
-                <form action="" method="post">
-                {{ form.hidden_tag() }}
-                {{ form.specialty(role_="button", class_="btn btn-primary") }}
-                {{ form.submit(value=_('Get Started'), role_="button", class_='btn btn-default smoothscroll')}}
-              </form>
-            </div>
           </div>
         </div>
+        <div class="row">
+              <div class="probootstrap-animate">
+                {% for specialty in specialties %}
+                <div class="col-sm-3">
+                <a href="{{ url_for('main.specialty', id=specialty.id) }}" id="spnSelectedGroup" class="btn btn-block btn-primary">{{ specialty.name }}</a>
+              </div>
+                {% endfor %}
+        </div>
       </div>
+    </div>
     </section>
 
     <section class="probootstrap-section" data-section="features">

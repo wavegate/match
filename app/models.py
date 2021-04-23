@@ -9,7 +9,6 @@ import json
 from app import db, login
 #from app.search import add_to_index, remove_from_index, query_index
 
-
 followers = db.Table(
 	'followers',
 	db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -138,7 +137,6 @@ class User(UserMixin, db.Model):
 def load_user(id):
 	return User.query.get(int(id))
 
-
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	body = db.Column(db.String(600))
@@ -158,7 +156,7 @@ class Program(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
 	name = db.Column(db.String(140))
-	body = db.Column(db.String(140))
+	body = db.Column(db.String(600))
 	state = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -167,7 +165,7 @@ class Program(db.Model):
 	interview_dates = db.relationship('Interview_Date', backref='interviewer', lazy='dynamic')
 	posts = db.relationship('Post', backref='program', lazy='dynamic')
 	language = db.Column(db.String(5))
-	image = db.Column(db.String(140), default='https://images.pexels.com/photos/4386464/pexels-photo-4386464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')
+	image = db.Column(db.String(140))
 	def __repr__(self):
 		return '<Program {}>'.format(self.body)
 	def get_latest_interviews(self):
@@ -236,7 +234,7 @@ class Test(db.Model):
 
 class Specialty(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(140))
+	name = db.Column(db.String(140), index=True)
 	programs = db.relationship('Program', backref='specialty', lazy='dynamic')
 	users = db.relationship('User', backref='specialty', lazy='dynamic')
 	posts = db.relationship('Post', backref='specialty', lazy='dynamic')

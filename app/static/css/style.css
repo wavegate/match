@@ -5,6 +5,12 @@
  * Author URL: https://probootstrap.com
  * License: Released for free under the Creative Commons Attribution 3.0 license (probootstrap.com/license)
  */
+
+#spnSelectedGroup {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @font-face {
   font-family: 'icomoon';
   src: url("../fonts/icomoon/fonts/icomoon.eot?1z9v6x");
@@ -529,7 +535,7 @@ a:hover, a:focus, a:active {
 }
 
 .probootstrap-hero .intro-text .probootstrap-subheading {
-  max-width: 500px;
+  max-width: 800px;
   color: rgba(255, 255, 255, 0.9);
   font-size: 20px;
 }
