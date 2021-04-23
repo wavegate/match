@@ -9,7 +9,7 @@
 
 		{% endfor %}
 		{% if interview.interviewee == current_user %}
-		<form action="{{ url_for('main.delete_interview', interview=interview.id)}}" method="post">
+		<form action="{{ url_for('main.delete_interview', interview_id=interview.id)}}" method="post">
 			{{ form.hidden_tag() }}
 			{{ form.submit(value=_('Delete'), class_='btn btn-default btn-sm')}}
 		</form>

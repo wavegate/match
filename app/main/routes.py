@@ -96,7 +96,7 @@ def delete_program(program_id):
 		specialty = program.specialty
 		db.session.delete(program)
 		db.session.commit()
-	return redirect(url_for('main.specialty', id=specialty.id))
+	return redirect(request.referrer)
 
 @bp.route('/delete_post/<int:post_id>', methods=['GET','POST'])
 @login_required
@@ -141,18 +141,19 @@ def add_interview(program_id):
 		db.session.add(interview)
 		db.session.commit()
 		flash(_('Interview added!'))
-		return redirect(request.referrer)
+		return redirect(url_for('main.program', program_id=program.id))
 	return render_template('add_interview.html',specialty2=specialty2, title=_('Add Interview Offer'),
 						   form=form, program=program)
 
-@bp.route('/delete_interview/<int:interview>', methods=['POST'])
+@bp.route('/delete_interview/<int:interview_id>', methods=['POST'])
 @login_required
-def delete_interview(interview):
+def delete_interview(interview_id):
+	interview = Interview.query.get(interview_id)
 	if current_user == interview.interviewee:
-		interview = Interview.query.get(interview)
 		program = interview.interviewer
 		db.session.delete(interview)
 		db.session.commit()
+		flash('Interview deleted!')
 	return redirect(request.referrer)
 
 @bp.route('/user/<username>', methods=['GET','POST'])
@@ -227,9 +228,7 @@ def unfollow_program(program_id):
 		current_user.unfollow_program(program)
 		db.session.commit()
 		flash(_('You are not following %(name)s.', name=program.name))
-		return redirect(url_for('main.specialty', id=program.specialty_id))
-	else:
-		return redirect(url_for('main.specialty', id=program.specialty_id))
+	return redirect(url_for('main.specialty', id=program.specialty_id))
 
 @bp.route('/send_message/<recipient>', methods=['GET', 'POST'])
 @login_required
