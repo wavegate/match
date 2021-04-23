@@ -52,7 +52,7 @@ def index():
 @bp.route('/programs/<specialty>', methods=['GET', 'POST'])
 def programs(specialty):
 	form = ProgramForm()
-	if form.validate_on_submit():
+	if form.validate_on_submit() and current_user.admin:
 		program = Program(name=form.name.data, specialty=form.specialty.data, body=form.body.data, image=form.image.data, state=form.state.data)
 		db.session.add(program)
 		db.session.commit()
@@ -69,7 +69,7 @@ def program(program_id):
 	interviews = program.interviews.order_by(Interview.date.desc())
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
-	if postform.validate_on_submit():
+	if postform.validate_on_submit() and current_user.is_authenticated:
 		language = guess_language(postform.post.data)
 		if language == 'UNKNOWN' or len(language) > 5:
 			language = ''
@@ -91,19 +91,21 @@ def program(program_id):
 @bp.route('/delete_program/<int:program_id>', methods=['POST'])
 @login_required
 def delete_program(program_id):
-	program = Program.query.get(program_id)
-	specialty = program.specialty
-	db.session.delete(program)
-	db.session.commit()
+	if current_user.admin:
+		program = Program.query.get(program_id)
+		specialty = program.specialty
+		db.session.delete(program)
+		db.session.commit()
 	return redirect(url_for('main.specialty', id=specialty.id))
 
 @bp.route('/delete_post/<int:post_id>', methods=['GET','POST'])
 @login_required
 def delete_post(post_id):
 	post = Post.query.get(post_id)
-	db.session.delete(post)
-	db.session.commit()
-	flash('Post deleted!')
+	if current_user == post.author:
+		db.session.delete(post)
+		db.session.commit()
+		flash('Post deleted!')
 	return redirect(request.referrer)
 
 @bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])
@@ -139,18 +141,19 @@ def add_interview(program_id):
 		db.session.add(interview)
 		db.session.commit()
 		flash(_('Interview added!'))
-		return redirect(url_for('main.program', program_id=program.id))
+		return redirect(request.referrer)
 	return render_template('add_interview.html',specialty2=specialty2, title=_('Add Interview Offer'),
 						   form=form, program=program)
 
 @bp.route('/delete_interview/<int:interview>', methods=['POST'])
 @login_required
 def delete_interview(interview):
-	interview = Interview.query.get(interview)
-	program = interview.interviewer
-	db.session.delete(interview)
-	db.session.commit()
-	return redirect(url_for('main.program', program_id=program.id))
+	if current_user == interview.interviewee:
+		interview = Interview.query.get(interview)
+		program = interview.interviewer
+		db.session.delete(interview)
+		db.session.commit()
+	return redirect(request.referrer)
 
 @bp.route('/user/<username>', methods=['GET','POST'])
 @login_required
@@ -165,7 +168,7 @@ def user(username):
 	prev_url = url_for('main.user', username=user.username,
 					   page=posts.prev_num) if posts.has_prev else None
 	form = EditProfileForm(current_user.username)
-	if form.validate_on_submit():
+	if form.validate_on_submit() and current_user == user:
 		current_user.username = form.username.data
 		current_user.about_me = form.about_me.data
 		db.session.commit()
@@ -176,24 +179,6 @@ def user(username):
 		form.about_me.data = current_user.about_me
 	return render_template('user.html', specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
 						   next_url=next_url, prev_url=prev_url, form=form)
-
-
-@bp.route('/edit_profile', methods=['GET', 'POST'])
-@login_required
-def edit_profile():
-	form = EditProfileForm(current_user.username)
-	if form.validate_on_submit():
-		current_user.username = form.username.data
-		current_user.about_me = form.about_me.data
-		db.session.commit()
-		flash(_('Your changes have been saved.'))
-		return redirect(url_for('main.edit_profile'))
-	elif request.method == 'GET':
-		form.username.data = current_user.username
-		form.about_me.data = current_user.about_me
-	return render_template('edit_profile.html', title=_('Edit Profile'),
-						   form=form)
-
 
 @bp.route('/follow/<username>', methods=['POST'])
 @login_required
@@ -246,39 +231,10 @@ def unfollow_program(program_id):
 	else:
 		return redirect(url_for('main.specialty', id=program.specialty_id))
 
-@bp.route('/translate', methods=['POST'])
-@login_required
-def translate_text():
-	return jsonify({'text': translate(request.form['text'],
-									  request.form['source_language'],
-									  request.form['dest_language'])})
-
-
-#@bp.route('/search')
-#@login_required
-#def search():
-#	if not g.search_form.validate():
-#		return redirect(url_for('main.explore'))
-#	page = request.args.get('page', 1, type=int)
-#	posts, total = Post.search(g.search_form.q.data, page,
-#							   current_app.config['POSTS_PER_PAGE'])
-#	next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
-#		if total > page * current_app.config['POSTS_PER_PAGE'] else None
-#	prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
-#		if page > 1 else None
-#	return render_template('search.html', title=_('Search'), posts=posts,
-#						   next_url=next_url, prev_url=prev_url)
-
-@bp.route('/user/<username>/popup')
-@login_required
-def user_popup(username):
-	user = User.query.filter_by(username=username).first_or_404()
-	form = EmptyForm()
-	return render_template('user_popup.html', user=user, form=form)
-
 @bp.route('/send_message/<recipient>', methods=['GET', 'POST'])
 @login_required
 def send_message(recipient):
+	specialty2 = session.get('specialty')
 	user = User.query.filter_by(username=recipient).first_or_404()
 	form = MessageForm()
 	if form.validate_on_submit():
@@ -289,7 +245,7 @@ def send_message(recipient):
 		db.session.commit()
 		flash(_('Your message has been sent.'))
 		return redirect(url_for('main.user', username=recipient))
-	return render_template('send_message.html', title=_('Send Message'),
+	return render_template('send_message.html', specialty2=specialty2, title=_('Send Message'),
 						   form=form, recipient=recipient)
 
 @bp.route('/messages')
@@ -322,55 +278,6 @@ def notifications():
 		'data': n.get_data(),
 		'timestamp': n.timestamp
 	} for n in notifications])
-
-@bp.route('/base_test')
-def base_test():
-	with current_app.open_resource('static/data/names.txt', 'r') as f:
-		contents = f.read().replace('\n', ',').split(',')
-	for name in contents:
-		flash(name)
-		program = Program(name=name, state="MO", specialty="Psychiatry")
-		#Interview(date=,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
-		db.session.add(program)
-		db.session.commit()
-	return render_template('base_test.html', contents=contents)
-
-def try_parsing_date(datestrings):
-	d = []
-	print(datestrings)
-	if datestrings != datestrings:
-		return None
-	dates = str(datestrings).replace("(full)","").replace(" ","").split(',')
-	for date in dates:
-		try:
-			parsed = dateparser.parse(date)
-			if parsed:
-				if parsed.month > 6:
-					parsed = parsed.replace(year=2020)
-				d.append(parsed)
-		except ValueError:
-			pass
-	return d
-
-def create_programs(info):
-	text = info.to_html()
-	for row in info.itertuples():
-		state = row[1]
-		name = row[2]
-		dates = row[3]
-		if name == name and dates:
-			program = Program(name=name, state=state, specialty="Psychiatry")
-			interview = Interview(interviewer=program,interviewee=current_user)
-			dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), dates))
-			interview.dates = dates
-			db.session.add(interview)
-			db.session.commit()
-		else:
-			if name == name:
-				program = Program(name=name, state=state, specialty="Psychiatry")
-				db.session.add(program)
-				db.session.commit()
-	return text
 
 @bp.route("/upload/<specialty>", methods=['GET', 'POST'])
 @csrf.exempt
@@ -413,20 +320,14 @@ def upload_file(specialty):
 		return Response(stream_with_context(generate()))
 	return render_template('upload.html')
 
-@bp.route('/analyze')
-def analyze():
-	with current_app.open_resource('static/data/psych2021.xlsx', encoding="utf8") as f:
-		contents = f.read()
-		flash(contents)
-	return render_template('index.html')
-
 @bp.route('/delete_programs')
 def delete_programs():
-	Program.query.delete()
-	Interview.query.delete()
-	Interview_Date.query.delete()
-	db.session.commit()
-	return render_template('programs.html')
+	if current_user.admin:
+		Program.query.delete()
+		Interview.query.delete()
+		Interview_Date.query.delete()
+		db.session.commit()
+	return redirect(request.referrer)
 
 @bp.route('/about', methods=['GET','POST'])
 def about():
@@ -443,22 +344,6 @@ def settings():
 	specialty2 = session.get('specialty')
 	return render_template('settings.html', specialty2=specialty2)
 
-@bp.route('/feedback', methods=['GET', 'POST'])
-def feedback():
-	form = FeedbackForm()
-	if form.validate_on_submit():
-		send_feedback_email(form)
-		flash(_('Feedback submitted!'))
-		return redirect(url_for('main.feedback'))
-	return render_template('feedback.html', form=form)
-
-@bp.route('/specialties', methods=['GET'])
-def specialties():
-	#if request.cookies.get('specialty'):
-	#	return redirect(url_for('main.specialty', id=request.cookies.get('specialty')))
-	specialties = Specialty.query.all()
-	return render_template('specialties.html', specialties=specialties)
-
 @bp.route('/specialty/<int:id>', methods=['GET', 'POST'])
 def specialty(id):
 	session['specialty'] = str(id)
@@ -467,7 +352,7 @@ def specialty(id):
 	specialty = Specialty.query.get(id)
 	current_user.specialty_id = id
 	db.session.commit()
-	if form.validate_on_submit():
+	if form.validate_on_submit() and current_user.admin:
 		program = Program(name=form.name.data, specialty=specialty, state=form.state.data)
 		db.session.add(program)
 		db.session.commit()
@@ -488,14 +373,15 @@ def create_specialty():
 			return redirect(url_for('main.index'))
 		return render_template('create_specialty.html', form=form, specialty2=specialty2)
 	else:
-		return render_template('landing.html')
+		return redirect(request.referrer)
 
 @bp.route('/delete_specialty/<int:id>', methods=['GET','POST'])
 def delete_specialty(id):
-	specialty = Specialty.query.get(id)
-	db.session.delete(specialty)
-	db.session.commit()
-	return redirect(url_for('main.index'))
+	if current_user.admin:
+		specialty = Specialty.query.get(id)
+		db.session.delete(specialty)
+		db.session.commit()
+	return redirect(request.referrer)
 
 @bp.route('/chat/<int:id>', methods=['GET', 'POST'])
 def chat(id):
@@ -522,8 +408,9 @@ def chat(id):
 
 @bp.route('/seedspecialties')
 def seedspecialties():
-	specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
-	for specialty in specialties:
-		db.session.add(Specialty(name=specialty))
-		db.session.commit()
+	if current_user.admin:
+		specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
+		for specialty in specialties:
+			db.session.add(Specialty(name=specialty))
+			db.session.commit()
 	return redirect(url_for('main.index'))
