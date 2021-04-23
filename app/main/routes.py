@@ -97,16 +97,14 @@ def delete_program(program_id):
 	db.session.commit()
 	return redirect(url_for('main.specialty', id=specialty.id))
 
-@bp.route('/delete_post/<int:post>?program=<program>', methods=['GET','POST'])
+@bp.route('/delete_post/<int:post_id>', methods=['GET','POST'])
 @login_required
-def delete_post(post, program):
-	#flash(program)
-	post = Post.query.get(post)
+def delete_post(post_id):
+	post = Post.query.get(post_id)
 	db.session.delete(post)
 	db.session.commit()
 	flash('Post deleted!')
-	#return redirect(url_for('main.index'))
-	return redirect(url_for('main.program',name=program))
+	return redirect(request.referrer)
 
 @bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])
 @login_required
@@ -118,12 +116,18 @@ def add_interview(program_id):
 		interview = Interview(date=form.date.data,interviewer=program,interviewee=current_user, supplemental_required=form.supplemental_required.data, method=form.method.data)
 		dates = None
 		dates2 = None
-		if request.form['dates'] != '':
-			available_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['dates'].split(',')))
-			dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), available_dates))
-		if request.form['unavailable_dates'] != '':
-			unavailable_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['unavailable_dates'].split(',')))
-			dates2 = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=True), unavailable_dates))
+		if request.form['interview_dates'] != '':
+			try:
+				available_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['interview_dates'].split(',')))
+				dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), available_dates))
+			except ValueError:
+				pass
+		if request.form['interview_invites'] != '':
+			try:
+				unavailable_dates = list(map(lambda x:datetime.strptime(x, '%m/%d/%Y'), request.form['interview_invites'].split(',')))
+				dates2 = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=True), unavailable_dates))
+			except ValueError:
+				pass
 		if dates:
 			interview.dates = dates
 		if dates2:
@@ -210,26 +214,6 @@ def follow(username):
 	else:
 		return redirect(url_for('main.programs'))
 
-
-@bp.route('/unfollow/<username>', methods=['POST'])
-@login_required
-def unfollow(username):
-	form = EmptyForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(username=username).first()
-		if user is None:
-			flash(_('User %(username)s not found.', username=username))
-			return redirect(url_for('main.programs'))
-		if user == current_user:
-			flash(_('You cannot unfollow yourself!'))
-			return redirect(url_for('main.user', username=username))
-		current_user.unfollow(user)
-		db.session.commit()
-		flash(_('You are not following %(username)s.', username=username))
-		return redirect(url_for('main.user', username=username))
-	else:
-		return redirect(url_for('main.programs'))
-
 @bp.route('/follow_program/<int:program_id>', methods=['POST'])
 @login_required
 def follow_program(program_id):
@@ -242,9 +226,9 @@ def follow_program(program_id):
 		current_user.follow_program(program)
 		db.session.commit()
 		flash(_('You are following %(name)s!', name=program.name))
-		return redirect(url_for('main.program', program_id=program_id))
+		return redirect(url_for('main.specialty', id=program.specialty_id))
 	else:
-		return redirect(url_for('main.programs'))
+		return redirect(url_for('main.specialty', id=program.specialty_id))
 
 @bp.route('/unfollow_program/<int:program_id>', methods=['POST'])
 @login_required
@@ -258,9 +242,9 @@ def unfollow_program(program_id):
 		current_user.unfollow_program(program)
 		db.session.commit()
 		flash(_('You are not following %(name)s.', name=program.name))
-		return redirect(url_for('main.program', program_id=program_id))
+		return redirect(url_for('main.specialty', id=program.specialty_id))
 	else:
-		return redirect(url_for('main.programs'))
+		return redirect(url_for('main.specialty', id=program.specialty_id))
 
 @bp.route('/translate', methods=['POST'])
 @login_required

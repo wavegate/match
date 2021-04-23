@@ -9,7 +9,6 @@ from app.auth.forms import LoginForm, RegistrationForm, \
 from app.models import User, Message
 from app.auth.email import send_password_reset_email
 
-
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     specialty2 = session.get('specialty')

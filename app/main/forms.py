@@ -31,6 +31,8 @@ class AddInterviewForm(FlaskForm):
 	supplemental_required = BooleanField('Was a supplemental required?')
 	method = SelectField('How was the interview offered?', choices=['','ERAS','Thalamus','Email'])
 	submit = SubmitField(_l('Submit'))
+	interview_dates = StringField()
+	interview_invites = StringField()
 
 	def __init__(self, user, program, *args, **kwargs):
 		super(AddInterviewForm, self).__init__(*args, **kwargs)

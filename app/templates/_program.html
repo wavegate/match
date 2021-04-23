@@ -21,13 +21,36 @@
 		{% endif %}
 		{% endfor %}
 	</td>
-	{% if current_user.admin %}
-	<td>
-	<form action="{{ url_for('main.delete_program', program_id=program.id) }}" method="post">
-			{{ form.hidden_tag() }}
-			{{ form.submit(value=_('Delete'), class_='btn btn-default btn-sm')}}
-		</form>
-	{% endif %}
-	</td>
+
+		{% if not current_user.is_anonymous %}
+		<td>
+		<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+			<div class="btn-group mr-2" role="group" aria-label="First group">
+				<form action="{{ url_for('main.add_interview', program_id=program.id) }}" method="post" novalidate>
+				<button href="" class="btn btn-primary btn-sm">Add Interview Invite</button>
+				{{ form.hidden_tag() }}
+				</form>
+				{% if not current_user.is_following_program(program) %}
+				<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post" novalidate>
+				{{ form.hidden_tag() }}
+				<button href="" class="btn btn-primary btn-sm">Follow</button>
+				</form>
+				{% else %}
+				<form action="{{ url_for('main.unfollow_program', program_id=program.id) }}" method="post" novalidate>
+				{{ form.hidden_tag() }}
+				<button href="" class="btn btn-primary btn-sm">Unfollow</button>
+				</form>
+				{% endif %}
+				{% if current_user.admin %}
+				<form action="{{ url_for('main.delete_program', program_id=program.id) }}" method="post" novalidate>
+				<button href="" class="btn btn-primary btn-sm">Delete</button>
+				{{ form.hidden_tag() }}
+				</form>
+				{% endif %}
+			</div>
+		</div>
+		</td>
+		{% endif %}
+
 
 </tr>
