@@ -333,7 +333,7 @@ def specialty(id):
 	session['specialty'] = str(id)
 	specialty2 = session.get('specialty')
 	form = ProgramForm()
-	specialty = Specialty.query.get(id).order_by(Specialty.state)
+	specialty = Specialty.query.get(id)
 	current_user.specialty_id = id
 	db.session.commit()
 	if form.validate_on_submit() and current_user.admin:
