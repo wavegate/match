@@ -360,7 +360,7 @@ def delete_specialty(id):
 def chat(id):
 	specialty2 = session.get('specialty')
 	specialty = Specialty.query.get(id)
-	name = current_user.username
+	name = current_user.username or 'anonymous'
 	room = specialty.name
 	if name == '' or room == '':
 		return redirect(request.referrer)
