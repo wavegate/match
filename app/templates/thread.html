@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block page_head %}{{ thread.title }}{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body ">
+                	<table class="table table-hover table-borderless">
+						<tr>
+							<td width="70px">
+								<a href="{{ url_for('main.user', username=thread.author.username) }}">
+									<img src="{{ thread.author.avatar(70) }}" />
+								</a>
+							</td>
+							<td>
+								<span id="thread{{ thread.id }}" style="font-size:1.6em">{{ thread.title }}</span><br/>
+									<a href="{{ url_for('main.user', username=thread.author.username) }}">
+										{{ thread.author.username }}
+									</a>
+								{{ _('%(username)s said %(when)s',
+								username=user_link, when=moment(thread.timestamp).fromNow()) }}
+								{% if thread.author == current_user %}
+								<a class="float-right" href="{{ url_for('main.delete_thread',thread_id=thread.id)}}">Delete</a>
+								{% endif %}
+							</td>
+						</tr>
+						<tr>
+							<td>
+							</td>
+							<td>
+								{{ thread.body }}
+							</td>
+						</tr>
+					</table>
+                	{% if not current_user.is_anonymous %}
+                	{% if postform %}
+					{{ render_form(postform) }}
+					{% endif %}
+					{% else %}
+					<p>Please log in to post a comment.</p>
+					{% endif %}
+                    {% for post in posts %}
+					{% include '_post.html' %}
+					{% endfor %}
+					<nav aria-label="...">
+							<ul class="pagination">
+								<li class="page-item{% if not prev_url %} disabled{% endif %}">
+									<a href="{{ prev_url or '#' }}" class="page-link">
+										<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+									</a>
+								</li>
+								<li class="page-item{% if not next_url %} disabled{% endif %}">
+									<a href="{{ next_url or '#' }}" class="page-link">
+										{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

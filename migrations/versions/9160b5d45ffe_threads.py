@@ -1,8 +1,8 @@
-"""empty message
+"""threads
 
-Revision ID: bedba32f07ba
+Revision ID: 9160b5d45ffe
 Revises: 
-Create Date: 2021-04-21 22:06:27.052749
+Create Date: 2021-04-25 18:09:50.299252
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bedba32f07ba'
+revision = '9160b5d45ffe'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,9 @@ def upgrade():
     sa.Column('name', sa.String(length=140), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    with op.batch_alter_table('specialty', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_specialty_name'), ['name'], unique=False)
+
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=True),
@@ -36,8 +39,10 @@ def upgrade():
     sa.ForeignKeyConstraint(['specialty_id'], ['specialty.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
-    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
+    with op.batch_alter_table('user', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
+        batch_op.create_index(batch_op.f('ix_user_username'), ['username'], unique=True)
+
     op.create_table('followers',
     sa.Column('follower_id', sa.Integer(), nullable=True),
     sa.Column('followed_id', sa.Integer(), nullable=True),
@@ -54,7 +59,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['sender_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_message_timestamp'), 'message', ['timestamp'], unique=False)
+    with op.batch_alter_table('message', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_message_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('notification',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=True),
@@ -64,13 +71,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_notification_name'), 'notification', ['name'], unique=False)
-    op.create_index(op.f('ix_notification_timestamp'), 'notification', ['timestamp'], unique=False)
+    with op.batch_alter_table('notification', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_notification_name'), ['name'], unique=False)
+        batch_op.create_index(batch_op.f('ix_notification_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('program',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('specialty_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(length=140), nullable=True),
-    sa.Column('body', sa.String(length=140), nullable=True),
+    sa.Column('body', sa.Text(), nullable=True),
     sa.Column('state', sa.String(length=140), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -80,7 +89,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_program_timestamp'), 'program', ['timestamp'], unique=False)
+    with op.batch_alter_table('program', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_program_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('test',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('testname', sa.String(length=140), nullable=True),
@@ -93,7 +104,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_test_timestamp'), 'test', ['timestamp'], unique=False)
+    with op.batch_alter_table('test', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_test_timestamp'), ['timestamp'], unique=False)
+
+    op.create_table('thread',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.Text(), nullable=True),
+    sa.Column('body', sa.Text(), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('specialty_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['specialty_id'], ['specialty.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('thread', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_thread_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('interview',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -106,18 +133,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_interview_date'), 'interview', ['date'], unique=False)
-    op.create_index(op.f('ix_interview_method'), 'interview', ['method'], unique=False)
-    op.create_index(op.f('ix_interview_unavailable_dates'), 'interview', ['unavailable_dates'], unique=False)
-    op.create_table('link',
-    sa.Column('user', sa.Integer(), nullable=True),
-    sa.Column('program', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['program'], ['program.id'], ),
-    sa.ForeignKeyConstraint(['user'], ['user.id'], )
-    )
-    op.create_table('post',
+    with op.batch_alter_table('interview', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_interview_date'), ['date'], unique=False)
+        batch_op.create_index(batch_op.f('ix_interview_method'), ['method'], unique=False)
+        batch_op.create_index(batch_op.f('ix_interview_unavailable_dates'), ['unavailable_dates'], unique=False)
+
+    op.create_table('interview__impression',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('body', sa.String(length=140), nullable=True),
+    sa.Column('body', sa.Text(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('program_id', sa.Integer(), nullable=True),
@@ -128,7 +151,31 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_post_timestamp'), 'post', ['timestamp'], unique=False)
+    with op.batch_alter_table('interview__impression', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_interview__impression_timestamp'), ['timestamp'], unique=False)
+
+    op.create_table('link',
+    sa.Column('user', sa.Integer(), nullable=True),
+    sa.Column('program', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['program'], ['program.id'], ),
+    sa.ForeignKeyConstraint(['user'], ['user.id'], )
+    )
+    op.create_table('post',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('body', sa.Text(), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('language', sa.String(length=5), nullable=True),
+    sa.Column('specialty_id', sa.Integer(), nullable=True),
+    sa.Column('thread_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['specialty_id'], ['specialty.id'], ),
+    sa.ForeignKeyConstraint(['thread_id'], ['thread.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('post', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_post_timestamp'), ['timestamp'], unique=False)
+
     op.create_table('interview__date',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -141,35 +188,64 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_interview__date_date'), 'interview__date', ['date'], unique=False)
-    op.create_index(op.f('ix_interview__date_full'), 'interview__date', ['full'], unique=False)
+    with op.batch_alter_table('interview__date', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_interview__date_date'), ['date'], unique=False)
+        batch_op.create_index(batch_op.f('ix_interview__date_full'), ['full'], unique=False)
+
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_interview__date_full'), table_name='interview__date')
-    op.drop_index(op.f('ix_interview__date_date'), table_name='interview__date')
+    with op.batch_alter_table('interview__date', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_interview__date_full'))
+        batch_op.drop_index(batch_op.f('ix_interview__date_date'))
+
     op.drop_table('interview__date')
-    op.drop_index(op.f('ix_post_timestamp'), table_name='post')
+    with op.batch_alter_table('post', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_post_timestamp'))
+
     op.drop_table('post')
     op.drop_table('link')
-    op.drop_index(op.f('ix_interview_unavailable_dates'), table_name='interview')
-    op.drop_index(op.f('ix_interview_method'), table_name='interview')
-    op.drop_index(op.f('ix_interview_date'), table_name='interview')
+    with op.batch_alter_table('interview__impression', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_interview__impression_timestamp'))
+
+    op.drop_table('interview__impression')
+    with op.batch_alter_table('interview', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_interview_unavailable_dates'))
+        batch_op.drop_index(batch_op.f('ix_interview_method'))
+        batch_op.drop_index(batch_op.f('ix_interview_date'))
+
     op.drop_table('interview')
-    op.drop_index(op.f('ix_test_timestamp'), table_name='test')
+    with op.batch_alter_table('thread', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_thread_timestamp'))
+
+    op.drop_table('thread')
+    with op.batch_alter_table('test', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_test_timestamp'))
+
     op.drop_table('test')
-    op.drop_index(op.f('ix_program_timestamp'), table_name='program')
+    with op.batch_alter_table('program', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_program_timestamp'))
+
     op.drop_table('program')
-    op.drop_index(op.f('ix_notification_timestamp'), table_name='notification')
-    op.drop_index(op.f('ix_notification_name'), table_name='notification')
+    with op.batch_alter_table('notification', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_notification_timestamp'))
+        batch_op.drop_index(batch_op.f('ix_notification_name'))
+
     op.drop_table('notification')
-    op.drop_index(op.f('ix_message_timestamp'), table_name='message')
+    with op.batch_alter_table('message', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_message_timestamp'))
+
     op.drop_table('message')
     op.drop_table('followers')
-    op.drop_index(op.f('ix_user_username'), table_name='user')
-    op.drop_index(op.f('ix_user_email'), table_name='user')
+    with op.batch_alter_table('user', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_user_username'))
+        batch_op.drop_index(batch_op.f('ix_user_email'))
+
     op.drop_table('user')
+    with op.batch_alter_table('specialty', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_specialty_name'))
+
     op.drop_table('specialty')
     # ### end Alembic commands ###

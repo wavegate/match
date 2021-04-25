@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	posts = db.relationship('Post', backref='author', lazy='dynamic')
+	threads = db.relationship('Thread', backref='author', lazy='dynamic')
 	interviews = db.relationship('Interview', backref='interviewee', lazy='dynamic')
 	interview_dates = db.relationship('Interview_Date', backref='interviewee', lazy='dynamic')
 	about_me = db.Column(db.String(140))
@@ -105,13 +106,6 @@ class User(UserMixin, db.Model):
 		return self.programs.filter(
 			link.c.program == program.id).count() > 0
 
-#    def followed_posts(self):
-#        followed = Post.query.join(
-#            followers, (followers.c.followed_id == Post.program_id)).filter(
-#                followers.c.follower_id == self.id)
-#        own = Post.query.filter_by(user_id=self.id)
-#        return followed.union(own).order_by(Post.timestamp.desc())
-
 	@staticmethod
 	def verify_reset_password_token(token):
 		try:
@@ -139,31 +133,49 @@ def load_user(id):
 
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	body = db.Column(db.String(600))
+	body = db.Column(db.Text)
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
 	language = db.Column(db.String(5))
 	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
+	thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
 
 	def __repr__(self):
 		return '<Post {}>'.format(self.body)
 	def get_program(self):
 		return self.program or None
 
+class Thread(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.Text)
+	body = db.Column(db.Text)
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
+	posts = db.relationship('Post', backref='thread', lazy='dynamic')
+
+class Interview_Impression(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.Text)
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
+	language = db.Column(db.String(5))
+	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
+
 class Program(db.Model):
 	__tablename__ = 'program'
 	id = db.Column(db.Integer, primary_key=True)
 	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
 	name = db.Column(db.String(140))
-	body = db.Column(db.String(600))
+	body = db.Column(db.Text)
 	state = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
 	interviews = db.relationship('Interview', backref='interviewer', lazy='dynamic')
 	interview_dates = db.relationship('Interview_Date', backref='interviewer', lazy='dynamic')
-	posts = db.relationship('Post', backref='program', lazy='dynamic')
+	interview_impressions = db.relationship('Interview_Impression', backref='program', lazy='dynamic')
 	language = db.Column(db.String(5))
 	image = db.Column(db.String(140))
 	def __repr__(self):
@@ -238,3 +250,4 @@ class Specialty(db.Model):
 	programs = db.relationship('Program', backref='specialty', lazy='dynamic')
 	users = db.relationship('User', backref='specialty', lazy='dynamic')
 	posts = db.relationship('Post', backref='specialty', lazy='dynamic')
+	threads = db.relationship('Thread', backref='specialty', lazy='dynamic')

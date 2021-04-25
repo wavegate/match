@@ -14,6 +14,7 @@ from config import Config
 from flask_wtf.csrf import CSRFProtect
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
+from flask_socketio import SocketIO
 
 db = SQLAlchemy()
 migrate = Migrate(render_as_batch=True)
@@ -25,6 +26,7 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 csrf = CSRFProtect()
+socketio = SocketIO()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -40,6 +42,7 @@ def create_app(config_class=Config):
     csrf.init_app(app)
     admin = Admin()
     admin.init_app(app)
+    socketio.init_app(app)
     admin.add_view(AdminView(models.User, db.session))
     admin.add_view(AdminView(models.Specialty, db.session))
     admin.add_view(AdminView(models.Program, db.session))

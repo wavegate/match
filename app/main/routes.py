@@ -4,9 +4,9 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
-from app import db, csrf
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty
+from app import db, csrf, socketio
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm, ThreadForm
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread
 from app.translate import translate
 from app.main import bp
 from app.auth.email import send_feedback_email
@@ -30,25 +30,12 @@ import dateparser
 import math
 import time
 import ast
+from flask_socketio import join_room, leave_room, emit
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-	#specialties = [(s.id, s.name) for s in Specialty.query.all()]
-	#form = SpecialtyForm()
-	#form.specialty.choices = specialties
-	#if request.method == 'POST':
-	#	specialty = form.specialty.data[0]
-	#	return redirect(url_for('main.specialty', id=specialty))
 	return render_template('landing.html', specialties = Specialty.query.order_by(Specialty.name))
-
-#@bp.before_app_request
-#def before_request():
-#	if current_user.is_authenticated:
-#		current_user.last_seen = datetime.utcnow()
-#		db.session.commit()
-#		g.search_form = SearchForm()
-#	g.locale = str(get_locale())
 
 @bp.route('/programs/<specialty>', methods=['GET', 'POST'])
 def programs(specialty):
@@ -266,7 +253,6 @@ def messages():
 	return render_template('messages.html', specialty2=specialty2, messages=messages.items,
 						   next_url=next_url, prev_url=prev_url)
 
-
 @bp.route('/notifications')
 @login_required
 def notifications():
@@ -345,6 +331,7 @@ def specialty(id):
 	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.timestamp.desc()), form=form)
 
 @bp.route('/create_specialty', methods=['GET','POST'])
+@login_required
 def create_specialty():
 	if current_user.admin:
 		specialty2 = session.get('specialty')
@@ -360,6 +347,7 @@ def create_specialty():
 		return redirect(request.referrer)
 
 @bp.route('/delete_specialty/<int:id>', methods=['GET','POST'])
+@login_required
 def delete_specialty(id):
 	if current_user.admin:
 		specialty = Specialty.query.get(id)
@@ -368,27 +356,102 @@ def delete_specialty(id):
 	return redirect(request.referrer)
 
 @bp.route('/chat/<int:id>', methods=['GET', 'POST'])
+@csrf.exempt
 def chat(id):
-	#if request.cookies.get('specialty'):
-	#	return redirect(url_for('main.specialty', id=request.cookies.get('specialty')))
+	specialty2 = session.get('specialty')
+	specialty = Specialty.query.get(id)
+	name = current_user.username
+	room = specialty.name
+	if name == '' or room == '':
+		return redirect(request.referrer)
+	return render_template('chat.html', name=name, room=room, specialty=specialty, specialty2=specialty2)
+
+@socketio.on('joined', namespace='/chat')
+def joined(message):
+    """Sent by clients when they enter a room.
+    A status message is broadcast to all people in the room."""
+    room = session.get('room')
+    join_room(room)
+    emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
+
+
+@socketio.on('text', namespace='/chat')
+def text(message):
+    """Sent by a client when the user entered a new message.
+    The message is sent to all people in the room."""
+    room = session.get('room')
+    emit('message', {'msg': current_user.username + ':' + message['msg']}, room=room)
+
+
+@socketio.on('left', namespace='/chat')
+def left(message):
+    """Sent by clients when they leave a room.
+    A status message is broadcast to all people in the room."""
+    room = session.get('room')
+    leave_room(room)
+    emit('status', {'msg': current_user.username + ' has left the room.'}, room=room)
+
+@bp.route('/back', methods=['POST'])
+@csrf.exempt
+def back():
+	return redirect(request.referrer)
+
+@bp.route('/forum/<int:specialty_id>', methods=['GET', 'POST'])
+def threads(specialty_id):
+	specialty2 = session.get('specialty')
+	page = request.args.get('page', 1, type=int)
+	specialty = Specialty.query.get(specialty_id)
+	threads = specialty.threads.order_by(Thread.timestamp.desc()).paginate(
+		page, current_app.config['POSTS_PER_PAGE'], False)
+	next_url = url_for('main.specialty', specialty_id=specialty_id,
+					   page=threads.next_num) if threads.has_next else None
+	prev_url = url_for('main.specialty', specialty_id=specialty_id,
+					   page=threads.prev_num) if threads.has_prev else None
+	return render_template('threads.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, specialty=specialty, threads=threads.items)
+
+@bp.route('/new_thread/<int:specialty_id>', methods=['GET', 'POST'])
+def new_thread(specialty_id):
+	specialty2 = session.get('specialty')
+	threadform = ThreadForm()
+	specialty = Specialty.query.get(specialty_id)
+	if threadform.validate_on_submit():
+		thread = Thread(body=threadform.body.data, author=current_user,title=threadform.title.data,
+					specialty=Specialty.query.get(specialty_id))
+		db.session.add(thread)
+		db.session.commit()
+		flash(_('Your thread is now live!'))
+		return redirect(url_for('main.threads', specialty_id=specialty_id))
+	return render_template('new_thread.html', specialty2 = specialty2, specialty=specialty, threadform=threadform)
+
+@bp.route('/thread/<int:thread_id>', methods=['GET', 'POST'])
+def thread(thread_id):
 	specialty2 = session.get('specialty')
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
-	specialty = Specialty.query.get(id)
+	thread = Thread.query.get(thread_id)
 	if postform.validate_on_submit():
-		post = Post(body=postform.post.data, author=current_user,
-					specialty=Specialty.query.get(id))
+		post = Post(body=postform.post.data, author=current_user, thread_id=thread_id)
 		db.session.add(post)
 		db.session.commit()
 		flash(_('Your post is now live!'))
-		return redirect(url_for('main.chat', id=specialty.id))
-	posts = specialty.posts.order_by(Post.timestamp.desc()).paginate(
+		return redirect(url_for('main.thread', thread_id=thread_id))
+	posts = thread.posts.order_by(Post.timestamp.desc()).paginate(
 		page, current_app.config['POSTS_PER_PAGE'], False)
-	next_url = url_for('main.specialty', id=specialty_id,
+	next_url = url_for('main.thread', thread_id=thread_id,
 					   page=posts.next_num) if posts.has_next else None
-	prev_url = url_for('main.specialty', id=specialty_id,
+	prev_url = url_for('main.thread', thread_id=thread_id,
 					   page=posts.prev_num) if posts.has_prev else None
-	return render_template('chat.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, specialty=specialty, postform=postform, posts=posts.items)
+	return render_template('thread.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, postform=postform, posts=posts.items, thread=thread)
+
+@bp.route('/delete_thread/<int:thread_id>', methods=['GET','POST'])
+@login_required
+def delete_thread(thread_id):
+	thread = Thread.query.get(thread_id)
+	if current_user == thread.author:
+		db.session.delete(thread)
+		db.session.commit()
+		flash('Thread deleted!')
+	return redirect(request.referrer)
 
 @bp.route('/seedspecialties')
 def seedspecialties():
@@ -398,3 +461,8 @@ def seedspecialties():
 			db.session.add(Specialty(name=specialty))
 			db.session.commit()
 	return redirect(url_for('main.index'))
+
+@bp.route('/start', methods=['POST'])
+def get_counts():
+	data = json.loads(request.data.decode())
+	url = data["url"]

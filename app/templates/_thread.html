@@ -1,0 +1,20 @@
+<table class="table table-hover">
+	<tr>
+		<td width="70px">
+			<a href="{{ url_for('main.user', username=thread.author.username) }}">
+				<img src="{{ thread.author.avatar(70) }}" />
+			</a>
+		</td>
+		<td>
+			<a href="{{ url_for('main.thread', thread_id=thread.id) }}"><span id="thread{{ thread.id }}">{{ thread.title }}</span></a><br/>
+				<a href="{{ url_for('main.user', username=thread.author.username) }}">
+					{{ thread.author.username }}
+				</a>
+			{{ _('%(username)s said %(when)s',
+			username=user_link, when=moment(thread.timestamp).fromNow()) }}
+			{% if thread.author == current_user %}
+			<a class="float-right" href="{{ url_for('main.delete_thread',thread_id=thread.id)}}">Delete</a>
+			{% endif %}
+		</td>
+	</tr>
+</table>

@@ -82,3 +82,8 @@ class SLUMSForm(FlaskForm):
 class SpecialtyForm(FlaskForm):
 	specialty = SelectField('Specialty', choices=[])
 	submit = SubmitField('Submit')
+
+class ThreadForm(FlaskForm):
+	title = StringField('Title:', validators=[DataRequired()])
+	body = TextAreaField('Text:', validators=[DataRequired()])
+	submit = SubmitField('Submit')

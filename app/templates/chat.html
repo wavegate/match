@@ -25,6 +25,14 @@
             </a>
           </li>
           <li>
+            </li>
+           <li>
+            <a href="{{ url_for('main.threads', specialty_id=specialty2) }}">
+              <i class="nc-icon nc-chat-33"></i>
+              <p>Forum</p>
+            </a>
+          </li>
+          <li>
             <a href="{{ url_for('main.index') }}">
               <i class="nc-icon nc-minimal-right"></i>
               <p>Change Specialty</p>
@@ -39,30 +47,9 @@
         <div class="col-md-12">
             <div class="card ">
                 <div class="card-body ">
-                	{% if not current_user.is_anonymous %}
-                	{% if postform %}
-					{{ render_form(postform) }}
-					{% endif %}
-					{% else %}
-					<p>Please log in to chat.</p>
-					{% endif %}
-                    {% for post in posts %}
-					{% include '_post.html' %}
-					{% endfor %}
-					<nav aria-label="...">
-							<ul class="pagination">
-								<li class="page-item{% if not prev_url %} disabled{% endif %}">
-									<a href="{{ prev_url or '#' }}" class="page-link">
-										<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-									</a>
-								</li>
-								<li class="page-item{% if not next_url %} disabled{% endif %}">
-									<a href="{{ next_url or '#' }}" class="page-link">
-										{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-									</a>
-								</li>
-							</ul>
-						</nav>
+                    <textarea id="chat" cols="80" rows="20"></textarea><br><br>
+                    <input id="text" size="80" placeholder="Enter your message here"><br><br>
+                    <a href="#" onclick="leave_room();">Leave this room</a>
                 </div>
             </div>
         </div>
@@ -73,4 +60,37 @@
 
 {% block scripts %}
 {{ super() }}
+ <script type="text/javascript" charset="utf-8">
+            var socket;
+            $(document).ready(function(){
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+                socket.on('connect', function() {
+                    socket.emit('joined', {});
+                });
+                socket.on('status', function(data) {
+                    $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                socket.on('message', function(data) {
+                    $('#chat').val($('#chat').val() + data.msg + '\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                $('#text').keypress(function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        text = $('#text').val();
+                        $('#text').val('');
+                        socket.emit('text', {msg: text});
+                    }
+                });
+            });
+            function leave_room() {
+                socket.emit('left', {}, function() {
+                    socket.disconnect();
+
+                    // go back to the login page
+                    window.location.href = "{{ url_for('main.index') }}";
+                });
+            }
+        </script>
 {% endblock %}
