@@ -360,7 +360,10 @@ def delete_specialty(id):
 def chat(id):
 	specialty2 = session.get('specialty')
 	specialty = Specialty.query.get(id)
-	name = current_user.username or 'anonymous'
+	if current_user.is_authenticated:
+		name = current_user.username
+	else:
+		name = 'anonymous'
 	room = specialty.name
 	if name == '' or room == '':
 		return redirect(request.referrer)
@@ -372,7 +375,10 @@ def joined(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     join_room(room)
-    emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
+    if current_user.is_authenticated:
+    	emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
+    else:
+    	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
 
 
 @socketio.on('text', namespace='/chat')
@@ -380,8 +386,10 @@ def text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
     room = session.get('room')
-    emit('message', {'msg': current_user.username + ':' + message['msg']}, room=room)
-
+    if current_user.is_authenticated:
+    	emit('message', {'msg': current_user.username + ':' + message['msg']}, room=room)
+    else:
+    	emit('message', {'msg': 'anonymous'+ ':' + message['msg']}, room=room)
 
 @socketio.on('left', namespace='/chat')
 def left(message):
@@ -389,7 +397,10 @@ def left(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     leave_room(room)
-    emit('status', {'msg': current_user.username + ' has left the room.'}, room=room)
+    if current_user.is_authenticated:
+    	emit('status', {'msg': current_user.username + ' has left the room.'}, room=room)
+    else:
+    	emit('status', {'msg': 'anonymous has left the room.'}, room=room)
 
 @bp.route('/back', methods=['POST'])
 @csrf.exempt
