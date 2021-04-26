@@ -43,8 +43,11 @@
 <div class="content">
     <div class="row">
       <div class="col-md-12">
-        <div class="card ">
-            <div class="card-body ">
+        <div class="card">
+            <div class="card-body">
+              {% if current_user.is_anonymous %}
+              Please login to add interview data and follow programs.
+              {% endif %}
                 <!--<table  id="table"></table>-->
                 <div class="table">
                     <table id="program_table" class="table table-responsive" data-show-toggle="true" data-toggle="table" data-search="true" data-pagination="true" data-show-columns="true">

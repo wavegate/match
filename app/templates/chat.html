@@ -48,11 +48,15 @@
             <div class="card">
                 <div class="card-body">
                   Note: Anonymous users can use chat and chat history does not persist. It is intended for friendly banter. Please use the Forum for discussions such as questions and answers.
+                  <form>
                   <div class="form-group">
                     <textarea id="chat" class="form-control" rows="15">{% for chat in chats %}{{ chat.text }}&#13;&#10;{% endfor %}</textarea>
-                    <input id="text" class="form-control" placeholder="Enter your message here"><br><br>
+                    <br>
+                    <input id="text" class="form-control" placeholder="Enter your message here">
+                    <div id="submit" class="btn btn-primary">Submit</div>
                   </div>
-                </div>
+                </form>
+              </div>
             </div>
         </div>
     </div>
@@ -72,7 +76,7 @@
  <script type="text/javascript" charset="utf-8">
             var socket;
             $(document).ready(function(){
-                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+                socket = io.connect('https://' + document.domain + ':' + location.port + '/chat', {secure: true});
                 socket.on('connect', function() {
                     socket.emit('joined', {});
                 });
@@ -91,6 +95,11 @@
                         $('#text').val('');
                         socket.emit('text', {msg: text});
                     }
+                });
+                $('#submit').click(function() {
+                      text = $('#text').val();
+                      $('#text').val('');
+                      socket.emit('text', {msg: text});
                 });
             });
             function leave_room() {
