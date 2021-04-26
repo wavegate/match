@@ -6,7 +6,7 @@ from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db, csrf, socketio
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm, ThreadForm
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread, Interview_Impression
 from app.translate import translate
 from app.main import bp
 from app.auth.email import send_feedback_email
@@ -58,23 +58,19 @@ def program(program_id):
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
 	if postform.validate_on_submit() and current_user.is_authenticated:
-		language = guess_language(postform.post.data)
-		if language == 'UNKNOWN' or len(language) > 5:
-			language = ''
-		post = Post(body=postform.post.data, author=current_user,
-					language=language, program=program)
-		db.session.add(post)
+		interview_impression = Interview_Impression(body=postform.post.data, author=current_user, program=program)
+		db.session.add(interview_impression)
 		db.session.commit()
-		flash(_('Your post is now live!'))
+		flash(_('Your interview impression is now live!'))
 		return redirect(url_for('main.program', program_id=program_id))
-	posts = program.posts.order_by(Post.timestamp.desc()).paginate(
+	interview_impressions = program.interview_impressions.order_by(Interview_Impression.timestamp.desc()).paginate(
 		page, current_app.config['POSTS_PER_PAGE'], False)
 	next_url = url_for('main.program', id=program_id,
-					   page=posts.next_num) if posts.has_next else None
+					   page=interview_impressions.next_num) if interview_impressions.has_next else None
 	prev_url = url_for('main.program', id=program_id,
-					   page=posts.prev_num) if posts.has_prev else None
+					   page=interview_impressions.prev_num) if interview_impressions.has_prev else None
 	form = EmptyForm()
-	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, posts=posts.items)
+	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, interview_impressions=interview_impressions.items)
 
 @bp.route('/delete_program/<int:program_id>', methods=['POST'])
 @login_required
@@ -94,6 +90,16 @@ def delete_post(post_id):
 		db.session.delete(post)
 		db.session.commit()
 		flash('Post deleted!')
+	return redirect(request.referrer)
+
+@bp.route('/delete_interview_impression/<int:interview_impression_id>', methods=['GET','POST'])
+@login_required
+def delete_interview_impression(interview_impression_id):
+	interview_impression = Interview_Impression.query.get(interview_impression_id)
+	if current_user == interview_impression.author:
+		db.session.delete(interview_impression)
+		db.session.commit()
+		flash('Interview impression deleted!')
 	return redirect(request.referrer)
 
 @bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])

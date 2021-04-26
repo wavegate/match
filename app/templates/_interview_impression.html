@@ -1,0 +1,25 @@
+<table class="table table-hover">
+	<tr>
+		<td width="70px">
+			<a href="{{ url_for('main.user', username=interview_impression.author.username) }}">
+				<img src="{{ interview_impression.author.avatar(70) }}" />
+			</a>
+		</td>
+		<td>
+			{% set user_link %}
+			<span class="user_popup">
+				<a href="{{ url_for('main.user', username=interview_impression.author.username) }}">
+					{{ interview_impression.author.username }}
+				</a>
+			</span>
+			{% endset %}
+			{{ _('%(username)s said %(when)s',
+			username=user_link, when=moment(interview_impression.timestamp).fromNow()) }}
+			<br>
+			<span id="interview_impression{{ interview_impression.id }}">{{ interview_impression.body }}</span>
+			{% if interview_impression.author == current_user %}
+			<a class="float-right" href="{{ url_for('main.delete_interview_impression',interview_impression_id=interview_impression.id)}}">Delete</a>
+			{% endif %}
+		</td>
+	</tr>
+</table>

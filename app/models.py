@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	posts = db.relationship('Post', backref='author', lazy='dynamic')
+	interview_impressions = db.relationship('Interview_Impression', backref='author', lazy='dynamic')
 	threads = db.relationship('Thread', backref='author', lazy='dynamic')
 	interviews = db.relationship('Interview', backref='interviewee', lazy='dynamic')
 	interview_dates = db.relationship('Interview_Date', backref='interviewee', lazy='dynamic')
