@@ -6,7 +6,7 @@ from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db, csrf, socketio
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm, ThreadForm
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread, Interview_Impression
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread, Interview_Impression, Chat
 from app.translate import translate
 from app.main import bp
 from app.auth.email import send_feedback_email
@@ -367,6 +367,7 @@ def chat(id):
 	specialty2 = session.get('specialty')
 	specialty = Specialty.query.get(id)
 	session['room'] = str(specialty.id)
+	chats = Chat.query.filter_by(specialty=specialty).order_by(Chat.timestamp.asc())[0:25]
 	if current_user.is_authenticated:
 		name = current_user.username
 	else:
@@ -374,7 +375,7 @@ def chat(id):
 	room = specialty.name
 	if name == '' or room == '':
 		return redirect(request.referrer)
-	return render_template('chat.html', name=name, room=room, specialty=specialty, specialty2=specialty2)
+	return render_template('chat.html', name=name, room=room, specialty=specialty, specialty2=specialty2, chats=chats)
 
 @socketio.on('joined', namespace='/chat')
 def joined(message):
@@ -382,20 +383,36 @@ def joined(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     join_room(room)
+    specialty=Specialty.query.get(room)
     if current_user.is_authenticated:
     	emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
+    	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
     else:
     	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
+    	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
+    db.session.add(chat)
+    if Chat.query.count() > 25:
+    	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
+    	db.session.delete(oldest_chat)
+    db.session.commit()
 
 @socketio.on('text', namespace='/chat')
 def text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
     room = session.get('room')
+    specialty=Specialty.query.get(room)
     if current_user.is_authenticated:
     	emit('message', {'msg': current_user.username + ':' + message['msg']}, room=room)
+    	chat = Chat(author=current_user, text=current_user.username + ':' + message['msg'], specialty=specialty)
     else:
     	emit('message', {'msg': 'anonymous'+ ':' + message['msg']}, room=room)
+    	chat = Chat(author=current_user, text='anonymous'+ ':' + message['msg'], specialty=specialty)
+    db.session.add(chat)
+    if Chat.query.count() > 25:
+    	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
+    	db.session.delete(oldest_chat)
+    db.session.commit()
 
 @socketio.on('left', namespace='/chat')
 def left(message):
@@ -403,10 +420,18 @@ def left(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     leave_room(room)
+    specialty=Specialty.query.get(room)
     if current_user.is_authenticated:
     	emit('status', {'msg': current_user.username + ' has left the room.'}, room=room)
+    	chat = Chat(author=current_user, text=current_user.username + ' has left the room.', specialty=specialty)
     else:
     	emit('status', {'msg': 'anonymous has left the room.'}, room=room)
+    	chat = Chat(author=current_user, text='anonymous has left the room.', specialty=specialty)
+    db.session.add(chat)
+    if Chat.query.count() > 25:
+    	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
+    	db.session.delete(oldest_chat)
+    db.session.commit()
 
 @bp.route('/forum/<int:specialty_id>', methods=['GET', 'POST'])
 def threads(specialty_id):

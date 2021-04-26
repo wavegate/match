@@ -10,3 +10,7 @@
     bottom: 10px;
   }
 }
+
+#chat {
+	max-height: 100%;
+}

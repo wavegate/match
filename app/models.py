@@ -27,6 +27,7 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(64), index=True, unique=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
+	chats = db.relationship('Chat', backref='author', lazy='dynamic')
 	posts = db.relationship('Post', backref='author', lazy='dynamic')
 	interview_impressions = db.relationship('Interview_Impression', backref='author', lazy='dynamic')
 	threads = db.relationship('Thread', backref='author', lazy='dynamic')
@@ -252,3 +253,11 @@ class Specialty(db.Model):
 	users = db.relationship('User', backref='specialty', lazy='dynamic')
 	posts = db.relationship('Post', backref='specialty', lazy='dynamic')
 	threads = db.relationship('Thread', backref='specialty', lazy='dynamic')
+	chats = db.relationship('Chat', backref='specialty', lazy='dynamic')
+
+class Chat(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	text = db.Column(db.Text)
+	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

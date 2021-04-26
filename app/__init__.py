@@ -51,6 +51,7 @@ def create_app(config_class=Config):
     admin.add_view(AdminView(models.Notification, db.session))
     admin.add_view(AdminView(models.Message, db.session))
     admin.add_view(AdminView(models.Post, db.session))
+    admin.add_view(AdminView(models.Chat, db.session))
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)

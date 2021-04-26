@@ -45,11 +45,13 @@
 <div class="content">
     <div class="row">
         <div class="col-md-12">
-            <div class="card ">
-                <div class="card-body ">
-                    <textarea id="chat" cols="80" rows="20"></textarea><br><br>
-                    <input id="text" size="80" placeholder="Enter your message here"><br><br>
+            <div class="card">
+                <div class="card-body">
+                  <div class="form-group">
+                    <textarea id="chat" class="form-control" rows="15">{% for chat in chats %}{{ chat.text }}&#13;&#10;{% endfor %}</textarea>
+                    <input id="text" class="form-control" placeholder="Enter your message here"><br><br>
                     <a href="#" onclick="leave_room();">Leave this room</a>
+                  </div>
                 </div>
             </div>
         </div>
