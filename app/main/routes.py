@@ -389,7 +389,7 @@ def joined(message):
     	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
     else:
     	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
-    	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
+    	chat = Chat(text='anonymous has entered the room.', specialty=specialty)
     db.session.add(chat)
     if Chat.query.count() > 25:
     	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
@@ -407,7 +407,7 @@ def text(message):
     	chat = Chat(author=current_user, text=current_user.username + ':' + message['msg'], specialty=specialty)
     else:
     	emit('message', {'msg': 'anonymous'+ ':' + message['msg']}, room=room)
-    	chat = Chat(author=current_user, text='anonymous'+ ':' + message['msg'], specialty=specialty)
+    	chat = Chat(text='anonymous'+ ':' + message['msg'], specialty=specialty)
     db.session.add(chat)
     if Chat.query.count() > 25:
     	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
@@ -426,7 +426,7 @@ def left(message):
     	chat = Chat(author=current_user, text=current_user.username + ' has left the room.', specialty=specialty)
     else:
     	emit('status', {'msg': 'anonymous has left the room.'}, room=room)
-    	chat = Chat(author=current_user, text='anonymous has left the room.', specialty=specialty)
+    	chat = Chat(text='anonymous has left the room.', specialty=specialty)
     db.session.add(chat)
     if Chat.query.count() > 25:
     	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
