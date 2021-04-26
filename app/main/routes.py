@@ -403,10 +403,10 @@ def text(message):
     room = session.get('room')
     specialty=Specialty.query.get(room)
     if current_user.is_authenticated:
-    	emit('message', {'msg': current_user.username + ':' + message['msg']}, room=room)
+    	emit('message', {'msg': current_user.username + ': ' + message['msg']}, room=room)
     	chat = Chat(author=current_user, text=current_user.username + ':' + message['msg'], specialty=specialty)
     else:
-    	emit('message', {'msg': 'anonymous'+ ':' + message['msg']}, room=room)
+    	emit('message', {'msg': 'anonymous'+ ': ' + message['msg']}, room=room)
     	chat = Chat(text='anonymous'+ ':' + message['msg'], specialty=specialty)
     db.session.add(chat)
     if Chat.query.count() > 25:
