@@ -279,6 +279,7 @@ def upload_file(specialty):
 			spec = Specialty.query.filter_by(name=specialty).first_or_404()
 			f = request.files['file']
 			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2])
+			f = f.replace({np.nan: None})
 			for index, row in f.iterrows():
 				state = row[0]
 				name = row[1]
@@ -334,7 +335,7 @@ def specialty(id):
 		db.session.commit()
 		flash(_('Program added!'))
 		return redirect(url_for('main.specialty', id=specialty.id))
-	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.timestamp.desc()), form=form)
+	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()), form=form)
 
 @bp.route('/create_specialty', methods=['GET','POST'])
 @login_required
@@ -404,10 +405,10 @@ def text(message):
     specialty=Specialty.query.get(room)
     if current_user.is_authenticated:
     	emit('message', {'msg': current_user.username + ': ' + message['msg']}, room=room)
-    	chat = Chat(author=current_user, text=current_user.username + ':' + message['msg'], specialty=specialty)
+    	chat = Chat(author=current_user, text=current_user.username + ': ' + message['msg'], specialty=specialty)
     else:
     	emit('message', {'msg': 'anonymous'+ ': ' + message['msg']}, room=room)
-    	chat = Chat(text='anonymous'+ ':' + message['msg'], specialty=specialty)
+    	chat = Chat(text='anonymous'+ ': ' + message['msg'], specialty=specialty)
     db.session.add(chat)
     if Chat.query.count() > 25:
     	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
