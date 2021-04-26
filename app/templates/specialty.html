@@ -14,7 +14,7 @@
           {% if specialty2 %}
           <li class="active">
             <a href="{{ url_for('main.specialty', id=specialty2) }}">
-              <i class="nc-icon nc-bank"></i>
+              <i class="nc-icon nc-calendar-60"></i>
               <p>Interview Invites</p>
             </a>
           </li>
@@ -26,7 +26,7 @@
           </li>
            <li>
             <a href="{{ url_for('main.threads', specialty_id=specialty2) }}">
-              <i class="nc-icon nc-chat-33"></i>
+              <i class="nc-icon nc-bank"></i>
               <p>Forum</p>
             </a>
           </li>
@@ -71,7 +71,6 @@
                     <i class="fa fa-circle text-success"></i>Interview date (still available)
                     <i class="fa fa-circle text-danger"></i>Interview date (already full)
                 </div>
-                <form role="form" ng-submit="getResults()"><input type="text" ng-model="url" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;"><input type="submit"></input></form>
             </div>
         </div>
     </div>

@@ -10,7 +10,7 @@
 				<a href="{{ url_for('main.user', username=thread.author.username) }}">
 					{{ thread.author.username }}
 				</a>
-			{{ _('%(username)s said %(when)s',
+			{{ _('%(username)s posted %(when)s',
 			username=user_link, when=moment(thread.timestamp).fromNow()) }}
 			{% if thread.author == current_user %}
 			<a class="float-right" href="{{ url_for('main.delete_thread',thread_id=thread.id)}}">Delete</a>

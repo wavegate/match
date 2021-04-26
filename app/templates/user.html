@@ -13,7 +13,7 @@
 {% if specialty2 %}
 <li>
 	<a href="{{ url_for('main.specialty', id=specialty2) }}">
-		<i class="nc-icon nc-bank"></i>
+		<i class="nc-icon nc-calendar-60"></i>
 		<p>Interview Invites</p>
 	</a>
 </li>
@@ -26,13 +26,13 @@
 </li>
            <li>
             <a href="{{ url_for('main.threads', specialty_id=specialty2) }}">
-              <i class="nc-icon nc-chat-33"></i>
+              <i class="nc-icon nc-bank"></i>
               <p>Forum</p>
             </a>
           </li>
 <li>
 	<a href="{{ url_for('main.index') }}">
-		<i class="nc-icon nc-bank"></i>
+		<i class="nc-icon nc-minimal-right"></i>
 		<p>Change Specialty</p>
 	</a>
 </li>
@@ -54,7 +54,6 @@
 							<h5 class="title">{{ user.username }}</h5>
 						</a>
 						<p class="description">
-							@School
 						</p>
 						{% if user != current_user %}
 						<p><a href="{{ url_for('main.send_message', recipient=user.username) }}" class="btn btn-default">{{ _('Send private message') }}</a></p>
@@ -64,12 +63,12 @@
 						{% if user.about_me %}{{ user.about_me }}{% endif %}
 					</p>
 				</div>
-				<div class="card-footer">
+				<!--<div class="card-footer">
 					<hr>
 					<div class="button-container">
 						<div class="row">
 							<div class="col-lg-3 col-md-6 col-6 ml-auto">
-								<h5>{{ programs.count() }}<br><small>Programs</small></h5>
+								<h5><br><small></small></h5>
 							</div>
 							<div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
 								<h5><br><small></small></h5>
@@ -79,7 +78,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div>-->
 			</div>
 		</div><!--
 		<div class="col-md-8">

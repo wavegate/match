@@ -60,7 +60,7 @@ Coded by www.creative-tim.com
           {% if specialty2 %}
           <li>
             <a href="{{ url_for('main.specialty', id=specialty2) }}">
-              <i class="nc-icon nc-bank"></i>
+              <i class="nc-icon nc-calendar-60"></i>
               <p>Interview Invites</p>
             </a>
           </li>
@@ -73,7 +73,7 @@ Coded by www.creative-tim.com
           </li>
            <li>
             <a href="{{ url_for('main.threads', specialty_id=specialty2) }}">
-              <i class="nc-icon nc-chat-33"></i>
+              <i class="nc-icon nc-bank"></i>
               <p>Forum</p>
             </a>
           </li>
@@ -215,13 +215,6 @@ Coded by www.creative-tim.com
   <script src="{{ url_for('static', filename='js/paper-dashboard.js') }}"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf-8">
-    var socket = io();
-    socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
-    });
-</script>
   {{ moment.include_moment() }}
   <script>
     function goBack() {
