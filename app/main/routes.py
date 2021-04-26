@@ -384,17 +384,17 @@ def joined(message):
     room = session.get('room')
     join_room(room)
     specialty=Specialty.query.get(room)
-    if current_user.is_authenticated:
-    	emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
-    	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
-    else:
-    	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
-    	chat = Chat(text='anonymous has entered the room.', specialty=specialty)
-    db.session.add(chat)
-    if Chat.query.count() > 25:
-    	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
-    	db.session.delete(oldest_chat)
-    db.session.commit()
+    #if current_user.is_authenticated:
+    #	emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
+    #	chat = Chat(author=current_user, text=current_user.username + ' has entered the room.', specialty=specialty)
+    #else:
+    #	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
+    #	chat = Chat(text='anonymous has entered the room.', specialty=specialty)
+    #db.session.add(chat)
+    #if Chat.query.count() > 25:
+    #	oldest_chat = Chat.query.order_by(Chat.timestamp.asc())[0]
+    #	db.session.delete(oldest_chat)
+    #db.session.commit()
 
 @socketio.on('text', namespace='/chat')
 def text(message):
