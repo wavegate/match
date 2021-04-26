@@ -42,7 +42,7 @@ def create_app(config_class=Config):
     csrf.init_app(app)
     admin = Admin()
     admin.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins='*')
     admin.add_view(AdminView(models.User, db.session))
     admin.add_view(AdminView(models.Specialty, db.session))
     admin.add_view(AdminView(models.Program, db.session))
