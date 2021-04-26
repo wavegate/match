@@ -360,6 +360,7 @@ def delete_specialty(id):
 def chat(id):
 	specialty2 = session.get('specialty')
 	specialty = Specialty.query.get(id)
+	session['room'] = str(specialty.id)
 	if current_user.is_authenticated:
 		name = current_user.username
 	else:
@@ -379,7 +380,6 @@ def joined(message):
     	emit('status', {'msg': current_user.username + ' has entered the room.'}, room=room)
     else:
     	emit('status', {'msg': 'anonymous has entered the room.'}, room=room)
-
 
 @socketio.on('text', namespace='/chat')
 def text(message):
@@ -401,11 +401,6 @@ def left(message):
     	emit('status', {'msg': current_user.username + ' has left the room.'}, room=room)
     else:
     	emit('status', {'msg': 'anonymous has left the room.'}, room=room)
-
-@bp.route('/back', methods=['POST'])
-@csrf.exempt
-def back():
-	return redirect(request.referrer)
 
 @bp.route('/forum/<int:specialty_id>', methods=['GET', 'POST'])
 def threads(specialty_id):
