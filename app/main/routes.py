@@ -278,17 +278,22 @@ def upload_file(specialty):
 		def generate():
 			spec = Specialty.query.filter_by(name=specialty).first_or_404()
 			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2])
+			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2,3])
 			f = f.replace({np.nan: None})
 			for index, row in f.iterrows():
 				state = row[0]
 				name = row[1]
+				invited = ast.literal_eval(row[3])
+				if invited:
+					invited = dt.datetime.strptime(ast.literal_eval(row[3])[0], '%m/%d/%Y')
+				else:
+					invited = None
 				dates = ast.literal_eval(row[2])
 				d = []
 				for date in dates:
 					d.append(dt.datetime.strptime(date, '%m/%d/%Y'))
 				program = Program(name=name, state=state, specialty=spec)
-				interview = Interview(interviewer=program,interviewee=current_user)
+				interview = Interview(date=invited,interviewer=program,interviewee=current_user)
 				dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), d))
 				interview.dates = dates
 				db.session.add(interview)
@@ -494,7 +499,7 @@ def delete_thread(thread_id):
 @bp.route('/seedspecialties')
 def seedspecialties():
 	if current_user.admin:
-		specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
+		specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Ophthalmology','Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
 		for specialty in specialties:
 			db.session.add(Specialty(name=specialty))
 			db.session.commit()
