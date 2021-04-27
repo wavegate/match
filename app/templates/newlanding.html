@@ -1,0 +1,314 @@
+
+<!--
+=========================================================
+ Paper Kit 2 - v2.2.0
+=========================================================
+
+ Product Page: https://www.creative-tim.com/product/paper-kit-2
+ Copyright 2019 Creative Tim (https://www.creative-tim.com)
+ Licensed under MIT (https://github.com/creativetimofficial/paper-kit-2/blob/master/LICENSE.md)
+
+ Coded by Creative Tim
+
+=========================================================
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='paper_assets/img//apple-icon.png') }}">
+  <!-- favicon here -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Match0912 - Residency Application Helper
+</title>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+<!--     Fonts and icons     -->
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+<!-- CSS Files -->
+<link href="{{ url_for('static', filename='paper_assets/css/bootstrap.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='paper_assets/css/paper-kit.css') }}" rel="stylesheet" />
+<!-- CSS Just for demo purpose, don't include it in your project -->
+<link href="{{ url_for('static', filename='paper_assets/demo/demo.css') }}" rel="stylesheet" />
+</head>
+
+<body class="index-page sidebar-collapse">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="300">
+    <div class="container">
+      <div class="navbar-translate">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}" rel="tooltip" title="Match0912" data-placement="bottom" target="_blank">
+          Match0912
+      </a>
+      <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-bar bar1"></span>
+          <span class="navbar-toggler-bar bar2"></span>
+          <span class="navbar-toggler-bar bar3"></span>
+      </button>
+  </div>
+  <div class="collapse navbar-collapse justify-content-end" id="navigation">
+    <ul class="navbar-nav">
+          <!--<li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank">
+              <i class="fa fa-twitter"></i>
+              <p class="d-lg-none">Twitter</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank">
+              <i class="fa fa-facebook-square"></i>
+              <p class="d-lg-none">Facebook</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank">
+              <i class="fa fa-instagram"></i>
+              <p class="d-lg-none">Instagram</p>
+            </a>
+        </li>-->
+        <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="Star on GitHub" data-placement="bottom" href="https://www.github.com/wavegate/match" target="_blank">
+              <i class="fa fa-github"></i>
+              <p class="d-lg-none">GitHub</p>
+          </a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-danger btn-round" href="{{ url_for('auth.login') }}">Profile / Login
+        </a>
+    </li>
+          <!--<li class="nav-item">
+            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
+          </li>
+          <li class="nav-item">
+            <a href="https://www.creative-tim.com/product/paper-kit-2-pro?ref=pk2-free-local" target="_blank" class="btn btn-danger btn-round">Upgrade to Pro</a>
+        </li>-->
+    </ul>
+</div>
+</div>
+</nav>
+<!-- End Navbar -->
+<div class="page-header section-dark" style="background-image: url('{{ url_for('static', filename='paper_assets/img/antoine-barres.jpg') }}">
+    <div class="filter"></div>
+    <div class="content-center">
+      <div class="container">
+        <div class="title-brand">
+          <h1 class="presentation-title">Match0912</h1>
+          <div class="fog-low">
+            <img src="{{ url_for('static', filename='paper_assets/img/fog-low.png') }}" alt="">
+        </div>
+        <div class="fog-low right">
+            <img src="{{ url_for('static', filename='paper_assets/img/fog-low.png') }}" alt="">
+        </div>
+    </div>
+    <h2 class="presentation-subtitle text-center">All of the /r/medicalschool spreadsheets in one place! <br><br>Select your specialty to get started:</h2><br>
+    <div class="row justify-content-center">
+        <form action="{{ url_for('main.specialtyselect') }}" method="POST">
+        <div class="btn-group">
+        <select name="specialtyselect" class="btn btn-danger btn-lg btn-round">
+            {% for specialty in specialties %}
+            <option href="{{url_for('main.specialty',id=specialty.id) }}" id="{{ specialty.id }}">{{ specialty.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" class="btn btn-danger btn-round btn-lg"></div>
+    </form>
+    </div>
+    </div>
+</div>
+</div>
+<!--<div class="moving-clouds" style="background-image: url({{ url_for('static', filename='paper_assets/img/clouds.png') }}); "></div>-->
+<h6 class="category category-absolute">Developed by Wavegate
+</h6>
+</div>
+<div class="main">
+    <div class="section text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 ml-auto mr-auto">
+            <h2 class="title">Stable, centralized, and moderated residency application info</h2>
+            <h5 class="description">Match0912 intends to create a hub where residency applicants can easily look up interview season information, contribute their own interview invites and help other users find their perfect program.</h5>
+            <br>
+            <a href="#paper-kit" class="btn btn-danger btn-round">See Details</a>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="info">
+          <div class="icon icon-danger">
+            <i class="nc-icon nc-album-2"></i>
+        </div>
+        <div class="description">
+            <h4 class="info-title">Review programs</h4>
+            <p class="description">(In development) Review residency program interview invite offers, fellowship information, salary, and more.</p>
+            <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
+        </div>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="info">
+      <div class="icon icon-danger">
+        <i class="nc-icon nc-bulb-63"></i>
+    </div>
+    <div class="description">
+        <h4 class="info-title">Forum</h4>
+        <p>Review programs, and open chats and discussions with other applicants to find the best program for you.</p>
+        <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
+    </div>
+</div>
+</div>
+<div class="col-md-3">
+    <div class="info">
+      <div class="icon icon-danger">
+        <i class="nc-icon nc-chart-bar-32"></i>
+    </div>
+    <div class="description">
+        <h4 class="info-title">Analysis</h4>
+        <p>(In development) Extrapolate from previous years' data to predict which programs you'll receive invites from and when</p>
+        <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
+    </div>
+</div>
+</div>
+<div class="col-md-3">
+    <div class="info">
+      <div class="icon icon-danger">
+        <i class="nc-icon nc-sun-fog-29"></i>
+    </div>
+    <div class="description">
+        <h4 class="info-title">Rank programs</h4>
+        <p>Keep track of your own stats, connect with other users through your personalized profile, and create your own rank list</p>
+        <a href="javascript:;" class="btn btn-link btn-danger">See more</a>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section section-dark text-center">
+  <div class="container">
+    <h2 class="title">A special thanks to:</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-profile card-plain">
+          <div class="card-avatar">
+            <a href="#avatar">
+              <img src="https://styles.redditmedia.com/t5_2re2p/styles/communityIcon_1bb1mg3ld1661.png?width=256&s=96c0f74d44bec61f5f113af041b9bf0e32de3901" alt="...">
+          </a>
+      </div>
+      <div class="card-body">
+        <a href="#paper-kit">
+          <div class="author">
+            <h4 class="card-title">/r/medicalschool</h4>
+            <h6 class="card-category">Community</h6>
+        </div>
+    </a>
+    <p class="card-description text-center">
+      Teamwork is so important that it is virtually impossible for you to reach the heights of your capabilities or make the money that you want without becoming very good at it.
+  </p>
+</div>
+<div class="card-footer text-center">
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-twitter"></i></a>
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-google-plus"></i></a>
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-linkedin"></i></a>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+    <div class="card card-profile card-plain">
+      <div class="card-avatar">
+        <a href="#avatar">
+          <img src="{{ url_for('static', filename='paper_assets/img/please.png')}}" alt="...">
+      </a>
+  </div>
+  <div class="card-body">
+    <a href="#paper-kit">
+      <div class="author">
+        <h4 class="card-title">Memes for MDs</h4>
+        <h6 class="card-category">Correspondents</h6>
+    </div>
+</a>
+<p class="card-description text-center">
+  The strength of the team is each individual member. The strength of each member is the team. If you can laugh together, you can work together, silence isn’t golden, it’s deadly.
+</p>
+</div>
+<div class="card-footer text-center">
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-twitter"></i></a>
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-google-plus"></i></a>
+    <a href="#pablo" class="btn btn-link btn-just-icon btn-neutral"><i class="fa fa-linkedin"></i></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="footer footer-black  footer-white ">
+  <div class="container">
+    <div class="row">
+      <nav class="footer-nav">
+        <ul>
+          <li>
+            <li><a href="{{ url_for('main.about') }}" target="_blank">About</a></li>
+        </li>
+    </ul>
+</nav>
+<div class="credits ml-auto">
+    <span class="copyright">
+      ©
+      <script>
+        document.write(new Date().getFullYear())
+    </script>, made with <i class="fa fa-heart heart"></i> by Wavegate
+</span>
+</div>
+</div>
+</div>
+</footer>
+<!--   Core JS Files   -->
+<script src="{{ url_for('static', filename='paper_assets/js/core/jquery.min.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='paper_assets/js/core/popper.min.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='paper_assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
+<!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+<script src="{{ url_for('static', filename='paper_assets/js/plugins/bootstrap-switch.js') }}"></script>
+<!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+<script src="{{ url_for('static', filename='paper_assets/js/plugins/nouislider.min.js') }}" type="text/javascript"></script>
+<!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+<script src="{{ url_for('static', filename='paper_assets/js/plugins/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='paper_assets/js/plugins/bootstrap-datepicker.js') }}" type="text/javascript"></script>
+<!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
+<script src="{{ url_for('static', filename='paper_assets/js/paper-kit.js') }}" type="text/javascript"></script>
+<script>
+  $(document).ready(function() {
+
+    if ($("#datetimepicker").length != 0) {
+      $('#datetimepicker').datetimepicker({
+        icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-chevron-up",
+          down: "fa fa-chevron-down",
+          previous: 'fa fa-chevron-left',
+          next: 'fa fa-chevron-right',
+          today: 'fa fa-screenshot',
+          clear: 'fa fa-trash',
+          close: 'fa fa-remove'
+      }
+  });
+  }
+  function scrollToDownload() {
+
+      if ($('.section-download').length != 0) {
+        $("html, body").animate({
+          scrollTop: $('.section-download').offset().top
+      }, 1000);
+    }
+}
+});
+</script>
+</body>
+
+</html>

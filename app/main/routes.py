@@ -35,7 +35,7 @@ from flask_socketio import join_room, leave_room, emit
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 def index():
-	return render_template('landing.html', specialties = Specialty.query.order_by(Specialty.name))
+	return render_template('newlanding.html', specialties = Specialty.query.order_by(Specialty.name))
 
 @bp.route('/programs/<specialty>', methods=['GET', 'POST'])
 def programs(specialty):
@@ -342,6 +342,12 @@ def specialty(id):
 		return redirect(url_for('main.specialty', id=specialty.id))
 	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()), form=form)
 
+@bp.route('/specialty', methods=['POST'])
+@csrf.exempt
+def specialtyselect():
+	specialty = Specialty.query.filter_by(name=request.form['specialtyselect']).first_or_404()
+	return redirect(url_for('main.specialty', id=specialty.id))
+
 @bp.route('/create_specialty', methods=['GET','POST'])
 @login_required
 def create_specialty():
@@ -509,3 +515,4 @@ def seedspecialties():
 def get_counts():
 	data = json.loads(request.data.decode())
 	url = data["url"]
+

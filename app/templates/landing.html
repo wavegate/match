@@ -36,6 +36,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="{{ url_for('main.index') }}" data-nav-section="home">Home</a></li>
             <li><a href="{{ url_for('main.about') }}" data-nav-section="features">Features</a></li>
+            <li><a href="{{ url_for('auth.login') }}">Profile / Login</a></li>
           </ul>
         </div>
       </div>
@@ -55,7 +56,7 @@
                 <div class="col-sm-3">
                 <a href="{{ url_for('main.specialty', id=specialty.id) }}" id="spnSelectedGroup" class="btn btn-block btn-primary">{{ specialty.name }}</a>
               </div>
-                {% endfor %}
+              {% endfor %}
         </div>
       </div>
     </div>
