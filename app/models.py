@@ -42,7 +42,7 @@ class User(UserMixin, db.Model):
 		primaryjoin=(followers.c.follower_id == id),
 		secondaryjoin=(followers.c.followed_id == id),
 		backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
-	programs = db.relationship('Program', secondary=link, back_populates='users', lazy='dynamic')
+	programs = db.relationship('Program', cascade="all,delete",secondary=link, back_populates='users', lazy='dynamic')
 	messages_sent = db.relationship('Message',
 									foreign_keys='Message.sender_id',
 									backref='author', lazy='dynamic')
@@ -178,7 +178,7 @@ class Program(db.Model):
 	url = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	users = db.relationship('User', secondary=link, back_populates='programs', lazy='dynamic')
+	users = db.relationship('User', cascade="all,delete",secondary=link, back_populates='programs', lazy='dynamic')
 	interviews = db.relationship('Interview', backref='interviewer', lazy='dynamic')
 	interview_dates = db.relationship('Interview_Date', backref='interviewer', lazy='dynamic')
 	interview_impressions = db.relationship('Interview_Impression', backref='program', lazy='dynamic')
