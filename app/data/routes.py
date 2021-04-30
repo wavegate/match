@@ -75,3 +75,12 @@ def delete_chats():
 		Chat.query.delete()
 		db.session.commit()
 	return redirect(url_for('main.index'))
+
+@bp.route('/remove_user_specialties')
+def remove_user_specialties():
+	if current_user.admin:
+		users = User.query.all()
+		for user in users:
+			user.specialty = None
+		db.session.commit()
+	return redirect(url_for('main.index'))
