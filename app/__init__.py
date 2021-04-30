@@ -17,7 +17,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_socketio import SocketIO
 
 db = SQLAlchemy()
-migrate = Migrate(render_as_batch=True)
+migrate = Migrate(render_as_batch=True, compare_type=True)
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')
