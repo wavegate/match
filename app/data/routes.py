@@ -100,3 +100,38 @@ def remove_user_specialties():
 			program.users = []
 		db.session.commit()
 	return redirect(url_for('main.index'))
+
+@bp.route('/add_salary')
+def add_salary():
+	def generate(): 
+		if current_user.admin:
+			with current_app.open_resource('static/data/salary.json') as f:
+				data = json.load(f)
+				count = 0
+				for i in data:
+					specialty = Specialty.query.filter_by(name=i['specialty']).first_or_404()
+					program = Program.query.filter_by(name=i['program'], specialty=specialty).first_or_404()
+					found = i['found']
+					if found:
+						program.salary = ", ".join(i['found'])
+						program.salary_url = i['url']
+						db.session.commit()
+					count = count + 1
+					yield(str(count) + " ")
+	return Response(stream_with_context(generate()))
+
+@bp.route('/add_images')
+def add_images():
+	def generate(): 
+		if current_user.admin:
+			with current_app.open_resource('static/data/images.json') as f:
+				data = json.load(f)
+				count = 0
+				for i in data:
+					specialty = Specialty.query.filter_by(name=i['specialty']).first_or_404()
+					program = Program.query.filter_by(name=i['program'], specialty=specialty).first_or_404()
+					program.imageurl = i['image']
+					db.session.commit()
+					count = count + 1
+					yield(str(count) + " ")
+	return Response(stream_with_context(generate()))

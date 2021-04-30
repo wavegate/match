@@ -13,7 +13,7 @@ from app.auth.email import send_password_reset_email
 def login():
     specialty2 = session.get('specialty')
     if current_user.is_authenticated:
-        return redirect(url_for('main.user', username=current_user.username))
+        return redirect(request.referrer)
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -32,7 +32,7 @@ def login():
 def logout():
     specialty2 = session.get('specialty')
     logout_user()
-    return redirect(url_for('main.specialty', id=specialty2))
+    return redirect(request.referrer)
 
 
 @bp.route('/register', methods=['GET', 'POST'])

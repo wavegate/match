@@ -184,6 +184,9 @@ class Program(db.Model):
 	interview_impressions = db.relationship('Interview_Impression', backref='program', lazy='dynamic')
 	language = db.Column(db.String(5))
 	image = db.Column(db.String(140))
+	salary = db.Column(db.Text)
+	salary_url = db.Column(db.Text)
+	imageurl = db.Column(db.Text)
 	def __repr__(self):
 		return '<Program {}>'.format(self.body)
 	def get_latest_interviews(self):

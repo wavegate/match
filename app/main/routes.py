@@ -72,7 +72,7 @@ def program(program_id):
 	form = EmptyForm()
 	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, interview_impressions=interview_impressions.items)
 
-@bp.route('/delete_program/<int:program_id>', methods=['POST'])
+@bp.route('/delete_program/<int:program_id>', methods=['GET','POST'])
 @login_required
 def delete_program(program_id):
 	if current_user.admin:
@@ -139,7 +139,7 @@ def add_interview(program_id):
 	return render_template('add_interview.html',specialty2=specialty2, title=_('Add Interview Offer'),
 						   form=form, program=program)
 
-@bp.route('/delete_interview/<int:interview_id>', methods=['POST'])
+@bp.route('/delete_interview/<int:interview_id>', methods=['GET','POST'])
 @login_required
 def delete_interview(interview_id):
 	interview = Interview.query.get(interview_id)
@@ -175,7 +175,7 @@ def user(username):
 	return render_template('user.html', specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
 						   next_url=next_url, prev_url=prev_url, form=form)
 
-@bp.route('/follow_program/<int:program_id>', methods=['POST'])
+@bp.route('/follow_program/<int:program_id>', methods=['GET', 'POST'])
 @login_required
 def follow_program(program_id):
 	form = EmptyForm()
@@ -189,7 +189,7 @@ def follow_program(program_id):
 		flash(_('You are following %(name)s!', name=program.name))
 	return redirect(request.referrer)
 
-@bp.route('/unfollow_program/<int:program_id>', methods=['POST'])
+@bp.route('/unfollow_program/<int:program_id>', methods=['GET', 'POST'])
 @login_required
 def unfollow_program(program_id):
 	form = EmptyForm()

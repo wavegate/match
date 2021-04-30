@@ -3,110 +3,131 @@
 {% block content %}
 <div class="content">
 	<div class="row">
-		<div class="col-md-8">
-			<div class="row">
-				<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<h5 class="card-title">Interview invites for {{ program.name }} ({{ program.specialty.name }})</h5>
-					</div>
-					<div class="card-body">
-						{% for interview in interviews %}
-						{% include '_interview.html' %}
-						{% else %}
-						No data has been uploaded for this program yet.
-						{% endfor %}
-					</div>
-					<div class="card-footer">
-                <div class="card-footer">
-                    <div class="chart-legend">
-                        <i class="fa fa-circle text-primary"></i>Date interview was offered
-                        <i class="fa fa-circle text-success"></i>Interview date (still available)
-                        <i class="fa fa-circle text-danger"></i>Interview date (already full)
-                    </div>
-                </div>
-            </div>
-				</div>
-			</div>
-		</div>
-			<div class="row">
-				<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<h5 class="card-title">Impressions</h5>
-					</div>
-					<div class="card-body">
-						{% if postform %}
-						{{ render_form(postform) }}
-						{% endif %}
-						<p>
-							{% for interview_impression in interview_impressions %}
-							{% include '_interview_impression.html' %}
-							{% endfor %}
-						</p>
-						<nav aria-label="...">
-							<ul class="pagination">
-								<li class="page-item{% if not prev_url %} disabled{% endif %}">
-									<a href="{{ prev_url or '#' }}" class="page-link">
-										<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-									</a>
-								</li>
-								<li class="page-item{% if not next_url %} disabled{% endif %}">
-									<a href="{{ next_url or '#' }}" class="page-link">
-										{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-									</a>
-								</li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-			</div>
-			</div>
-		</div>
-
 		<div class="col-md-4">
-			<div class="card ">
-				<div class="card-header ">
-					<div class="card-header ">
-						<h5 class="card-title">{{ program.name }}</h5>
-						<p class="card-category">Specialty: {{ program.specialty.name }}</p>
-						<p>Location: {{ program.city }}, {{program.state}}</p>
-						<p>Website: {% if program.url %}<a href="{{program.url}}">{{ program.url }}</a>{% else %}None{% endif %}</p>
-						<p>Accreditation ID: {{ program.accreditation_id }}</p>
-						<p>Status: {{ program.status }}</p>
-						<p class="card-category"></p>
-						{% if not current_user.is_anonymous %}
-							{% if not current_user.is_following_program(program) %}
-							<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post">
-								{{ form.hidden_tag() }}
-								{{ form.submit(value=_('Follow'), class_='btn btn-default') }}
-							</form>
-							{% else %}
-							<form action="{{ url_for('main.unfollow_program', program_id=program.id) }}" method="post">
-								{{ form.hidden_tag() }}
-								{{ form.submit(value=_('Unfollow'), class_='btn btn-default') }}
-							</form>
-							{% endif %}
-							{% if current_user.admin == True %}
-							<form action="{{ url_for('main.delete_program', program_id=program.id)}}" method="post">
-								{{ form.hidden_tag() }}
-								{{ form.submit(value=_('Delete'), class_='btn btn-default')}}
-							</form>
-							{% endif %}
-							<form action="{{ url_for('main.add_interview', program_id=program.id)}}" method="post">
-								{{ form.hidden_tag() }}
-								{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
-							</form>
-							{% endif %}
+			<div class="card card-user">
+				<div class="image" style="border-top-left-radius:12px;border-top-right-radius:12px;">
+					<a href="{{ program.imageurl }}" target="_blank"><img src="{{ program.imageurl }}" style="object-fit: cover;margin-top:-100px;"></a>
+				</div>
+				<div class="card-body">
+					<div class="d-flex justify-content-center text-center">
+						<h5 class="title">{{ program.name }}</h5>
 					</div>
-					<!--<div class="card-body align-items-center">
-						{{ program.body }} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+					<div class="row">
+						<div class="col-md-12">
+							<p class="description text-center">
+								{{ program.specialty.name }}
+								<br>{{ program.city }}, {{program.state}}
+								<br>
+								{% if program.url %}<a href="{{program.url}}" target="_blank">{{ program.url }}</a>{% endif %}
+								<br>Accreditation ID: {{ program.accreditation_id }}
+								<br>Status: {{ program.status }}
+							</p>
+								<div class="text-center">
+									{% if not current_user.is_anonymous %}
+								{% if not current_user.is_following_program(program) %}
+								<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post">
+									{{ form.hidden_tag() }}
+									<button type="submit" title="Follow" class="fas fa-user-plus btn btn-success btn-round"></button>
+								</form>
+								{% else %}
+								<form action="{{ url_for('main.unfollow_program', program_id=program.id) }}" method="post">
+									{{ form.hidden_tag() }}
+									<button type="submit" title="Unfollow" class="fas fa-user-minus btn btn-danger btn-round"></button>
+								</form>
+								{% endif %}
+								{% if current_user.admin == True %}
+								<form action="{{ url_for('main.delete_program', program_id=program.id)}}" method="post">
+										{{ form.hidden_tag() }}
+										{{ form.submit(value=_('Delete'), class_='btn btn-primary')}}
+									</form>
+									{% endif %}
+									{% endif %}
+								</div>
+						</div>
 					</div>
-					<p>Other programs from institution. Open house / meet and greet dates. LOI updates. Map</p>-->
+					<ul class="nav nav-tabs">
+					    <li class="nav-item">
+					        <a href="#salary" class="nav-link active" data-toggle="tab">Salary</a>
+					    </li>
+					    <li class="nav-item">
+					        <a href="#impressions" class="nav-link" data-toggle="tab">Impressions</a>
+					    </li>
+					</ul>
+
+					<div class="tab-content" style="padding-top:15px">
+					    <div class="tab-pane fade show active" id="salary">
+					    	{% if program.salary %}
+					        <a href="{{ program.salary_url }}" target="_blank">(Check Website)</a>
+					        <p>{{ program.salary }}</p>
+					        {% else %}
+					        <p>No salary information yet.</p>
+					        {% endif %}
+					    </div>
+					    <div class="tab-pane fade" id="impressions">
+					        {% if postform %}
+							{{ render_form(postform) }}
+							{% endif %}
+							<p>
+								{% if not interview_impressions %}There are no impressions yet.{% endif %}
+								{% for interview_impression in interview_impressions %}
+								{% include '_interview_impression.html' %}
+								{% endfor %}
+							</p>
+							<nav aria-label="...">
+								<ul class="pagination">
+									<li class="page-item{% if not prev_url %} disabled{% endif %}">
+										<a href="{{ prev_url or '#' }}" class="page-link">
+											<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
+										</a>
+									</li>
+									<li class="page-item{% if not next_url %} disabled{% endif %}">
+										<a href="{{ next_url or '#' }}" class="page-link">
+											{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+					    </div>
+					    <div class="tab-pane fade" id="messages">
+					        <p>Messages tab content ...</p>
+					    </div>
+					</div>
+				</div>
+				<div class="card-footer">
+					<hr>
+						<small>*Information, including images from Unsplash, are automatically generated. Please report incorrect information through the About page.</small>
+				</div>
+			</div>
+		</div>
+	<div class="col-md-8">
+		<div class="card">
+			<div class="card-body">
+
+				{% for interview in interviews %}
+				{% include '_interview.html' %}
+				{% else %}
+				No data has been uploaded for this program yet.
+				{% endfor %}
+
+				{% if not current_user.is_anonymous %}
+				<form action="{{ url_for('main.add_interview', program_id=program.id)}}" method="post">
+					{{ form.hidden_tag() }}
+					{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-primary')}}
+				</form>
+				{% endif %}
+			</div>
+			<div class="card-footer">
+				<div class="card-footer">
+					<div class="chart-legend">
+						<i class="fa fa-circle text-primary"></i>Date interview was offered
+						<i class="fa fa-circle text-success"></i>Interview date (still available)
+						<i class="fa fa-circle text-danger"></i>Interview date (already full)
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 {% endblock %}
 
