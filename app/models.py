@@ -169,7 +169,7 @@ class Program(db.Model):
 	__tablename__ = 'program'
 	id = db.Column(db.Integer, primary_key=True)
 	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
-	name = db.Column(db.String(140))
+	name = db.Column(db.String(300))
 	body = db.Column(db.Text)
 	city = db.Column(db.String(140))
 	state = db.Column(db.String(140))
