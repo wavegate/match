@@ -1,8 +1,8 @@
-"""threads
+"""start
 
-Revision ID: 9160b5d45ffe
+Revision ID: 29910811f4c8
 Revises: 
-Create Date: 2021-04-25 18:09:50.299252
+Create Date: 2021-04-29 22:13:58.805339
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9160b5d45ffe'
+revision = '29910811f4c8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,6 +42,19 @@ def upgrade():
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
         batch_op.create_index(batch_op.f('ix_user_username'), ['username'], unique=True)
+
+    op.create_table('chat',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('text', sa.Text(), nullable=True),
+    sa.Column('specialty_id', sa.Integer(), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['specialty_id'], ['specialty.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('chat', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_chat_timestamp'), ['timestamp'], unique=False)
 
     op.create_table('followers',
     sa.Column('follower_id', sa.Integer(), nullable=True),
@@ -78,9 +91,13 @@ def upgrade():
     op.create_table('program',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('specialty_id', sa.Integer(), nullable=True),
-    sa.Column('name', sa.String(length=140), nullable=True),
+    sa.Column('name', sa.Text(), nullable=True),
     sa.Column('body', sa.Text(), nullable=True),
+    sa.Column('city', sa.String(length=140), nullable=True),
     sa.Column('state', sa.String(length=140), nullable=True),
+    sa.Column('accreditation_id', sa.String(length=140), nullable=True),
+    sa.Column('status', sa.String(length=140), nullable=True),
+    sa.Column('url', sa.String(length=140), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('language', sa.String(length=5), nullable=True),
@@ -239,6 +256,10 @@ def downgrade():
 
     op.drop_table('message')
     op.drop_table('followers')
+    with op.batch_alter_table('chat', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_chat_timestamp'))
+
+    op.drop_table('chat')
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_user_username'))
         batch_op.drop_index(batch_op.f('ix_user_email'))
