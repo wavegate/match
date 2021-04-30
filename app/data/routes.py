@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 	jsonify, current_app, Response, stream_with_context, make_response, session
 from flask_login import current_user, login_required
 from app import db, csrf
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat, Interview_Impression
 import logging
 import re
 import pandas as pd
@@ -73,6 +73,13 @@ def delete_interview_dates():
 def delete_chats():
 	if current_user.admin:
 		Chat.query.delete()
+		db.session.commit()
+	return redirect(url_for('main.index'))
+
+@bp.route('/delete_interview_impressions')
+def delete_interview_impressions():
+	if current_user.admin:
+		Interview_Impression.query.delete()
 		db.session.commit()
 	return redirect(url_for('main.index'))
 
