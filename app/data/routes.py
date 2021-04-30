@@ -81,7 +81,15 @@ def remove_user_specialties():
 	if current_user.admin:
 		users = User.query.all()
 		for user in users:
-			user.specialty = None
-			user.programs = None
+			user.specialty_id = None
+			user.programs = []
+		db.session.commit()
+		specialties = Specialty.query.all()
+		for specialty in specialties:
+			specialty.users = []
+			specialty.programs = []
+		db.session.commit()
+		for program in Program.query.all():
+			program.users = []
 		db.session.commit()
 	return redirect(url_for('main.index'))
