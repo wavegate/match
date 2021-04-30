@@ -55,3 +55,16 @@ def create_programs():
 					yield(str(count) + " ")
 	return Response(stream_with_context(generate()))
 
+@bp.route('/delete_interviews')
+def delete_interviews():
+	if current_user.admin:
+		Interview.query.delete()
+		db.session.commit()
+	return redirect(url_for('main.index'))
+
+@bp.route('/delete_interview_dates')
+def delete_interview_dates():
+	if current_user.admin:
+		Interview_Date.query.delete()
+		db.session.commit()
+	return redirect(url_for('main.index'))
