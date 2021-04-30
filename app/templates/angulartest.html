@@ -1,0 +1,14 @@
+<html ng-app="MyApp">
+<body ng-controller="MyAppController">
+
+
+<form ng-submit="getResults()">
+	<input ng-model="url" placeholder="Enter URL...">
+</form>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

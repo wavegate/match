@@ -68,6 +68,13 @@
 			<div class="card ">
 				<div class="card-header ">
 					<div class="card-header ">
+						<h5 class="card-title">{{ program.name }}</h5>
+						<p class="card-category">Specialty: {{ program.specialty.name }}</p>
+						<p>Location: {{ program.city }}, {{program.state}}</p>
+						<p>Website: {% if program.url %}<a href="{{program.url}}">{{ program.url }}</a>{% else %}None{% endif %}</p>
+						<p>Accreditation ID: {{ program.accreditation_id }}</p>
+						<p>Status: {{ program.status }}</p>
+						<p class="card-category"></p>
 						{% if not current_user.is_anonymous %}
 							{% if not current_user.is_following_program(program) %}
 							<form action="{{ url_for('main.follow_program', program_id=program.id) }}" method="post">
@@ -91,9 +98,6 @@
 								{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-default')}}
 							</form>
 							{% endif %}
-						<h5 class="card-title">{{ program.name }}</h5>
-						<p class="card-category">Specialty: {{ program.specialty.name }}</p>
-						<p class="card-category"></p>
 					</div>
 					<!--<div class="card-body align-items-center">
 						{{ program.body }} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

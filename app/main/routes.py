@@ -175,25 +175,6 @@ def user(username):
 	return render_template('user.html', specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
 						   next_url=next_url, prev_url=prev_url, form=form)
 
-@bp.route('/follow/<username>', methods=['POST'])
-@login_required
-def follow(username):
-	form = EmptyForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(username=username).first()
-		if user is None:
-			flash(_('User %(username)s not found.', username=username))
-			return redirect(url_for('main.programs'))
-		if user == current_user:
-			flash(_('You cannot follow yourself!'))
-			return redirect(url_for('main.user', username=username))
-		current_user.follow(user)
-		db.session.commit()
-		flash(_('You are following %(username)s!', username=username))
-		return redirect(url_for('main.user', username=username))
-	else:
-		return redirect(url_for('main.programs'))
-
 @bp.route('/follow_program/<int:program_id>', methods=['POST'])
 @login_required
 def follow_program(program_id):
@@ -206,9 +187,7 @@ def follow_program(program_id):
 		current_user.follow_program(program)
 		db.session.commit()
 		flash(_('You are following %(name)s!', name=program.name))
-		return redirect(url_for('main.specialty', id=program.specialty_id))
-	else:
-		return redirect(url_for('main.specialty', id=program.specialty_id))
+	return redirect(request.referrer)
 
 @bp.route('/unfollow_program/<int:program_id>', methods=['POST'])
 @login_required
@@ -222,7 +201,7 @@ def unfollow_program(program_id):
 		current_user.unfollow_program(program)
 		db.session.commit()
 		flash(_('You are not following %(name)s.', name=program.name))
-	return redirect(url_for('main.specialty', id=program.specialty_id))
+	return redirect(request.referrer)
 
 @bp.route('/send_message/<recipient>', methods=['GET', 'POST'])
 @login_required
@@ -513,6 +492,8 @@ def seedspecialties():
 
 @bp.route('/start', methods=['POST'])
 def get_counts():
-	data = json.loads(request.data.decode())
-	url = data["url"]
+    return 1
 
+@bp.route('/angulartest')
+def angulartest():
+	return render_template('angulartest.html')

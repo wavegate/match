@@ -51,6 +51,7 @@ def create_app(config_class=Config):
     admin.add_view(AdminView(models.Notification, db.session))
     admin.add_view(AdminView(models.Message, db.session))
     admin.add_view(AdminView(models.Post, db.session))
+    admin.add_view(AdminView(models.Thread, db.session))
     admin.add_view(AdminView(models.Chat, db.session))
 
     from app.errors import bp as errors_bp
@@ -64,6 +65,9 @@ def create_app(config_class=Config):
 
     from app.cognition import bp as cognition_bp
     app.register_blueprint(cognition_bp, url_prefix='/cognition')
+
+    from app.data import bp as data_bp
+    app.register_blueprint(data_bp, url_prefix='/data')
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
