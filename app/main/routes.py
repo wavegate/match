@@ -31,6 +31,7 @@ import math
 import time
 import ast
 from flask_socketio import join_room, leave_room, emit
+import openpyxl
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
@@ -257,27 +258,38 @@ def upload_file(specialty):
 		def generate():
 			spec = Specialty.query.filter_by(name=specialty).first_or_404()
 			f = request.files['file']
-			f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2,3])
-			f = f.replace({np.nan: None})
-			for index, row in f.iterrows():
-				state = row[0]
-				name = row[1]
-				invited = ast.literal_eval(row[3])
-				if invited:
-					invited = dt.datetime.strptime(ast.literal_eval(row[3])[0], '%m/%d/%Y')
-				else:
-					invited = None
-				dates = ast.literal_eval(row[2])
-				d = []
-				for date in dates:
-					d.append(dt.datetime.strptime(date, '%m/%d/%Y'))
-				program = Program(name=name, state=state, specialty=spec)
-				interview = Interview(date=invited,interviewer=program,interviewee=current_user)
-				dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), d))
-				interview.dates = dates
-				db.session.add(interview)
-				db.session.commit()
-				yield(str(index))
+			wb = openpyxl.load_workbook(f)
+			for ws in wb:
+				if ws.title == "Surgery":
+					for col in ws.iter_cols(min_row=3,min_col=7,max_col=7):
+						for cell in col:
+							if cell.value:
+								name = cell.value
+								invited = ast.literal_eval(ws.cell(cell.row,cell.column-4).value)
+								if invited:
+									invited = dt.datetime.strptime(invited[0], '%m/%d/%Y')
+
+			#f = pd.read_excel(f, engine='openpyxl', sheet_name=specialty, header=0, usecols=[0,1,2,3])
+			#f = f.replace({np.nan: None})
+			#for index, row in f.iterrows():
+			#	state = row[0]
+			#	name = row[1]
+			#	invited = ast.literal_eval(row[3])
+			#	if invited:
+			#		invited = dt.datetime.strptime(ast.literal_eval(row[3])[0], '%m/%d/%Y')
+			#	else:
+			#		invited = None
+			#	dates = ast.literal_eval(row[2])
+			#	d = []
+			#	for date in dates:
+			#		d.append(dt.datetime.strptime(date, '%m/%d/%Y'))
+			#	program = Program(name=name, state=state, specialty=spec)
+			#	interview = Interview(date=invited,interviewer=program,interviewee=current_user)
+			#	dates = list(map(lambda x: Interview_Date(date=x, interviewer=program,interviewee=current_user, invite=interview,full=False), d))
+			#	interview.dates = dates
+			#	db.session.add(interview)
+			#	db.session.commit()
+			#	yield(str(index))
 		return Response(stream_with_context(generate()))
 	return render_template('upload.html')
 
@@ -480,20 +492,3 @@ def delete_thread(thread_id):
 		db.session.commit()
 		flash('Thread deleted!')
 	return redirect(request.referrer)
-
-@bp.route('/seedspecialties')
-def seedspecialties():
-	if current_user.admin:
-		specialties = ['Anesthesiology', 'Child Neurology', 'Dermatology', 'Diagnostic Radiology', 'Emergency Medicine', 'Family Medicine', 'Internal Medicine', 'Interventional Radiology', 'Neurological Surgery', 'Neurology', 'Obstetrics and Gynecology', 'Ophthalmology','Orthopaedic Surgery', 'Otolaryngology', 'Pathology', 'Pediatrics', 'Physical Medicine and Rehabilitation', 'Plastic Surgery', 'Psychiatry', 'Radiation Oncology', 'General Surgery', 'Thoracic Surgery', 'Urology', 'Vascular Surgery', 'Prelim or Transitional Year']
-		for specialty in specialties:
-			db.session.add(Specialty(name=specialty))
-			db.session.commit()
-	return redirect(url_for('main.index'))
-
-@bp.route('/start', methods=['POST'])
-def get_counts():
-    return 1
-
-@bp.route('/angulartest')
-def angulartest():
-	return render_template('angulartest.html')

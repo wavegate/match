@@ -13,7 +13,7 @@ from app.auth.email import send_password_reset_email
 def login():
     specialty2 = session.get('specialty')
     if current_user.is_authenticated:
-        return redirect(request.referrer)
+        return redirect(url_for('main.user', username=current_user.username))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()

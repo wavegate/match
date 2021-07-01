@@ -8,12 +8,14 @@ import logging
 import re
 import pandas as pd
 import datetime as dt
+from datetime import datetime
 import dateutil.parser
 import os
 import json
 from app.data import bp
 import urllib.request
 import app
+import openpyxl as openpyxl
 
 @bp.route('/delete_specialties')
 def delete_specialties():
@@ -39,6 +41,39 @@ def delete_programs():
 		Program.query.delete()
 		db.session.commit()
 	return redirect(url_for('main.index'))
+
+@bp.route('/upload_surgery', methods=['GET', 'POST'])
+@csrf.exempt
+def upload_surgery():
+	if request.method == 'POST':
+		if current_user.admin:
+			def generate():
+				spec = Specialty.query.filter_by(name='Surgery').first_or_404()
+				print(spec.name)
+				wb = openpyxl.load_workbook(request.files['file'])
+				ws = wb.active
+				for row in ws.iter_rows(min_row=1):
+					program_name = row[0].value
+					program = Program.query.filter_by(name=program_name, specialty_id=spec.id).first_or_404()
+					program_offer_dates = row[1].value
+					program_interview_dates = row[2].value
+					offer_dates = None
+					interview_dates = None
+					if program_offer_dates:
+						offer_dates = list(map(lambda x: Interview(date=datetime.strptime(x, "%m/%d/%Y"), interviewer=program,interviewee=current_user), program_offer_dates.split(",")))
+						for offer_date in offer_dates:
+							db.session.add(offer_date)
+					if program_interview_dates:
+						interview_dates = list(map(lambda x: Interview_Date(date=datetime.strptime(x, "%m/%d/%Y"), interviewer=program,interviewee=current_user,full=True), program_interview_dates.split(",")))
+						for interview_date in interview_dates:
+							db.session.add(interview_date)
+					db.session.commit()
+					yield(program_name)
+			return Response(stream_with_context(generate()))
+		return redirect(url_for('main.index'))
+	return render_template('upload.html')
+
+
 
 @bp.route('/create_programs')
 def create_programs():
