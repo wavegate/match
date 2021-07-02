@@ -333,6 +333,15 @@ def specialty(id):
 		return redirect(url_for('main.specialty', id=specialty.id))
 	return render_template('specialty.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()), form=form)
 
+@bp.route('/impressions/<int:id>', methods=['GET'])
+def interview_impressions(id):
+	session['specialty'] = str(id)
+	specialty2 = session.get('specialty')
+	specialty = Specialty.query.get(id)
+	current_user.special_id = id
+	db.session.commit()
+	return render_template('impressions.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()))
+
 @bp.route('/specialty', methods=['POST'])
 @csrf.exempt
 def specialtyselect():

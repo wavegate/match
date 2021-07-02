@@ -1,0 +1,15 @@
+<tr data-title="bootstrap table">
+	<td>
+		{% if program.state %}{{ program.state }}{% endif %}
+	</td>
+	<td>
+		<span style="display:none">{{ program.name }}</span><a href="{{ url_for('main.program', program_id=program.id) }}">
+			{{ program.name }}
+		</a>
+	</td>
+	<td>
+		{% for impression in program.interview_impressions %}
+		<blockquote>{{ impression.body }}</blockquote>
+		{% endfor %}
+	</td>
+</tr>

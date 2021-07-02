@@ -73,7 +73,30 @@ def upload_surgery():
 		return redirect(url_for('main.index'))
 	return render_template('upload.html')
 
-
+@bp.route('/upload_surgery_interview_impressions', methods=['GET', 'POST'])
+@csrf.exempt
+def upload_surgery_interview_impressions():
+	if request.method == 'POST':
+		if current_user.admin:
+			def generate():
+				spec = Specialty.query.filter_by(name='Surgery').first()
+				wb = openpyxl.load_workbook(request.files['file'])
+				ws = wb.active
+				for row in ws.iter_rows(min_row=1):
+					program_name = row[0].value
+					program = Program.query.filter_by(name=program_name, specialty_id=spec.id).first()
+					if program:
+						program_interview_impressions = row[1].value
+						interview_impressions = None
+						if program_interview_impressions:
+							interview_impressions = list(map(lambda x: Interview_Impression(body=x, author=current_user, program=program), program_interview_impressions.split("XXXXX")))
+							for interview_impression in interview_impressions:
+								db.session.add(interview_impression)
+						db.session.commit()
+						yield(program_name)
+			return Response(stream_with_context(generate()))
+		return redirect(url_for('main.index'))
+	return render_template('upload.html')
 
 @bp.route('/create_programs')
 def create_programs():

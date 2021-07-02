@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{% block page_head %}{{ specialty.name }} Interview Invites{% endblock %}
+{% block page_head %}{{ specialty.name }} Interview Impressions{% endblock %}
+
 
 {% block sidebar %}
 {% if not current_user.is_anonymous %}
@@ -12,13 +13,13 @@
           </li>
           {% endif %}
           {% if specialty2 %}
-          <li class="active">
+          <li>
             <a href="{{ url_for('main.specialty', id=specialty2) }}">
               <i class="nc-icon nc-calendar-60"></i>
               <p>Interview Invites</p>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="{{ url_for('main.interview_impressions', id=specialty2) }}">
               <i class="nc-icon nc-tie-bow"></i>
               <p>Interview Impressions</p>
@@ -46,6 +47,16 @@
           {% endblock %}
 
 {% block content %}
+<style>
+ blockquote:before {
+  font-family: 'FontAwesome';
+  
+  content:"\f10d";
+  color: rgba(0,0,0,0.1);
+  font-size: 0.8em;
+  vertical-align: 0.8em;
+}
+</style>
 <div class="content">
   <div class="row">
     <div class="col-md-12">
@@ -53,9 +64,9 @@
         <div class="card-body">
           <p><i class="fa fa-question-circle"></i> What's This?</p>
           <p>Below you will find data for each individual residency program from the 2020-2021 application cycle:
-          <ul><li>WHEN interview invites were received by applicants</li><li>WHAT interview dates were available for that offer</li></ul>
+          <ul><li>Impressions of applicants' interview experience</li></ul>
           <p>Data is extracted from previous Reddit /r/medicalschool spreadsheets as well as supplied by other users of residencymatch.app.</p>
-          <p> You can log in to add your own interview invite data and follow programs to receive updates on when others receive invites. Click on individual program names to view detailed residency information such as interview impressions, salary, etc.</p>
+          <p>Please log in and click on the name of the program to add your own interview impressions.</p>
         </div>
       </div>
     </div>
@@ -73,15 +84,11 @@
                         <thead class="text-primary">
                             <th data-sortable="true" data-field="1">State</th>
                             <th data-sortable="true" data-field="2">Name</th>
-                            <th data-sortable="true" data-field="4">Latest invite dates</th>
-                            <th data-sortable="true" data-field="5">Latest interview dates</th>
-                            {% if current_user %}
-                            <th data-field="6">Functions</th>
-                            {% endif %}
+                            <th data-sortable="false" data-field="4">Interview Impressions</th>
                         </thead>
                         <tbody>
                             {% for program in programs %}
-                            {% include '_program.html' %}
+                            {% include '_program_impression.html' %}
                             {% endfor %}
                         </tbody>
                     </table>
@@ -97,23 +104,6 @@
         </div>
     </div>
 </div>
-{% if current_user.admin == True %}
-{% if form %}
-<div class="row">
-  <div class="col-md-12">
-    <div class="card ">
-      <div class="card-header ">
-        <h5 class="card-title">Add Program</h5>
-        <p class="card-category"></p>
-    </div>
-    <div class="card-body ">
-        {{ render_form(form) }}
-    </div>
-</div>
-</div>
-</div>
-{% endif %}
-{% endif %}
 </div>
 
 
