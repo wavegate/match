@@ -29,7 +29,6 @@ Coded by www.creative-tim.com
   {% block css %}
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
   <!-- CSS Files -->
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/paper-dashboard.css') }}" rel="stylesheet" />
@@ -37,6 +36,8 @@ Coded by www.creative-tim.com
   <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
   <link href="https://demos.creative-tim.com/bs3/paper-dashboard/assets/css/animate.min.css" rel="stylesheet">
   {% endblock %}
+  <script src="https://kit.fontawesome.com/168ac382af.js" crossorigin="anonymous"></script>
+  <link rel="shortcut icon" href="#" />
 </head>
 
 <body>
@@ -215,7 +216,6 @@ Coded by www.creative-tim.com
   <script src="{{ url_for('static', filename='js/paper-dashboard.js') }}"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script src="https://kit.fontawesome.com/168ac382af.js" crossorigin="anonymous"></script>
   {{ moment.include_moment() }}
   <script>
     function goBack() {
