@@ -16,7 +16,7 @@
 								</a>
 							</td>
 							<td>
-								<span id="thread{{ thread.id }}" style="font-size:1.6em">{{ thread.title }}</span><br/>
+								<span id="thread{{ thread.id }}" style="font-size:1.6em">{% if thread.title %}{{ thread.title }}{% else %}No Thread Title{% endif %}</span><br/>
 									<a href="{{ url_for('main.user', username=thread.author.username) }}">
 										{{ thread.author.username }}
 									</a>
@@ -36,9 +36,19 @@
 						</tr>
 					</table>
                 	{% if not current_user.is_anonymous %}
-                	{% if postform %}
-					{{ render_form(postform) }}
-					{% endif %}
+                	<form action="" method="post">
+				        {% if postform %}
+				        {{ postform.hidden_tag() }}
+	                    <div class="form-group">
+	                        {{ postform.post.label(class_="col-form-label") }}<br>
+	                        {{ postform.post(class_="form-control") }}
+	                        {% for error in postform.post.errors %}
+	                        <span style="color: red;">[{{ error }}]</span>
+	                        {% endfor %}
+	                        {{ postform.submit(class_="btn btn-primary btn-md") }}
+	                    </div>
+						{% endif %}
+					</form>
 					{% else %}
 					<p>Please log in to post a comment.</p>
 					{% endif %}
