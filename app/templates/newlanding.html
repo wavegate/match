@@ -94,20 +94,56 @@ The above copyright notice and this permission notice shall be included in all c
 </nav>
 <!-- End Navbar -->
 <style>
+.page-header::before {    
+      content: "";
+      background-image: url("{{ url_for('static', filename='paper_assets/img/antoine-barres.jpg') }}");
+      background-size: cover;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.50;
+}
+.info-title {
+  color: black;
+  font-weight: 500;
+}
+.title {
+  color: black;
+  font-weight: 600;
+}
+.description {
+  color: rgb(20,20,20);
+  font-weight: 400;
+}
 #specialty-selector {
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
 }
+.fog-low {
+  margin-bottom: -43px;
+  opacity: 0.50;
+}
+.presentation-subtitle {
+  font-weight: 400;
+}
 @media only screen and (max-width: 768px) {
+  .navbar.navbar-transparent {
+    padding-top: 0px;
+  }
   #specialty-selector {
     max-width: 240px;
   }
   .presentation-title {
-    font-size: 5rem;
+    font-size: 4rem;
+  }
+  .presentation-subtitle {
+    font-size: 1rem;
   }
 }
 </style>
-<div class="page-header section-dark" style="background-image: url('{{ url_for('static', filename='paper_assets/img/antoine-barres.jpg') }}">
+<div class="page-header section-dark">
     <div class="filter"></div>
     <div class="content-center">
       <div class="container">
@@ -172,7 +208,7 @@ The above copyright notice and this permission notice shall be included in all c
     </div>
     <div class="description">
         <h4 class="info-title">Forum</h4>
-        <p>Share your interview impressions, chat, and discuss with other applicants to find the best program for you.</p>
+        <p class="description">Share your interview impressions, chat, and discuss with other applicants to find the best program for you.</p>
         <!--<a href="javascript:;" class="btn btn-link btn-danger">See more</a>-->
     </div>
 </div>
@@ -184,7 +220,7 @@ The above copyright notice and this permission notice shall be included in all c
     </div>
     <div class="description">
         <h4 class="info-title">Analysis</h4>
-        <p>(In development) Extrapolate from previous years' data to predict which programs you'll receive invites from and when</p>
+        <p class="description">(In development) Extrapolate from previous years' data to predict which programs you'll receive invites from and when</p>
         <!--<a href="javascript:;" class="btn btn-link btn-danger">See more</a>-->
     </div>
 </div>
@@ -196,7 +232,7 @@ The above copyright notice and this permission notice shall be included in all c
     </div>
     <div class="description">
         <h4 class="info-title">Rank Programs</h4>
-        <p>(In development) Keep track of your own stats, connect with other users through your personalized profile, and create your own rank list</p>
+        <p class="description">(In development) Keep track of your own stats, connect with other users through your personalized profile, and create your own rank list</p>
         <!--<a href="javascript:;" class="btn btn-link btn-danger">See more</a>-->
     </div>
 </div>

@@ -40,6 +40,18 @@ Coded by www.creative-tim.com
   <link rel="shortcut icon" href="#" />
 </head>
 
+<style>
+.dropdown-toggle::after {
+  content: none;
+}
+@media only screen and (max-width: 768px) {
+
+}
+.btn {
+  margin: 5px 0 0 0 !important;
+}
+</style>
+
 <body>
   <div class="wrapper ">
     <div class="sidebar off-canvas-sidebar" data-color="white" data-active-color="danger">
@@ -219,6 +231,7 @@ Coded by www.creative-tim.com
   <script src="{{ url_for('static', filename='demo/demo.js') }}"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6QHjhcTjiiNmHCM2bPFRUanvNxerCgqE"></script>
   <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap-table-mobile.js') }}"></script>
   <script src="{{ url_for('static', filename='js/paper-dashboard.js') }}"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
