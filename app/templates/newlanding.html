@@ -93,6 +93,20 @@ The above copyright notice and this permission notice shall be included in all c
 </div>
 </nav>
 <!-- End Navbar -->
+<style>
+#specialty-selector {
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+@media only screen and (max-width: 768px) {
+  #specialty-selector {
+    max-width: 240px;
+  }
+  .presentation-title {
+    font-size: 5rem;
+  }
+}
+</style>
 <div class="page-header section-dark" style="background-image: url('{{ url_for('static', filename='paper_assets/img/antoine-barres.jpg') }}">
     <div class="filter"></div>
     <div class="content-center">
@@ -110,7 +124,7 @@ The above copyright notice and this permission notice shall be included in all c
     <div class="row justify-content-center">
         <form action="{{ url_for('main.specialtyselect') }}" method="POST">
         <div class="btn-group">
-        <select name="specialtyselect" class="btn btn-danger btn-lg btn-round">
+        <select id="specialty-selector" name="specialtyselect" class="btn btn-danger btn-lg btn-round">
             {% for specialty in specialties %}
             <option href="{{url_for('main.specialty',id=specialty.id) }}" id="{{ specialty.id }}">{{ specialty.name }}</option>
             {% endfor %}
