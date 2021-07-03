@@ -9,7 +9,7 @@
 	</td>
 	<td>
 		{% for impression in program.interview_impressions %}
-		<blockquote>{{ impression.body }}</blockquote>
+		<blockquote class="{% if impression.name_and_shame %}blockquote2{% endif %}">{{ impression.body }}</blockquote>
 		{% endfor %}
 	</td>
 </tr>

@@ -164,6 +164,7 @@ class Interview_Impression(db.Model):
 	program_id = db.Column(db.Integer, db.ForeignKey('program.id'))
 	language = db.Column(db.String(5))
 	specialty_id = db.Column(db.Integer, db.ForeignKey('specialty.id'))
+	name_and_shame = db.Column(db.Boolean, default=0)
 
 class Program(db.Model):
 	__tablename__ = 'program'
