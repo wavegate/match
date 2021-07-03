@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 	jsonify, current_app, Response, stream_with_context, make_response, session
 from flask_login import current_user, login_required
 from app import db, csrf
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat, Interview_Impression
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat, Interview_Impression, Thread
 import logging
 import re
 import pandas as pd
@@ -119,6 +119,32 @@ def upload_surgery_name_and_shame():
 								db.session.add(interview_impression)
 						db.session.commit()
 						yield(program_name)
+			return Response(stream_with_context(generate()))
+		return redirect(url_for('main.index'))
+	return render_template('upload.html')
+
+@bp.route('/upload_surgery_chat', methods=['GET', 'POST'])
+@csrf.exempt
+def upload_surgery_chat():
+	if request.method == 'POST':
+		if current_user.admin:
+			def generate():
+				spec = Specialty.query.filter_by(name='Surgery').first()
+				wb = openpyxl.load_workbook(request.files['file'])
+				ws = wb.active
+				for row in ws.iter_rows(min_row=1):
+					if row[0].value:
+						thread_body = row[0].value
+						thread = Thread(body=thread_body, author=current_user,specialty=spec)
+						db.session.add(thread)
+						db.session.commit()
+						response_list = row[1].value
+						if response_list:
+							responses = list(map(lambda x: Post(body=x, author=current_user, thread_id=thread.id), response_list.split("XXXXX")))
+							for response in responses:
+								db.session.add(response)
+						db.session.commit()
+						yield(str(row[0].row))
 			return Response(stream_with_context(generate()))
 		return redirect(url_for('main.index'))
 	return render_template('upload.html')

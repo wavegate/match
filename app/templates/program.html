@@ -64,9 +64,21 @@
 					        {% endif %}
 					    </div>
 					    <div class="tab-pane fade" id="impressions">
-					        {% if postform %}
-							{{ render_form(postform) }}
-							{% endif %}
+					    	<form action="" method="post">
+						        {% if postform %}
+						        {{ postform.hidden_tag() }}
+			                    <div class="form-group">
+			                        {{ postform.post.label(class_="col-form-label") }}<br>
+			                        {{ postform.post(class_="form-control") }}
+			                        {{ postform.name_and_shame(class_="") }}
+			                        {{ postform.name_and_shame.label(class_="col-form-label") }}<br>
+			                        {% for error in postform.post.errors %}
+			                        <span style="color: red;">[{{ error }}]</span>
+			                        {% endfor %}
+			                        {{ postform.submit(class_="btn btn-primary btn-md") }}
+			                    </div>
+								{% endif %}
+							</form>
 							<p>
 								{% if not interview_impressions %}There are no impressions yet.{% endif %}
 								{% for interview_impression in interview_impressions %}

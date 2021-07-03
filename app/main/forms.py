@@ -45,6 +45,7 @@ class EmptyForm(FlaskForm):
 
 class PostForm(FlaskForm):
 	post = TextAreaField(_l('Enter post:'), validators=[DataRequired()])
+	name_and_shame = BooleanField('Name and shame?')
 	submit = SubmitField(_l('Submit'))
 
 

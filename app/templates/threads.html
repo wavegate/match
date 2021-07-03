@@ -51,6 +51,18 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
+          <p><i class="fa fa-question-circle"></i> What's This?</p>
+          <p>Below you will find data from the Applicant Chat portion of the /r/medicalschool spreadsheets. Open individual threads to see responding posts.</p>
+          <p>Data is extracted from previous Reddit /r/medicalschool spreadsheets as well as supplied by other users of residencymatch.app. Anyone can add their own data, but only moderators can edit or remove anyone's data. This allows information to be organized and relatively immune to trolling. Data created by "Wavegate" means they are added automatically by me from previous spreadsheet data.</p>
+          <p>You can log in to add your own threads.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
           {% if threads %}
           {% for thread in threads %}
           {% include '_thread.html' %}

@@ -6,8 +6,10 @@
 			{% else %}
 			<span class="btn btn-success btn-sm">{{ interview_date.date.strftime('%m/%d/%y') }}</span> 
 			{% endif %}
+			{% else %}
+			None.
+			{% endfor %}
 
-		{% endfor %}
 		{% if interview.interviewee == current_user %}
 		<form action="{{ url_for('main.delete_interview', interview_id=interview.id)}}" method="post">
 			{{ form.hidden_tag() }}

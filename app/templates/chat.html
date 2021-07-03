@@ -50,10 +50,19 @@
 {% block content %}
 <div class="content">
     <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <p><i class="fa fa-question-circle"></i> What's This?</p>
+          <p>This is a simple chatroom for current online users within this specialty to chat with each other. Anonymous users can use chat and chat history does not persist. Please use the Forum for discussions such as questions and answers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                  Note: Anonymous users can use chat and chat history does not persist. Please use the Forum for discussions such as questions and answers.
                   <div class="form-group">
                     <textarea id="chat" class="form-control" rows="15">{% for chat in chats %}{{ chat.text }}&#13;&#10;{% endfor %}</textarea>
                     <br>

@@ -59,7 +59,7 @@ def program(program_id):
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
 	if postform.validate_on_submit() and current_user.is_authenticated:
-		interview_impression = Interview_Impression(body=postform.post.data, author=current_user, program=program)
+		interview_impression = Interview_Impression(body=postform.post.data, author=current_user, program=program, name_and_shame=postform.name_and_shame.data)
 		db.session.add(interview_impression)
 		db.session.commit()
 		flash(_('Your interview impression is now live!'))
@@ -452,9 +452,9 @@ def threads(specialty_id):
 	specialty = Specialty.query.get(specialty_id)
 	threads = specialty.threads.order_by(Thread.timestamp.desc()).paginate(
 		page, current_app.config['POSTS_PER_PAGE'], False)
-	next_url = url_for('main.specialty', specialty_id=specialty_id,
+	next_url = url_for('main.specialty', specialty2 = specialty2, id=specialty_id,
 					   page=threads.next_num) if threads.has_next else None
-	prev_url = url_for('main.specialty', specialty_id=specialty_id,
+	prev_url = url_for('main.specialty', specialty2 = specialty2, id=specialty_id,
 					   page=threads.prev_num) if threads.has_prev else None
 	return render_template('threads.html', specialty2 = specialty2, next_url=next_url, prev_url=prev_url, specialty=specialty, threads=threads.items)
 
