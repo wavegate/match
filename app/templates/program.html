@@ -46,10 +46,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="card-footer">
-					<hr>
-						<small>*Information, including images from Unsplash, are automatically generated. Please report incorrect information through the About page.</small>
-				</div>
 			</div>
 		</div>
 	<div class="col-md-8">
@@ -138,26 +134,34 @@
 			                    </div>
 								{% endif %}
 							</form>
-							<p>
-								{% if not interview_impressions %}There are no impressions yet.{% endif %}
-								{% for interview_impression in interview_impressions %}
-								{% include '_interview_impression.html' %}
-								{% endfor %}
-							</p>
-							<nav aria-label="...">
-								<ul class="pagination">
-									<li class="page-item{% if not prev_url %} disabled{% endif %}">
-										<a href="{{ prev_url or '#' }}" class="page-link">
-											<span aria-hidden="true">&larr;</span> {{ _('Previous page') }}
-										</a>
-									</li>
-									<li class="page-item{% if not next_url %} disabled{% endif %}">
-										<a href="{{ next_url or '#' }}" class="page-link">
-											{{ _('Next page') }} <span aria-hidden="true">&rarr;</span>
-										</a>
-									</li>
-								</ul>
-							</nav>
+							<style>
+							blockquote:before {
+								font-family: 'FontAwesome';
+
+								content:"\f10d";
+								color: rgba(0,0,0,0.3);
+								font-size: 0.8em;
+								vertical-align: 0.8em;
+							}
+							.blockquote2:before {
+								content:"\f12a";
+								color: rgba(219,0,0,0.5);
+								font-size: 1em;
+								vertical-align: 0em;
+								margin-right: 1em;
+								margin-left: 1em;
+							}
+						</style>
+							{% for impression in program.interview_impressions %}
+
+							<a href="{{ url_for('main.user', username=impression.author.username) }}">
+								{{ impression.author.username }}
+							</a>
+						{{ _('%(username)s said %(when)s',
+						username=user_link, when=moment(impression.timestamp).fromNow()) }}
+							<blockquote class="{% if impression.name_and_shame %}blockquote2{% endif %}">{{ impression.body }}</blockquote>
+							{% endfor %}
+							
 					    </div>
 					    <div class="tab-pane fade" id="post-iv">
 					    	<form action="" method="post">

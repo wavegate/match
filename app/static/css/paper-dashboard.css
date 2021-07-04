@@ -3043,7 +3043,7 @@ License - nucleoapp.com/license/
       height: 60px; }
   .sidebar .nav,
   .off-canvas-sidebar .nav {
-    margin-top: 20px;
+    margin-top: 0px;
     display: block; }
     .sidebar .nav .caret,
     .off-canvas-sidebar .nav .caret {
@@ -3222,7 +3222,7 @@ License - nucleoapp.com/license/
     color: #66615B; }
   .sidebar[data-color="white"] .logo:after,
   .off-canvas-sidebar[data-color="white"] .logo:after {
-    background-color: #66615B;
+    background-color: ;
     opacity: .4; }
   .sidebar[data-color="white"] .user .info a span,
   .sidebar[data-color="white"] .user .nav .sidebar-mini-icon,
