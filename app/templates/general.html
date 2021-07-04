@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block page_head %}{{ specialty.name }} Interview Impressions{% endblock %}
+{% block page_head %}{{ specialty.name }} General Program Information{% endblock %}
 
 
 {% block sidebar %}
@@ -72,9 +72,9 @@
         <div class="card-body">
           <p><i class="fa fa-question-circle"></i> What's This?</p>
           <p>Below you will find data for each individual residency program from the 2019-2020 and 2020-2021 application cycles:
-          <ul><li>Impressions of applicants' interview experience</li></ul>
+          <ul><li>General program information, including location, type of program, number of positions available, fellowships offered, call schedule, etc.</li></ul>
           <p>Data is extracted from previous Reddit /r/medicalschool spreadsheets as well as supplied by other users of residencymatch.app. Anyone can add their own data, but only moderators can edit or remove anyone's data. This allows information to be organized and relatively immune to trolling. Data created by "Wavegate" means they are added automatically by me from previous spreadsheet data.</p>
-          <p>Please log in and click on the name of the program to add your own interview impressions.</p>
+          <p>Please log in and click on the name of the program to add your own data, follow programs, or add programs to your rank list.</p>
         </div> 
       </div>
     </div>
@@ -83,9 +83,6 @@
       <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-              <div class="chart-legend">
-                    <i class="fa fa-exclamation text-danger" style="margin-right:0.6em"></i>= Name and Shame
-                </div>
               {% if current_user.is_anonymous %}
               Please login to add interview data and follow programs.
               {% endif %}
@@ -93,13 +90,26 @@
                 <div class="table">
                     <table id="program_table" class="table" data-toggle="table" data-search="true" data-pagination="true" data-show-columns="true" data-mobile-responsive="true">
                         <thead class="text-primary">
-                            <th data-sortable="true" data-field="1">State</th>
-                            <th data-sortable="true" data-field="2">Name</th>
-                            <th data-sortable="false" data-field="4">Interview Impressions</th>
+                            <th data-sortable="true" data-field="1">Name</th>
+                            <th data-sortable="true" data-field="2">State</th>
+                            <th data-sortable="true" data-field="3">City</th>
+                            <th data-sortable="false" data-field="4">Program Type</th>
+                            <th data-sortable="false" data-field="5">Program Director</th>
+                            <th data-sortable="false" data-field="6">Categorical Positions</th>
+                            <th data-sortable="false" data-field="7">Preliminary Positions</th>
+                            <th data-sortable="false" data-field="8">Trauma Level</th>
+                            <th data-sortable="false" data-field="9">Fellowships</th>
+                            <th data-sortable="false" data-field="10">Research Required</th>
+                            <th data-sortable="false" data-field="11"># Weeks Vacation</th>
+                            <th data-sortable="false" data-field="12">Call Schedule</th>
+                            <th data-sortable="false" data-field="13">Social Media</th>
+                            <th data-sortable="false" data-field="14">Step 1 Cutoff</th>
+                            <th data-sortable="false" data-field="15">LORs Required</th>
+
                         </thead>
                         <tbody>
                             {% for program in programs %}
-                            {% include '_program_impression.html' %}
+                            {% include '_program_general_info.html' %}
                             {% endfor %}
                         </tbody>
                     </table>

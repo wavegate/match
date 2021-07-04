@@ -152,6 +152,37 @@ def upload_surgery_postiv_communications():
 		return redirect(url_for('main.index'))
 	return render_template('upload.html')
 
+@bp.route('/upload_surgery_general_info', methods=['GET', 'POST'])
+@csrf.exempt
+def upload_surgery_general_info():
+	if request.method == 'POST':
+		if current_user.admin:
+			def generate():
+				spec = Specialty.query.filter_by(name='Surgery').first()
+				wb = openpyxl.load_workbook(request.files['file'])
+				ws = wb.active
+				for row in ws.iter_rows(min_row=1):
+					program_name = row[0].value
+					program = Program.query.filter_by(name=program_name, specialty_id=spec.id).first()
+					if program:
+						program.program_type = row[1].value
+						program.program_director = row[2].value
+						program.categorical_positions = row[3].value
+						program.preliminary_positions = row[4].value
+						program.trauma_level = row[5].value
+						program.fellowships = row[6].value
+						program.research_required = row[7].value
+						program.weeks_vacation = row[10].value
+						program.call_schedule = row[11].value
+						program.social_media = row[13].value
+						program.step_1_cutoff = row[15].value
+						program.LORs = row[17].value
+						db.session.commit()
+						yield(program.name)
+			return Response(stream_with_context(generate()))
+		return redirect(url_for('main.index'))
+	return render_template('upload.html')
+
 @bp.route('/upload_surgery_chat', methods=['GET', 'POST'])
 @csrf.exempt
 def upload_surgery_chat():

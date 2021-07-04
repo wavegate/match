@@ -1,0 +1,49 @@
+<tr data-title="bootstrap table">
+	<td>
+		<span style="display:none">{{ program.name }}</span><a href="{{ url_for('main.program', program_id=program.id) }}">
+			{{ program.name }}
+		</a>
+	</td>
+	<td>
+		{% if program.state %}{{ program.state }}{% endif %}
+	</td>
+	<td>
+		{% if program.city %}{{ program.city }}{% endif %}
+	</td>
+	<td>
+		{% if program.program_type %}{{ program.program_type }}{% endif %}
+	</td>
+	<td>
+		{% if program.program_director %}{{ program.program_director }}{% endif %}
+	</td>
+	<td>
+		{% if program.categorical_positions %}{{ program.categorical_positions }}{% endif %}
+	</td>
+	<td>
+		{% if program.preliminary_positions %}{{ program.preliminary_positions }}{% endif %}
+	</td>
+	<td>
+		{% if program.trauma_level %}{{ program.trauma_level }}{% endif %}
+	</td>
+	<td>
+		{% if program.fellowships %}{{ program.fellowships }}{% endif %}
+	</td>
+	<td>
+		{% if program.research_required %}{{ program.research_required }}{% endif %}
+	</td>
+	<td>
+		{% if program.weeks_vacation %}{{ program.weeks_vacation }}{% endif %}
+	</td>
+	<td>
+		{% if program.call_schedule %}{{ program.call_schedule }}{% endif %}
+	</td>
+	<td>
+		{% if program.social_media %}{{ program.social_media }}{% endif %}
+	</td>
+	<td>
+		{% if program.step_1_cutoff %}{{ program.step_1_cutoff }}{% endif %}
+	</td>
+	<td>
+		{% if program.LORs %}{{ program.LORs }}{% endif %}
+	</td>
+</tr>

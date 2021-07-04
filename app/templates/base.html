@@ -75,14 +75,6 @@ Coded by www.creative-tim.com
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          {% if not current_user.is_anonymous %}
-          <li>
-            <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
-              <i class="nc-icon nc-single-02"></i>
-              <p>My Profile</p>
-            </a>
-          </li>
-          {% endif %}
           {% if specialty %}
           <li>
             <a href="{{ url_for('main.index') }}" class="specialty_name btn btn-primary">
@@ -92,6 +84,12 @@ Coded by www.creative-tim.com
         </li>
         {% endif %}
           {% if specialty2 %}
+          <li>
+            <a href="{{ url_for('main.general', id=specialty2) }}">
+              <i class="fa fa-info"></i>
+              <p>General Information</p>
+            </a>
+          </li>
           <li>
             <a href="{{ url_for('main.specialty', id=specialty2) }}">
               <i class="nc-icon nc-calendar-60"></i>
@@ -110,23 +108,11 @@ Coded by www.creative-tim.com
               <p>Post-IV Communication</p>
             </a>
           </li>
-          <li>
-            <a href="{{ url_for('main.general', id=specialty2) }}">
-              <i class="fa fa-info"></i>
-              <p>General Program Information</p>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('main.chat', id=specialty2) }}">
-              <i class="nc-icon nc-chat-33"></i>
-              <p>Chat</p>
-            </a>
-          </li>
           </li>
            <li>
             <a href="{{ url_for('main.threads', specialty_id=specialty2) }}">
-              <i class="nc-icon nc-bank"></i>
-              <p>Forum</p>
+              <i class="nc-icon nc-chat-33"></i>
+              <p>Question / Answer</p>
             </a>
           </li>
           {% endif %}
@@ -207,6 +193,9 @@ Coded by www.creative-tim.com
                   {{ _('Register') }}
                 </a>
                 {% else %}
+                <a href="{{ url_for('main.user', username=current_user.username) }}" class="dropdown-item">
+                  <p>My Profile</p>
+                </a>
                 <a href="{{ url_for('auth.logout') }}" class="dropdown-item">
                   <p>Logout</p>
                 </a>

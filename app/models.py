@@ -190,6 +190,19 @@ class Program(db.Model):
 	salary = db.Column(db.Text)
 	salary_url = db.Column(db.Text)
 	imageurl = db.Column(db.Text)
+	program_type = db.Column(db.String(500))
+	program_director = db.Column(db.String(500))
+	categorical_positions = db.Column(db.Integer)
+	preliminary_positions = db.Column(db.Integer)
+	trauma_level = db.Column(db.Integer)
+	fellowships = db.Column(db.String(500))
+	research_required = db.Column(db.String(500))
+	weeks_vacation = db.Column(db.String(500))
+	call_schedule = db.Column(db.Text)
+	social_media = db.Column(db.String(500))
+	step_1_cutoff = db.Column(db.String(500))
+	LORs = db.Column(db.String(500))
+
 	def __repr__(self):
 		return '<Program {}>'.format(self.body)
 	def get_latest_interviews(self):

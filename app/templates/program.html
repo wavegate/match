@@ -45,9 +45,25 @@
 								</div>
 						</div>
 					</div>
-					<ul class="nav nav-tabs">
+				</div>
+				<div class="card-footer">
+					<hr>
+						<small>*Information, including images from Unsplash, are automatically generated. Please report incorrect information through the About page.</small>
+				</div>
+			</div>
+		</div>
+	<div class="col-md-8">
+		<div class="card">
+			<div class="card-body">
+				<ul class="nav nav-tabs">
+						<li class="nav-item">
+					    	<a href="#general" class="nav-link active" data-toggle="tab">General</a>
+					    </li>
+						<li class="nav-item">
+					    	<a href="#interviews" class="nav-link" data-toggle="tab">Interview Invites</a>
+					    </li>
 					    <li class="nav-item">
-					        <a href="#salary" class="nav-link active" data-toggle="tab">Salary</a>
+					        <a href="#salary" class="nav-link" data-toggle="tab">Salary</a>
 					    </li>
 					    <li class="nav-item">
 					        <a href="#impressions" class="nav-link" data-toggle="tab">Impressions</a>
@@ -58,7 +74,47 @@
 					</ul>
 
 					<div class="tab-content" style="padding-top:15px">
-					    <div class="tab-pane fade show active" id="salary">
+						<div class="tab-pane fade show active" id="general">
+							<ul>
+							<li>
+								Program type: {% if program.program_type %}{{ program.program_type }}{% endif %}
+							</li>
+							<li>
+								Program director: {% if program.program_director %}{{ program.program_director }}{% endif %}
+							</li>
+							<li>
+								Categorial positions: {% if program.categorical_positions %}{{ program.categorical_positions }}{% endif %}
+							</li>
+							<li>
+								Preliminary positions: {% if program.preliminary_positions %}{{ program.preliminary_positions }}{% endif %}
+							</li>
+							<li>
+								Trauma level: {% if program.trauma_level %}{{ program.trauma_level }}{% endif %}
+							</li>
+							<li>
+								Fellowships: {% if program.fellowships %}{{ program.fellowships }}{% endif %}
+							</li>
+							<li>
+								Research required? {% if program.research_required %}{{ program.research_required }}{% endif %}
+							</li>
+							<li>
+								# weeks vacation: {% if program.weeks_vacation %}{{ program.weeks_vacation }}{% endif %}
+							</li>
+							<li>
+								Call schedule: {% if program.call_schedule %}{{ program.call_schedule }}{% endif %}
+							</li>
+							<li>
+								Social media: {% if program.social_media %}{{ program.social_media }}{% endif %}
+							</li>
+							<li>
+								Step 1 cutoff: {% if program.step_1_cutoff %}{{ program.step_1_cutoff }}{% endif %}
+							</li>
+							<li>
+								LORs required: {% if program.LORs %}{{ program.LORs }}{% endif %}
+							</li>
+						</ul>
+					    </div>
+					    <div class="tab-pane fade" id="salary">
 					    	{% if program.salary %}
 					        <a href="{{ program.salary_url }}" target="_blank">(Check Website)</a>
 					        <p>{{ program.salary }}</p>
@@ -127,42 +183,22 @@
 								{% endfor %}
 							</p>
 					    </div>
-					    <div class="tab-pane fade" id="messages">
-					        <p>Messages tab content ...</p>
+					    <div class="tab-pane fade" id="interviews">
+							{% for interview in interviews %}
+							{% include '_interview.html' %}
+							{% else %}
+							No data has been uploaded for this program yet.
+							{% endfor %}
+
+							{% if not current_user.is_anonymous %}
+							<form action="{{ url_for('main.add_interview', program_id=program.id)}}" method="post">
+								{{ form.hidden_tag() }}
+								{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-primary')}}
+							</form>
+							{% endif %}
+
+			</div>
 					    </div>
-					</div>
-				</div>
-				<div class="card-footer">
-					<hr>
-						<small>*Information, including images from Unsplash, are automatically generated. Please report incorrect information through the About page.</small>
-				</div>
-			</div>
-		</div>
-	<div class="col-md-8">
-		<div class="card">
-			<div class="card-body">
-
-				{% for interview in interviews %}
-				{% include '_interview.html' %}
-				{% else %}
-				No data has been uploaded for this program yet.
-				{% endfor %}
-
-				{% if not current_user.is_anonymous %}
-				<form action="{{ url_for('main.add_interview', program_id=program.id)}}" method="post">
-					{{ form.hidden_tag() }}
-					{{ form.submit(value=_('Add Interview Invite'), class_='btn btn-primary')}}
-				</form>
-				{% endif %}
-			</div>
-			<div class="card-footer">
-				<div class="card-footer">
-					<div class="chart-legend">
-						<i class="fa fa-circle text-primary"></i>Date interview was offered
-						<i class="fa fa-circle text-success"></i>Interview date (still available)
-						<i class="fa fa-circle text-danger"></i>Interview date (already full)
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
