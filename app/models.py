@@ -194,7 +194,7 @@ class Program(db.Model):
 	program_director = db.Column(db.String(500))
 	categorical_positions = db.Column(db.String(500))
 	preliminary_positions = db.Column(db.String(500))
-	trauma_level = db.Column(db.Integer)
+	trauma_level = db.Column(db.String(500))
 	fellowships = db.Column(db.String(500))
 	research_required = db.Column(db.String(500))
 	weeks_vacation = db.Column(db.String(500))
