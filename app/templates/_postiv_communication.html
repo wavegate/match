@@ -1,0 +1,17 @@
+<table class="table table-hover">
+	<tr>
+		<td width="70px">
+			<a href="{{ url_for('main.user', username=postiv_communication.author.username) }}">
+				<img src="{{ postiv_communication.author.avatar(70) }}" />
+			</a>
+		</td>
+		<td>
+			<blockquote><a href="{{ url_for('main.user', username=postiv_communication.author.username) }}">
+				{{ postiv_communication.author.username }}
+			</a> received a {% if postiv_communication.personalized %}personalized{% else %}generic{% endif %} {{ postiv_communication.type_of_communication}} {% if postiv_communication.date_of_communication %}on {{ postiv_communication.date_of_communication.strftime('%m/%d/%y') }}{% endif %} with: {{ postiv_communication.content }}</blockquote>
+			{% if postiv_communication.author == current_user %}
+			<a class="float-right" href="{{ url_for('main.delete_postiv_communication',postiv_communication_id=postiv_communication.id)}}">Delete</a>
+			{% endif %}
+		</td>
+	</tr>
+</table>

@@ -50,6 +50,20 @@ Coded by www.creative-tim.com
 .btn {
   margin: 5px 0 0 0 !important;
 }
+.specialty_name {
+  width: 100px;
+  padding: 10px 5px 10px 5px;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
+  color: white !important;
+}
+.dontchange {
+  font-size: 1.3rem;
+}
+.change {
+  font-size: 0.7rem;
+}
 </style>
 
 <body>
@@ -61,7 +75,6 @@ Coded by www.creative-tim.com
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          {% block sidebar %}
           {% if not current_user.is_anonymous %}
           <li>
             <a href="{{ url_for('main.user', username=current_user.username) }}" class="nav-link">
@@ -70,6 +83,14 @@ Coded by www.creative-tim.com
             </a>
           </li>
           {% endif %}
+          {% if specialty %}
+          <li>
+            <a href="{{ url_for('main.index') }}" class="specialty_name btn btn-primary">
+              <p class="dontchange">{{ specialty.name }}</p>
+              <p class="change">Change specialty</p>
+          </a>
+        </li>
+        {% endif %}
           {% if specialty2 %}
           <li>
             <a href="{{ url_for('main.specialty', id=specialty2) }}">
@@ -81,6 +102,18 @@ Coded by www.creative-tim.com
             <a href="{{ url_for('main.interview_impressions', id=specialty2) }}">
               <i class="nc-icon nc-tie-bow"></i>
               <p>Interview Impressions</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.post_iv', id=specialty2) }}">
+              <i class="fa fa-at"></i>
+              <p>Post-IV Communication</p>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.general', id=specialty2) }}">
+              <i class="fa fa-info"></i>
+              <p>General Program Information</p>
             </a>
           </li>
           <li>
@@ -96,14 +129,7 @@ Coded by www.creative-tim.com
               <p>Forum</p>
             </a>
           </li>
-          <li>
-            <a href="{{ url_for('main.index') }}">
-              <i class="nc-icon nc-minimal-right"></i>
-              <p>Change Specialty</p>
-            </a>
-          </li>
           {% endif %}
-          {% endblock %}
         </ul>
       </div>
     </div>

@@ -5,8 +5,8 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from guess_language import guess_language
 from app import db, csrf, socketio
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm, ThreadForm
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread, Interview_Impression, Chat
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, MessageForm, ProgramForm, AddInterviewForm, FeedbackForm, PostIVForm, SLUMSForm, CreateSpecialtyForm, SpecialtyForm, ThreadForm
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Thread, Interview_Impression, Chat, PostInterviewCommunication
 from app.translate import translate
 from app.main import bp
 from app.auth.email import send_feedback_email
@@ -58,11 +58,18 @@ def program(program_id):
 	interviews = program.interviews.order_by(Interview.date.desc())
 	page = request.args.get('page', 1, type=int)
 	postform = PostForm()
+	postivform = PostIVForm()
 	if postform.validate_on_submit() and current_user.is_authenticated:
 		interview_impression = Interview_Impression(body=postform.post.data, author=current_user, program=program, name_and_shame=postform.name_and_shame.data)
 		db.session.add(interview_impression)
 		db.session.commit()
 		flash(_('Your interview impression is now live!'))
+		return redirect(url_for('main.program', program_id=program_id))
+	if postivform.validate_on_submit() and current_user.is_authenticated:
+		postiv = PostInterviewCommunication(date_of_communication=postivform.date.data, author=current_user, program=program, type_of_communication=postivform.type_of_communication.data, personalized=postivform.personalized.data, content=postivform.content.data)
+		db.session.add(postiv)
+		db.session.commit()
+		flash("Your post-interview impression is now live!")
 		return redirect(url_for('main.program', program_id=program_id))
 	interview_impressions = program.interview_impressions.order_by(Interview_Impression.timestamp.desc()).paginate(
 		page, current_app.config['POSTS_PER_PAGE'], False)
@@ -71,7 +78,7 @@ def program(program_id):
 	prev_url = url_for('main.program', id=program_id,
 					   page=interview_impressions.prev_num) if interview_impressions.has_prev else None
 	form = EmptyForm()
-	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, form=form, interview_impressions=interview_impressions.items)
+	return render_template('program.html', specialty2=specialty2,next_url=next_url, prev_url=prev_url,program=program, interviews=program.interviews, postform=postform, postivform=postivform, form=form, interview_impressions=interview_impressions.items, postiv_communications=program.postiv_communications.order_by(PostInterviewCommunication.timestamp.desc()))
 
 @bp.route('/delete_program/<int:program_id>', methods=['GET','POST'])
 @login_required
@@ -101,6 +108,16 @@ def delete_interview_impression(interview_impression_id):
 		db.session.delete(interview_impression)
 		db.session.commit()
 		flash('Interview impression deleted!')
+	return redirect(request.referrer)
+
+@bp.route('/delete_postiv_communication/<int:postiv_communication_id>', methods=['GET','POST'])
+@login_required
+def delete_postiv_communication(postiv_communication_id):
+	postiv_communication = PostInterviewCommunication.query.get(postiv_communication_id)
+	if current_user == postiv_communication.author:
+		db.session.delete(postiv_communication)
+		db.session.commit()
+		flash('Post-interview communication deleted!')
 	return redirect(request.referrer)
 
 @bp.route('/add_interview/<int:program_id>', methods=['GET', 'POST'])
@@ -173,7 +190,7 @@ def user(username):
 	elif request.method == 'GET':
 		form.username.data = current_user.username
 		form.about_me.data = current_user.about_me
-	return render_template('user.html', specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
+	return render_template('user.html', specialty=Specialty.query.get(specialty2), specialty2=specialty2, user=user, interviews=user.interviews,posts=posts.items, programs=user.programs,
 						   next_url=next_url, prev_url=prev_url, form=form)
 
 @bp.route('/follow_program/<int:program_id>', methods=['GET', 'POST'])
@@ -341,6 +358,27 @@ def interview_impressions(id):
 	current_user.special_id = id
 	db.session.commit()
 	return render_template('impressions.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()))
+
+
+@bp.route('/post_iv/<int:id>', methods=['GET'])
+def post_iv(id):
+	session['specialty'] = str(id)
+	specialty2 = session.get('specialty')
+	specialty = Specialty.query.get(id)
+	current_user.special_id = id
+	db.session.commit()
+	return render_template('post_iv.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()))
+
+
+@bp.route('/general/<int:id>', methods=['GET'])
+def general(id):
+	session['specialty'] = str(id)
+	specialty2 = session.get('specialty')
+	specialty = Specialty.query.get(id)
+	current_user.special_id = id
+	db.session.commit()
+	return render_template('general.html', specialty2=specialty2, specialty=specialty, title=specialty.name, programs=specialty.programs.order_by(Program.name.asc()))
+
 
 @bp.route('/specialty', methods=['POST'])
 @csrf.exempt

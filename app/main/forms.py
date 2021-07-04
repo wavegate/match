@@ -48,6 +48,12 @@ class PostForm(FlaskForm):
 	name_and_shame = BooleanField('Name and shame?')
 	submit = SubmitField(_l('Submit'))
 
+class PostIVForm(FlaskForm):
+	date = DateField('What day did you receive the communication?')
+	type_of_communication = StringField('What type of communication? eg. Thank you letter')
+	personalized = BooleanField("Was the communication personalized?")
+	content = TextAreaField("What was the content of the communication?")
+	submit = SubmitField(_l('Submit'))
 
 class SearchForm(FlaskForm):
 	q = StringField(_l('Search'), validators=[DataRequired()])

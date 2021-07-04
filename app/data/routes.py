@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 	jsonify, current_app, Response, stream_with_context, make_response, session
 from flask_login import current_user, login_required
 from app import db, csrf
-from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat, Interview_Impression, Thread
+from app.models import User, Post, Program, Message, Notification, Interview, Interview_Date, Test, Specialty, Chat, Interview_Impression, Thread, PostInterviewCommunication
 import logging
 import re
 import pandas as pd
@@ -117,6 +117,35 @@ def upload_surgery_name_and_shame():
 							interview_impressions = list(map(lambda x: Interview_Impression(body=x, author=current_user, program=program, name_and_shame=True), program_interview_impressions.split("XXXXX")))
 							for interview_impression in interview_impressions:
 								db.session.add(interview_impression)
+						db.session.commit()
+						yield(program_name)
+			return Response(stream_with_context(generate()))
+		return redirect(url_for('main.index'))
+	return render_template('upload.html')
+
+@bp.route('/upload_surgery_postiv_communications', methods=['GET', 'POST'])
+@csrf.exempt
+def upload_surgery_postiv_communications():
+	if request.method == 'POST':
+		if current_user.admin:
+			def generate():
+				spec = Specialty.query.filter_by(name='Surgery').first()
+				wb = openpyxl.load_workbook(request.files['file'])
+				ws = wb.active
+				for row in ws.iter_rows(min_row=1):
+					program_name = row[0].value
+					program = Program.query.filter_by(name=program_name, specialty_id=spec.id).first()
+					if program:
+						tally = row[1].value
+						date = row[2].value
+						type_of_communication = row[3].value
+						if row[4].value == "Personalized":
+							personalized = True
+						else:
+							personalized = False
+						content = row[5].value
+						postiv = PostInterviewCommunication(date_of_communication=date, author=current_user, program=program, type_of_communication=type_of_communication, personalized=personalized, content=content)
+						db.session.add(postiv)
 						db.session.commit()
 						yield(program_name)
 			return Response(stream_with_context(generate()))
