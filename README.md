@@ -1,4 +1,4 @@
-# Residency Mtach
+# Residency Match
 
 This is an application intended for medical residency applicants to have a more organized format to share interview season experiences.
 
