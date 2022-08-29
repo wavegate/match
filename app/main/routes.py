@@ -384,7 +384,7 @@ def general(id):
 @csrf.exempt
 def specialtyselect():
 	specialty = Specialty.query.filter_by(name=request.form['specialtyselect']).first_or_404()
-	return redirect(url_for('main.specialty', id=specialty.id))
+	return redirect(url_for('main.general', id=specialty.id))
 
 @bp.route('/create_specialty', methods=['GET','POST'])
 @login_required
